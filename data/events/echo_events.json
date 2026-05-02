@@ -1,0 +1,62 @@
+[
+  {
+    "id": "jingwei",
+    "name": "精卫衔木",
+    "story": "你看到一只小鸟，无声地从西山衔来枯枝，又投入海中。海始终未填，它始终未停。",
+    "options": [
+      {"label": "上前帮她衔一段", "type": "card", "card": "huang.jingwei_fill", "preview": "获得：《精卫·恒念》"},
+      {"label": "告诉她海是填不满的", "type": "fragments", "amount": 30, "preview": "+30 灵韵碎片"},
+      {"label": "默默坐下，直到天亮", "type": "max_hp", "amount": 5, "preview": "+5 最大气血（永久）"}
+    ]
+  },
+  {
+    "id": "fusang",
+    "name": "扶桑朝露",
+    "story": "扶桑神木的露珠悬在叶尖，太阳即将从你身后升起。汤谷之上，传说一日落则一日升。",
+    "options": [
+      {"label": "用碎片接一滴露", "type": "heal_full_cost", "cost": 15, "preview": "失去 15 碎片，回满气血"},
+      {"label": "凝视太阳的方向", "type": "card", "card": "shan.fusang", "preview": "获得：《扶桑·朝露》"},
+      {"label": "拿一片叶子回去", "type": "exp", "amount": 30, "preview": "+30 EXP"}
+    ]
+  },
+  {
+    "id": "yinglong",
+    "name": "应龙呼云",
+    "story": "天上一道金色光闪过，是有翼之龙。它向你低声示意，让你看见远处的山雨。",
+    "options": [
+      {"label": "向应龙稽首致谢", "type": "card", "card": "hai.yinglong_call", "preview": "获得：《应龙·呼云》"},
+      {"label": "记下这片云的形状", "type": "exp", "amount": 35, "preview": "+35 EXP"},
+      {"label": "在雨中走一段", "type": "heal", "amount": 25, "preview": "+25 气血"}
+    ]
+  },
+  {
+    "id": "fisher",
+    "name": "西风渔者",
+    "story": "你遇到一位老渔夫，他正用残破的网捕一只虚幻的文鳐鱼。他抬起头，眼神温和。",
+    "options": [
+      {"label": "送他几块灵韵碎片", "type": "card_cost", "card": "hai.wenyao_evade", "cost": 10, "preview": "失去 10 碎片，获得《文鳐·夜遁》"},
+      {"label": "教他更好的捕鱼之法", "type": "exp", "amount": 25, "preview": "+25 EXP"},
+      {"label": "默默离开", "type": "heal", "amount": 10, "preview": "+10 气血"}
+    ]
+  },
+  {
+    "id": "kuafu",
+    "name": "夸父石",
+    "story": "你遇到一块写着「夸父」的石碑。传说夸父逐日而亡，化身为山，杖落地为桃林。",
+    "options": [
+      {"label": "为夸父点一柱香", "type": "card", "card": "huang.kuafu_pursue", "preview": "获得：《夸父·逐日》"},
+      {"label": "拾一颗石碑边的桃子", "type": "heal", "amount": 30, "preview": "+30 气血"},
+      {"label": "默念几句典籍", "type": "exp", "amount": 20, "preview": "+20 EXP；解锁图鉴：夸父"}
+    ]
+  },
+  {
+    "id": "xingtian",
+    "name": "刑天舞戚",
+    "story": "你看见一具无头之躯，仍在以乳为目、以脐为口，操干戚而舞。陶渊明诗云：刑天舞干戚，猛志固常在。",
+    "options": [
+      {"label": "向他鞠躬", "type": "card", "card": "huang.xingtian_axe", "preview": "获得：《刑天·舞戚》"},
+      {"label": "献上你的灵韵碎片", "type": "max_hp_cost", "cost": 25, "amount": 10, "preview": "失去 25 碎片，+10 最大气血（永久）"},
+      {"label": "悄悄写下他的故事", "type": "exp", "amount": 40, "preview": "+40 EXP"}
+    ]
+  }
+]

@@ -1,0 +1,134 @@
+[
+  {
+    "id": "hu_diao",
+    "display_name": "迷雾狐裔",
+    "max_hp": 22,
+    "intent_pattern": ["ATTACK:6", "BLOCK:4", "ATTACK:7"],
+    "classic_quote": "青丘之山有兽焉，其状如狐而九尾，其音如婴儿，能食人。",
+    "translation": "本是青丘九尾狐的远支，被忘川之雾扭曲后失去本性，成了游荡的孤魂。"
+  },
+  {
+    "id": "lu_shu",
+    "display_name": "鹿蜀",
+    "max_hp": 26,
+    "intent_pattern": ["ATTACK:5", "BUFF:1", "ATTACK:8"],
+    "classic_quote": "杻阳之山有兽焉，其状如马而白首，其文如虎而赤尾，其音如谣，其名曰鹿蜀，佩之宜子孙。（《山海经·南山经》）",
+    "translation": "鹿蜀本是吉兽，传说佩戴它的皮毛可使子孙昌盛。被忘川扰乱后却躁动不安。",
+    "awaken_options": [
+      "鹿蜀形似白头之马，身上有虎纹和赤尾，叫声婉转，佩戴它能使子孙昌盛。",
+      "鹿蜀是西山的凶兽，红身白尾，专门吞食小儿，需以五谷祭祀。",
+      "鹿蜀是夸父的坐骑，曾载夸父逐日，最终力竭而亡。",
+      "鹿蜀生于沧海，鳞身鹿首，鸣声如雷，能呼风唤雨。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "shan.qilin_breath"
+  },
+  {
+    "id": "cong_cong",
+    "display_name": "从从",
+    "max_hp": 18,
+    "intent_pattern": ["ATTACK:4", "ATTACK:4", "BLOCK:6"],
+    "classic_quote": "栒状之山有兽焉，其状如犬，六足，其名曰从从，其鸣自叫。（《山海经·东山经》）",
+    "translation": "从从是六足犬形之兽，叫声像在自呼其名。被忘川所扰，已分不清同类。"
+  },
+  {
+    "id": "lei_beast",
+    "display_name": "类",
+    "max_hp": 30,
+    "intent_pattern": ["ATTACK:3", "ATTACK:3", "DEBUFF:1", "ATTACK:9"],
+    "classic_quote": "亶爰之山有兽焉，其状如狸而有髦，其名曰类，自为牝牡，食者不妒。",
+    "translation": "类自含雌雄两性，本象征'和'与'容'。今被忘川扰乱，失去了那份从容。"
+  },
+  {
+    "id": "elite_qiongqi",
+    "display_name": "迷误·穷奇",
+    "max_hp": 56,
+    "is_elite": true,
+    "intent_pattern": ["ATTACK:10", "BUFF:2", "ATTACK:12", "BLOCK:8"],
+    "classic_quote": "邽山有兽焉，其状如牛，猬毛，名曰穷奇，音如獆狗，是食人。（《山海经·西山经》）",
+    "translation": "穷奇形如刺猬牛，本是守山之兽。今被忘川深度侵蚀，把每一个进入山的人都当成入侵者。",
+    "awaken_options": [
+      "穷奇形如牛，浑身刺猬般的硬毛，叫声似犬吠，本被记为吞噬之兽。",
+      "穷奇是天庭的看门神兽，长着九条尾巴，从不轻易示人。",
+      "穷奇是水中的巨蛇，鳞片金光闪烁，能预知风雨。",
+      "穷奇是龙的远亲，身长十丈，住在西海之底。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "huang.qiongqi_lash"
+  },
+  {
+    "id": "boss_bifang",
+    "display_name": "讹火·毕方",
+    "max_hp": 110,
+    "is_boss": true,
+    "intent_pattern": [
+      "ATTACK:8",
+      "ATTACK:6",
+      "BLOCK:10",
+      "ATTACK:14",
+      "BUFF:2",
+      "ATTACK:6",
+      "ATTACK:6",
+      "BLOCK:8"
+    ],
+    "classic_quote": "章莪之山有鸟焉，其状如鹤，一足，赤文青质而白喙，名曰毕方，其鸣自叫也，见则其邑有讹火。（《山海经·西山经》）",
+    "translation": "毕方是独足赤纹青身白喙的神鸟。原是司守火塘的灵物，被忘川驱使后只剩'讹火'之念，遗忘了它本是温暖人心的火光。",
+    "awaken_options": [
+      "章莪之山有一种鸟，长得像鹤，只有一只脚，身上有红色花纹、青色羽毛和白色的喙，名叫毕方，鸣叫时像在自呼其名，所到之处常有奇异的火光。",
+      "毕方是凤凰的远亲，红羽如焰，鸣声如雷，所到之地祥瑞遍生。",
+      "毕方是大泽之中的怪鸟，三足而长尾，每隔六十年现身一次，预示丰收。",
+      "毕方原是夔的化身，独足而善鸣，能引雷电。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "hai.bifang_dance"
+  },
+  {
+    "id": "boss_bifang_weak",
+    "display_name": "雏火·毕方",
+    "max_hp": 70,
+    "is_boss": true,
+    "intent_pattern": [
+      "ATTACK:6",
+      "BLOCK:8",
+      "ATTACK:8",
+      "ATTACK:5"
+    ],
+    "classic_quote": "毕方者，赤文青质，独足之鸟也。雏火者，初生之火，未盛而易引。",
+    "translation": "刚被忘川扰动、力量尚未稳定的小毕方。比一般 BOSS 容易，但仍是真正的 BOSS。",
+    "awaken_options": [
+      "刚被忘川气息侵染、独足赤纹的雏鸟，鸣声细弱，所到之处偶有微火。",
+      "雏火毕方是穷奇的远亲，凶悍异常，需以五牲祭之。",
+      "雏火其实是火神祝融幼时的别名。",
+      "雏火乃水中之鱼，逆流而上者皆死。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "hai.bifang_dance"
+  },
+  {
+    "id": "boss_bifang_strong",
+    "display_name": "焚岭古毕方",
+    "max_hp": 160,
+    "is_boss": true,
+    "intent_pattern": [
+      "ATTACK:10",
+      "ATTACK:8",
+      "BLOCK:14",
+      "ATTACK:18",
+      "BUFF:3",
+      "ATTACK:10",
+      "DEBUFF:2",
+      "ATTACK:8",
+      "BLOCK:12"
+    ],
+    "classic_quote": "古之毕方，栖焚岭之巅，火气环身千年，鸣则群山为之震。",
+    "translation": "在焚岭岭脊栖息千年的古毕方，气场强大，建议先击败小怪和精英、积累卡组优势后再来。",
+    "awaken_options": [
+      "栖焚岭之巅、火气环身千年的古毕方，是毕方家族中最强者，鸣声可震群山。",
+      "焚岭毕方是九尾狐变形而成的古妖。",
+      "焚岭毕方实际是凤凰之父，以火羽炼成。",
+      "焚岭毕方乃应龙后裔，长有四翼九首。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "hai.bifang_dance"
+  }
+]

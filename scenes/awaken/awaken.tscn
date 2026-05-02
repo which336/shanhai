@@ -1,0 +1,73 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb38twc2u0wlr"]
+
+[ext_resource type="Script" path="res://scripts/awaken/awaken_view.gd" id="1_aw"]
+
+[node name="AwakenView" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_aw")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.65)
+
+[node name="Panel" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(840, 580)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -290.0
+offset_right = 420.0
+offset_bottom = 290.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="V" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="Panel/V"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "唤醒"
+horizontal_alignment = 1
+
+[node name="Quote" type="RichTextLabel" parent="Panel/V"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="Hint" type="Label" parent="Panel/V"]
+layout_mode = 2
+text = "下面 4 段白话，哪一段最贴合原文？"
+horizontal_alignment = 1
+
+[node name="Options" type="VBoxContainer" parent="Panel/V"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Result" type="RichTextLabel" parent="Panel/V"]
+visible = false
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+
+[node name="CloseButton" type="Button" parent="Panel/V"]
+visible = false
+layout_mode = 2
+text = "继续"

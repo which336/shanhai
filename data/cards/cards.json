@@ -1,0 +1,409 @@
+[
+  {
+    "_section": "===== 通用基础卡（起手） ====="
+  },
+  {
+    "id": "neutral.strike",
+    "title": "击",
+    "school": 0,
+    "card_type": 0,
+    "rarity": 0,
+    "cost": 1,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害。",
+    "classic_quote": "凡有形者，皆可击；以理胜之，以心服之。",
+    "translation": "凡有形之物皆可击破，但真正的胜利在于以理服人。这张最基础的卡提醒我们：力量本身并非目的。",
+    "alive_today": "武术中的'寸劲'、书法中的'笔力'，都源于'劲在意先'的传统智慧。",
+    "effects": [
+      { "kind": 0, "amount": 6, "target": 1 }
+    ]
+  },
+  {
+    "id": "neutral.guard",
+    "title": "守",
+    "school": 0,
+    "card_type": 1,
+    "rarity": 0,
+    "cost": 1,
+    "description": "获得 {0} 点护盾。",
+    "classic_quote": "守者，先察其势，后定其心。",
+    "translation": "守不是退让，而是先观察形势，再安定心神。一张防御卡提醒我们：守住自己，才能见招拆招。",
+    "alive_today": "中国传统武学中的'后发制人'、围棋中的'厚势'理论，都强调'守'的智慧。",
+    "effects": [
+      { "kind": 1, "amount": 5, "target": 0 }
+    ]
+  },
+  {
+    "_section": "===== 山经 · 守拙流（防御 / 草木）====="
+  },
+  {
+    "id": "shan.jianmu",
+    "title": "建木·承露",
+    "school": 1,
+    "card_type": 1,
+    "rarity": 0,
+    "cost": 1,
+    "description": "获得 {0} 点护盾，抽 {1} 张牌。",
+    "classic_quote": "有木青叶紫茎，玄华黄实，名曰建木，百仞无枝，上有九欘，下有九枸，其实如麻，其叶如芒，大皞爰过，黄帝所为。（《山海经·海内经》）",
+    "translation": "建木是上古天梯，连接天与人的神木。袁珂校注：建木乃古人想象中沟通天地的通道，其形高直，承接天露。",
+    "alive_today": "三星堆出土的'青铜神树'被视为建木的实物对应，今天仍在四川广汉博物馆中静静矗立。",
+    "effects": [
+      { "kind": 1, "amount": 4, "target": 0 },
+      { "kind": 3, "amount": 1, "target": 0 }
+    ]
+  },
+  {
+    "id": "shan.fusang",
+    "title": "扶桑·朝露",
+    "school": 1,
+    "card_type": 1,
+    "rarity": 0,
+    "cost": 1,
+    "description": "回合开始时回复 {0} 生命，持续本局。",
+    "classic_quote": "汤谷上有扶木，一日方至，一日方出，皆载于乌。（《山海经·大荒东经》）",
+    "translation": "汤谷之上有扶桑神木，太阳栖息其上，一日落则一日升，循环不息。",
+    "alive_today": "'扶桑'后成为日本古称的雅称，至今汉日文化交流中仍被提起。",
+    "effects": [
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "root", "status_stack": 2 }
+    ]
+  },
+  {
+    "id": "shan.ruomu",
+    "title": "若木·定身",
+    "school": 1,
+    "card_type": 1,
+    "rarity": 1,
+    "cost": 2,
+    "description": "获得 {0} 点护盾，下一张山经卡费用 -1。",
+    "classic_quote": "灰野之山，上有赤树，青叶，赤华，名曰若木。（《山海经·大荒北经》）",
+    "translation": "灰野之山上的若木，叶青花赤，是日落之处的圣树，象征终而复始的安定力量。",
+    "alive_today": "屈原《离骚》'折若木以拂日兮'即取此意，至今广为传诵。",
+    "effects": [
+      { "kind": 1, "amount": 8, "target": 0 },
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "resonance_shan", "status_stack": 1 }
+    ]
+  },
+  {
+    "id": "shan.luwu",
+    "title": "陆吾·镇山",
+    "school": 1,
+    "card_type": 1,
+    "rarity": 1,
+    "cost": 2,
+    "description": "获得 {0} 点护盾，并获得 {1} 层根脉。",
+    "classic_quote": "西南四百里，曰昆仑之丘，是实惟帝之下都，神陆吾司之。其神状虎身而九尾，人面而虎爪。（《山海经·西山经》）",
+    "translation": "陆吾是昆仑之神，掌管天上九部和帝苑时节。九尾虎身，人面虎爪，威严而不暴戾。",
+    "alive_today": "陆吾形象在明清门神纹样、北京石狮造型中仍可见其踪。",
+    "effects": [
+      { "kind": 1, "amount": 9, "target": 0 },
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "root", "status_stack": 2 }
+    ]
+  },
+  {
+    "id": "shan.qilin_breath",
+    "title": "麒麟之息",
+    "school": 1,
+    "card_type": 1,
+    "rarity": 1,
+    "cost": 1,
+    "description": "回复 {0} 生命，并获得 {1} 点护盾。",
+    "classic_quote": "麒麟，仁兽也。麏身，牛尾，一角。（《说文解字》引）",
+    "translation": "麒麟为仁兽，性情温和，所到之处不踏生灵不折草木，是太平的象征。",
+    "alive_today": "'麒麟送子'图、麒麟送瑞剪纸，至今仍是民间过年常见纹样。",
+    "effects": [
+      { "kind": 2, "amount": 4, "target": 0 },
+      { "kind": 1, "amount": 4, "target": 0 }
+    ]
+  },
+  {
+    "_section": "===== 海经 · 灵动流（速度 / 水族）====="
+  },
+  {
+    "id": "hai.yinglong_call",
+    "title": "应龙·呼云",
+    "school": 2,
+    "card_type": 1,
+    "rarity": 0,
+    "cost": 1,
+    "description": "抽 {0} 张牌。",
+    "classic_quote": "应龙处南极，杀蚩尤与夸父，不得复上，故下数旱。（《山海经·大荒东经》）",
+    "translation": "应龙是有翼之龙，曾助黄帝战蚩尤。他能呼云行雨，是水神的化身。",
+    "alive_today": "应龙形象保留在故宫太和殿藻井、汉画像石上，是中国龙形象的早期祖型。",
+    "effects": [
+      { "kind": 3, "amount": 2, "target": 0 }
+    ]
+  },
+  {
+    "id": "hai.wenyao_evade",
+    "title": "文鳐·夜遁",
+    "school": 2,
+    "card_type": 1,
+    "rarity": 0,
+    "cost": 0,
+    "description": "获得 {0} 点护盾。下一张海经卡费用 -1（共鸣加成）。",
+    "classic_quote": "观水多文鳐鱼，状如鲤鱼，鱼身而鸟翼，苍文而白首，赤喙，常行西海，游于东海，以夜飞。（《山海经·西山经》）",
+    "translation": "文鳐鱼鱼身鸟翼，能日行于西海，夜飞至东海，被视为长途跋涉的智者。",
+    "alive_today": "今广东沿海仍有'飞鱼'，被视为文鳐鱼的现代余音。",
+    "effects": [
+      { "kind": 1, "amount": 3, "target": 0 },
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "resonance_hai", "status_stack": 1 }
+    ]
+  },
+  {
+    "id": "hai.kun_swift",
+    "title": "鲲·掠浪",
+    "school": 2,
+    "card_type": 0,
+    "rarity": 0,
+    "cost": 1,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害，并施加 {1} 层湿润。",
+    "classic_quote": "北冥有鱼，其名为鲲。鲲之大，不知其几千里也。（《庄子·逍遥游》）",
+    "translation": "鲲是北海中的巨鱼，化为大鹏可扶摇九万里，是变化与自由的图腾。",
+    "alive_today": "成语'鲲鹏展翅'仍在中文写作中表达远大志向。",
+    "effects": [
+      { "kind": 0, "amount": 5, "target": 1 },
+      { "kind": 5, "amount": 0, "target": 1, "status_id": "wet", "status_stack": 1 }
+    ]
+  },
+  {
+    "id": "hai.bifang_dance",
+    "title": "毕方·闪羽",
+    "school": 2,
+    "card_type": 0,
+    "rarity": 1,
+    "cost": 1,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害两次。若目标湿润，再追加一次。",
+    "classic_quote": "章莪之山有鸟焉，其状如鹤，一足，赤文青质而白喙，名曰毕方，其鸣自叫也，见则其邑有讹火。（《山海经·西山经》）",
+    "translation": "毕方是独足红纹白喙的神鸟，所到之处有讹火。但被唤醒后，它本是司守火塘的灵鸟。",
+    "alive_today": "敦煌壁画、汉代瓦当中的朱雀形象，与毕方有共同的文化原型。",
+    "effects": [
+      { "kind": 0, "amount": 4, "target": 1 },
+      { "kind": 0, "amount": 4, "target": 1 }
+    ]
+  },
+  {
+    "id": "hai.heluo_dive",
+    "title": "何罗·分游",
+    "school": 2,
+    "card_type": 0,
+    "rarity": 1,
+    "cost": 1,
+    "requires_target": true,
+    "description": "对全体敌人造成 {0} 点伤害。",
+    "classic_quote": "谯明之山，谯水出焉，其中多何罗之鱼，一首而十身，其音如吠犬，食之已痈。（《山海经·北山经》）",
+    "translation": "何罗鱼一头十身，能群游而不乱。古人以其象征团结之力。",
+    "alive_today": "'一心十身'被引申为协作精神，成为中文成语典源之一。",
+    "effects": [
+      { "kind": 0, "amount": 5, "target": 2 }
+    ]
+  },
+  {
+    "id": "hai.zhulong_breath",
+    "title": "烛龙·吐息",
+    "school": 2,
+    "card_type": 1,
+    "rarity": 2,
+    "cost": 2,
+    "description": "抽 {0} 张牌，本回合下一张牌费用归零。",
+    "classic_quote": "钟山之神，名曰烛阴，视为昼，瞑为夜，吹为冬，呼为夏。（《山海经·海外北经》）",
+    "translation": "烛龙是钟山之神，睁眼为昼闭眼为夜，呼吸调节寒暑，是时间本身的化身。",
+    "alive_today": "屈原《天问》'日安不到，烛龙何照'，至今仍被引用。",
+    "effects": [
+      { "kind": 3, "amount": 2, "target": 0 },
+      { "kind": 4, "amount": 1, "target": 0 }
+    ]
+  },
+  {
+    "_section": "===== 荒经 · 锐意流（爆发 / 凶兽）====="
+  },
+  {
+    "id": "huang.qiongqi_lash",
+    "title": "穷奇·裂风",
+    "school": 3,
+    "card_type": 0,
+    "rarity": 0,
+    "cost": 1,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害，施加 {1} 层易伤。",
+    "classic_quote": "邽山有兽焉，其状如牛，猬毛，名曰穷奇，音如獆狗，是食人。（《山海经·西山经》）",
+    "translation": "穷奇形如刺猬牛，本被记载为凶兽。被唤醒后才知它原是捍卫山林的猎手，只是被忘川扭曲了它的认知。",
+    "alive_today": "'穷奇'后被借作春秋四凶之一，这种'被污名化'的命运本身值得反思。",
+    "effects": [
+      { "kind": 0, "amount": 7, "target": 1 },
+      { "kind": 5, "amount": 0, "target": 1, "status_id": "vulnerable", "status_stack": 1 }
+    ]
+  },
+  {
+    "id": "huang.taotie_devour",
+    "title": "饕餮·一咽",
+    "school": 3,
+    "card_type": 0,
+    "rarity": 1,
+    "cost": 2,
+    "requires_target": true,
+    "description": "随机弃 {1} 张牌。每弃 1 张，伤害 +4。基础伤害 {0}。",
+    "classic_quote": "钩吾之山，有兽焉，其状羊身人面，其目在腋下，虎齿人爪，其音如婴儿，名曰狍鸮，是食人。（《山海经·北山经》）",
+    "translation": "饕餮的原型狍鸮被记为食人之兽。后人引申为'贪'的警戒。游戏中将其唤醒，让它回归本来面目——饥饿，但渴望被理解。",
+    "alive_today": "商周青铜器上的'饕餮纹'是中国早期纹样艺术的高峰，至今仍被视觉设计沿用。",
+    "effects": [
+      { "kind": 0, "amount": 6, "target": 1 },
+      { "kind": 7, "amount": 2, "target": 0 }
+    ]
+  },
+  {
+    "id": "huang.kuafu_pursue",
+    "title": "夸父·逐日",
+    "school": 3,
+    "card_type": 0,
+    "rarity": 1,
+    "cost": 2,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害。失去 {1} 生命。下一张攻击牌伤害翻倍。",
+    "classic_quote": "夸父与日逐走，入日；渴，欲得饮，饮于河、渭；河、渭不足，北饮大泽。（《山海经·海外北经》）",
+    "translation": "夸父追逐太阳的故事被后人误读为不自量力，但在《列子》中明示——夸父是为给后人留下水源而献身的先驱。",
+    "alive_today": "'夸父逐日'被中国航天人引为精神原型，'夸父号'是真实存在的太阳观测卫星。",
+    "effects": [
+      { "kind": 0, "amount": 12, "target": 1 },
+      { "kind": 0, "amount": 3, "target": 0 },
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "strengthen", "status_stack": 3 }
+    ]
+  },
+  {
+    "id": "huang.jingwei_fill",
+    "title": "精卫·恒念",
+    "school": 3,
+    "card_type": 1,
+    "rarity": 1,
+    "cost": 1,
+    "description": "本局每出一张攻击牌，永久 +1 伤害。",
+    "classic_quote": "发鸠之山，有鸟焉，其状如乌，文首，白喙，赤足，名曰精卫，其鸣自詨。是炎帝之少女，名曰女娃，女娃游于东海，溺而不返，故为精卫，常衔西山之木石，以堙于东海。（《山海经·北山经》）",
+    "translation": "精卫填海，明知不可为而为之。这是中华文化中'坚守'的最早原型。",
+    "alive_today": "中国治沙工程、植树造林事业，被誉为'当代精卫'。",
+    "effects": [
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "strengthen", "status_stack": 1 }
+    ]
+  },
+  {
+    "id": "huang.xingtian_axe",
+    "title": "刑天·舞戚",
+    "school": 3,
+    "card_type": 0,
+    "rarity": 2,
+    "cost": 1,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害两次。若手牌为空，再追加一次。",
+    "classic_quote": "刑天与帝至此争神，帝断其首，葬之常羊之山，乃以乳为目，以脐为口，操干戚以舞。（《山海经·海外西经》）",
+    "translation": "刑天虽断头依然舞戚不止，是'不屈精神'的最早化身。陶渊明《读山海经》：'刑天舞干戚，猛志固常在。'",
+    "alive_today": "'猛志固常在'今被广泛刻于匾额、校训，纪念那些虽败犹荣的坚持者。",
+    "effects": [
+      { "kind": 0, "amount": 6, "target": 1 },
+      { "kind": 0, "amount": 6, "target": 1 }
+    ]
+  },
+  {
+    "_section": "===== 通用 · 进阶卡 ====="
+  },
+  {
+    "id": "neutral.scroll_study",
+    "title": "古卷研读",
+    "school": 0,
+    "card_type": 1,
+    "rarity": 0,
+    "cost": 0,
+    "exhaust": true,
+    "description": "抽 {0} 张牌。消耗。",
+    "classic_quote": "学而时习之，不亦说乎？（《论语》）",
+    "translation": "通过阅读古卷整理思绪。在战斗最焦灼的时刻，知识仍是最稳的依靠。",
+    "alive_today": "今天每一个图书馆、每一次阅读，都是这种精神的延续。",
+    "effects": [
+      { "kind": 3, "amount": 2, "target": 0 }
+    ]
+  },
+  {
+    "id": "neutral.qi_gather",
+    "title": "凝灵韵",
+    "school": 0,
+    "card_type": 1,
+    "rarity": 1,
+    "cost": 0,
+    "exhaust": true,
+    "description": "本回合获得 {0} 灵韵。消耗。",
+    "classic_quote": "气者，万物之本。（《淮南子》）",
+    "translation": "调息凝神，把散落的灵韵拢回到掌心。",
+    "alive_today": "中国传统养生中的'调息法'即源于此。",
+    "effects": [
+      { "kind": 4, "amount": 2, "target": 0 }
+    ]
+  },
+  {
+    "id": "neutral.warrior_oath",
+    "title": "侠者誓",
+    "school": 0,
+    "card_type": 0,
+    "rarity": 1,
+    "cost": 2,
+    "requires_target": true,
+    "description": "造成 {0} 点伤害。如果你的护盾大于 0，造成两次。",
+    "classic_quote": "侠之大者，为国为民。（金庸 《射雕英雄传》）",
+    "translation": "保护他人不是退让，而是主动出击的另一面。",
+    "alive_today": "'侠义'精神在抗疫一线的医生、抗洪一线的子弟兵身上从未消失。",
+    "effects": [
+      { "kind": 0, "amount": 9, "target": 1 }
+    ]
+  },
+  {
+    "id": "neutral.scholar_resolve",
+    "title": "学子心",
+    "school": 0,
+    "card_type": 2,
+    "rarity": 1,
+    "cost": 1,
+    "exhaust": true,
+    "description": "本局起手抽牌 +{0}。消耗。",
+    "classic_quote": "为天地立心，为生民立命，为往圣继绝学，为万世开太平。（张载）",
+    "translation": "学问不只是知识，更是责任。多看一卷书，多一分担当。",
+    "alive_today": "'横渠四句'今天仍被无数学子座右铭引用。",
+    "effects": [
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "scholar", "status_stack": 1 }
+    ]
+  },
+  {
+    "id": "neutral.ancestor_blessing",
+    "title": "先祖庇荫",
+    "school": 0,
+    "card_type": 1,
+    "rarity": 2,
+    "cost": 2,
+    "exhaust": true,
+    "description": "回复 {0} 生命，获得 {1} 点护盾，抽 {2} 张牌。",
+    "classic_quote": "祖宗之法，不可不守；祖宗之德，不可不承。",
+    "translation": "传承不是负担，而是荫蔽——先人留下的智慧与德泽，是我们最深的底气。",
+    "alive_today": "'家风传承'已被列为国家文明建设的重点，近年还设立了'家风家训'文化纪念活动。",
+    "effects": [
+      { "kind": 2, "amount": 6, "target": 0 },
+      { "kind": 1, "amount": 6, "target": 0 },
+      { "kind": 3, "amount": 1, "target": 0 }
+    ]
+  },
+  {
+    "_section": "===== 现实文物 · 让博物馆走进卡组 ====="
+  },
+  {
+    "id": "relic.sanxingdui_gaze",
+    "title": "三星堆·纵目",
+    "school": 0,
+    "card_type": 2,
+    "rarity": 2,
+    "cost": 1,
+    "exhaust": true,
+    "description": "本局抽牌每回合 +{0}。消耗。",
+    "classic_quote": "蜀王蚕丛，其目纵；其国曰蜀。（《华阳国志·蜀志》）",
+    "translation": "蚕丛是古蜀的首位君王，相传其眼睛'纵目'——不止能看眼前事，更能看千年后。三星堆青铜纵目面具高 65 公分，眼柱外凸 16 公分，是世界上最早的'凝望'。",
+    "alive_today": "三星堆遗址 2021–2024 年陆续出土了 6 个新祭祀坑，刷新了世界对古蜀文明的认知。今天，它在四川广汉的三星堆博物馆，每天与数千游客对视。",
+    "effects": [
+      { "kind": 6, "amount": 0, "target": 0, "status_id": "scholar", "status_stack": 1 }
+    ]
+  }
+]

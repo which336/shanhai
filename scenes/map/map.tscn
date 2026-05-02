@@ -1,0 +1,178 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/map/map_scene.gd" id="1_map"]
+
+[node name="MapScene" type="Node2D"]
+script = ExtResource("1_map")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HitFlash" type="ColorRect" parent="UI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+color = Color(0.95, 0.18, 0.18, 0)
+
+[node name="Title" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 8.0
+offset_right = 300.0
+offset_bottom = 50.0
+theme_override_font_sizes/font_size = 28
+text = "南山 · 朱雀庭"
+horizontal_alignment = 1
+
+[node name="Hint" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -540.0
+offset_top = 50.0
+offset_right = 540.0
+offset_bottom = 78.0
+text = "[WASD/方向键] 移动     [Tab] 小地图     [K] 山海图鉴     [R] 重生本层     [ESC] 战斗中=放弃"
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -540.0
+offset_top = -32.0
+offset_right = 540.0
+offset_bottom = -8.0
+text = "气血 0 / 0"
+horizontal_alignment = 1
+
+[node name="MiniMapPanel" type="PanelContainer" parent="UI"]
+anchors_preset = 0
+offset_left = 16.0
+offset_top = 88.0
+offset_right = 304.0
+offset_bottom = 268.0
+
+[node name="MiniMap" type="Control" parent="UI/MiniMapPanel"]
+custom_minimum_size = Vector2(280, 172)
+mouse_filter = 2
+
+[node name="MiniMapTitle" type="Label" parent="UI/MiniMapPanel/MiniMap"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -100.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = 22.0
+text = "小地图 [Tab]"
+horizontal_alignment = 2
+
+
+[node name="BackButton" type="Button" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -130.0
+offset_top = 8.0
+offset_right = -16.0
+offset_bottom = 42.0
+text = "返回主菜单"
+
+[node name="ConfirmPanel" type="PanelContainer" parent="UI"]
+visible = false
+custom_minimum_size = Vector2(580, 240)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -290.0
+offset_top = -120.0
+offset_right = 290.0
+offset_bottom = 120.0
+
+[node name="V" type="VBoxContainer" parent="UI/ConfirmPanel"]
+theme_override_constants/separation = 18
+
+[node name="Text" type="Label" parent="UI/ConfirmPanel/V"]
+custom_minimum_size = Vector2(0, 130)
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="H" type="HBoxContainer" parent="UI/ConfirmPanel/V"]
+alignment = 1
+theme_override_constants/separation = 24
+
+[node name="Yes" type="Button" parent="UI/ConfirmPanel/V/H"]
+custom_minimum_size = Vector2(140, 40)
+text = "是"
+
+[node name="No" type="Button" parent="UI/ConfirmPanel/V/H"]
+custom_minimum_size = Vector2(140, 40)
+text = "否"
+
+[node name="EventPanel" type="PanelContainer" parent="UI"]
+visible = false
+custom_minimum_size = Vector2(620, 360)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -180.0
+offset_right = 310.0
+offset_bottom = 180.0
+
+[node name="V" type="VBoxContainer" parent="UI/EventPanel"]
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="UI/EventPanel/V"]
+theme_override_font_sizes/font_size = 24
+text = "事件"
+horizontal_alignment = 1
+
+[node name="Body" type="Label" parent="UI/EventPanel/V"]
+custom_minimum_size = Vector2(0, 100)
+text = ""
+autowrap_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Options" type="VBoxContainer" parent="UI/EventPanel/V"]
+theme_override_constants/separation = 6
+
+[node name="VictoryPanel" type="PanelContainer" parent="UI"]
+visible = false
+custom_minimum_size = Vector2(560, 260)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -130.0
+offset_right = 280.0
+offset_bottom = 130.0
+
+[node name="V" type="VBoxContainer" parent="UI/VictoryPanel"]
+theme_override_constants/separation = 18
+
+[node name="Text" type="Label" parent="UI/VictoryPanel/V"]
+custom_minimum_size = Vector2(0, 160)
+text = "本层通关！"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Button" type="Button" parent="UI/VictoryPanel/V"]
+custom_minimum_size = Vector2(220, 44)
+text = "回到主菜单"
+size_flags_horizontal = 4
