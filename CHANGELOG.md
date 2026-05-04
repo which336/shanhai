@@ -5,6 +5,7 @@
 - Updated treasure result panels to use the same explicit reward summary pattern.
 - Updated Boss victory and final purification panels to label reward lines as explicit change summaries.
 - Updated shop purchases to keep an explicit latest-change summary in the shop panel.
+- Persisted shop inventory and sold state per shop node so reopening the same shop cannot refresh or rebuy sold items.
 - Updated rest station result panels to use the same explicit heal summary pattern.
 - Added regression checks ensuring event, treasure, rest station, shop, non-final Boss, and final Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.

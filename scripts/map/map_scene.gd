@@ -102,6 +102,9 @@ var _shop_buttons: Array = []
 var _shop_title: String = "古玩铺"
 var _shop_story: String = "店主戴狐面具，玻璃柜中陈列着几样东西。"
 var _shop_last_result: String = ""
+var _shop_entity: Dictionary = {}
+var _shop_entity_id: String = ""
+var _shop_items_by_entity_id: Dictionary = {}
 var _pending_reset_map: bool = false
 var _pending_chapter_advance: bool = false
 var _debug_chapter_toggle: Button = null
@@ -1481,14 +1484,50 @@ func _append_shop_card(cid: String, west_cards: Array, offered_cards: Dictionary
 	return true
 
 
+func _shop_entity_index() -> int:
+	if _shop_entity_id.is_empty():
+		return -1
+	for i in data["entities"].size():
+		if str(data["entities"][i].get("id", "")) == _shop_entity_id:
+			return i
+	return -1
+
+
+func _sync_shop_items_to_entity() -> void:
+	var saved_items := _shop_items.duplicate(true)
+	_shop_entity["shop_items"] = saved_items
+	if not _shop_entity_id.is_empty():
+		_shop_items_by_entity_id[_shop_entity_id] = saved_items
+	var entity_index := _shop_entity_index()
+	if entity_index < 0:
+		return
+	var entity: Dictionary = data["entities"][entity_index]
+	entity["shop_items"] = saved_items
+	data["entities"][entity_index] = entity
+
+
 func _enter_shop(e: Dictionary) -> void:
-	_shop_items.clear()
+	_shop_items = []
 	_shop_buttons.clear()
 	_shop_last_result = ""
+	_shop_entity = e
+	_shop_entity_id = str(e.get("id", ""))
 	_shop_title = str(e.get("name", "白石古肆" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "古玩铺"))
 	_shop_story = str(e.get("story", ""))
 	if _shop_story.is_empty():
 		_shop_story = "石灯后坐着一位戴虎纹面具的老者，柜上摆着西山旧符。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "店主戴狐面具，玻璃柜中陈列着几样东西。"
+	var saved_items: Variant = e.get("shop_items", null)
+	if not _shop_entity_id.is_empty() and _shop_items_by_entity_id.has(_shop_entity_id):
+		saved_items = _shop_items_by_entity_id[_shop_entity_id]
+	var entity_index := _shop_entity_index()
+	if entity_index >= 0:
+		var entity: Dictionary = data["entities"][entity_index]
+		if not (saved_items is Array and not Array(saved_items).is_empty()):
+			saved_items = entity.get("shop_items", saved_items)
+	if saved_items is Array and not Array(saved_items).is_empty():
+		_shop_items = Array(saved_items).duplicate(true)
+		_show_shop_panel()
+		return
 	var base_cards: Array = [
 		"shan.jianmu", "shan.fusang", "shan.ruomu", "shan.luwu",
 		"hai.yinglong_call", "hai.wenyao_evade", "hai.kun_swift", "hai.heluo_dive",
@@ -1527,6 +1566,7 @@ func _enter_shop(e: Dictionary) -> void:
 		_shop_items.append({"type": "heal", "label": "灵芝散：恢复 %d HP  %d 碎片" % [SHOP_HEAL_AMOUNT, SHOP_HEAL_PRICE], "price": SHOP_HEAL_PRICE, "amount": SHOP_HEAL_AMOUNT})
 		_shop_items.append({"type": "max_hp", "label": "古玉护符：最大 HP +%d  %d 碎片" % [SHOP_MAXHP_AMOUNT, SHOP_MAXHP_PRICE], "price": SHOP_MAXHP_PRICE, "amount": SHOP_MAXHP_AMOUNT})
 	_shop_items.append({"type": "leave", "label": "[离开]", "price": 0})
+	_sync_shop_items_to_entity()
 	_show_shop_panel()
 
 
@@ -1629,6 +1669,8 @@ func _on_shop_buy(idx: int) -> void:
 		if card_to_buy == null:
 			item["sold"] = true
 			item["label"] = "—— 商品异常 ——"
+			_shop_items[idx] = item
+			_sync_shop_items_to_entity()
 			_refresh_shop_body()
 			_refresh_shop_buttons()
 			return
@@ -1655,6 +1697,8 @@ func _on_shop_buy(idx: int) -> void:
 			RunState.hp = mini(RunState.max_hp, RunState.hp + amt)
 			RunState.hp_changed.emit(RunState.hp, RunState.max_hp)
 			_shop_last_result = "最大 HP +%d  -%d 碎片" % [amt, price]
+	_shop_items[idx] = item
+	_sync_shop_items_to_entity()
 	_refresh_shop_body()
 	_refresh_shop_buttons()
 	_update_status()

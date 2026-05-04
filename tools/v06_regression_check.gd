@@ -297,10 +297,17 @@ func _check_west_map_scene() -> void:
 	await _check_event_choice_result(map, map_data)
 	await _check_treasure_open(map, map_data)
 	await _check_rest_use(map, map_data)
-	map.call("_enter_shop", {"name": "白石古肆", "story": "虎纹面具老者守着西山旧符。"})
-	await process_frame
-	_check_shop_copy(map)
-	_check_shop_items(Array(map.get("_shop_items")))
+	var shop_entity: Dictionary = {}
+	for entity in Array(Dictionary(map.get("data")).get("entities", [])):
+		if entity is Dictionary and str(entity.get("kind", "")) == "shop":
+			shop_entity = entity
+			break
+	_expect(not shop_entity.is_empty(), "west map should generate shop")
+	if not shop_entity.is_empty():
+		map.call("_enter_shop", shop_entity)
+		await process_frame
+		_check_shop_copy(map, shop_entity)
+		_check_shop_items(Array(map.get("_shop_items")))
 	_check_boss_reward(map)
 	map.queue_free()
 
@@ -509,7 +516,7 @@ func _check_event_choice_result(map, map_data: Dictionary) -> void:
 		_expect(str(body_label.text).find("本次变化") >= 0, "event result panel should summarize actual reward")
 
 
-func _check_shop_copy(map) -> void:
+func _check_shop_copy(map, shop_entity: Dictionary) -> void:
 	var title_label = map.get("_event_title")
 	var body_label = map.get("_event_body")
 	_expect(title_label != null, "shop title label should exist")
@@ -530,9 +537,18 @@ func _check_shop_copy(map) -> void:
 				break
 	_expect(buy_index >= 0, "shop should have purchasable item")
 	if buy_index >= 0:
+		var before_fragments: int = int(_game_state.fragments)
 		map.call("_on_shop_buy", buy_index)
 		if body_label != null:
 			_expect(str(body_label.text).find("本次变化") >= 0, "shop purchase should summarize actual change")
+		_expect(bool(items[buy_index].get("sold", false)), "shop purchase should mark item sold")
+		map.call("_enter_shop", shop_entity)
+		var reopened_items: Array = Array(map.get("_shop_items"))
+		_expect(buy_index < reopened_items.size() and bool(reopened_items[buy_index].get("sold", false)), "shop should keep sold state after reopening")
+		var after_buy_fragments: int = int(_game_state.fragments)
+		map.call("_on_shop_buy", buy_index)
+		_expect(int(_game_state.fragments) == after_buy_fragments, "reopened sold shop item should not charge fragments again")
+		_expect(after_buy_fragments < before_fragments, "shop purchase should charge fragments once")
 
 
 func _check_boss_reward(map) -> void:
