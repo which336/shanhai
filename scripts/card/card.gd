@@ -66,5 +66,8 @@ func get_rarity_name() -> String:
 func get_resolved_description() -> String:
 	var s := description
 	for i in effects.size():
-		s = s.replace("{%d}" % i, str(effects[i].amount))
+		var value: int = effects[i].amount
+		if (effects[i].kind == CardEffect.Kind.APPLY_STATUS or effects[i].kind == CardEffect.Kind.SELF_STATUS) and effects[i].status_stack != 0:
+			value = effects[i].status_stack
+		s = s.replace("{%d}" % i, str(value))
 	return s

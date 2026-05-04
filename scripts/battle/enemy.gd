@@ -63,6 +63,9 @@ func act_on(player: BattlePlayer) -> void:
 		EnemyData.IntentKind.ATTACK:
 			var raw := StatusEffect.calc_damage_modifier(statuses, player.statuses, current_intent.amount)
 			player.take_damage(raw)
+			if statuses.has(StatusEffect.ID_STRENGTHEN):
+				statuses.erase(StatusEffect.ID_STRENGTHEN)
+				status_changed.emit()
 		EnemyData.IntentKind.BLOCK:
 			gain_block(current_intent.amount)
 		EnemyData.IntentKind.BUFF:
@@ -85,6 +88,16 @@ func on_turn_start() -> void:
 	if block != 0:
 		block = 0
 		block_changed.emit(block)
+
+
+func on_turn_end() -> void:
+	for sid in statuses.keys():
+		if sid == StatusEffect.ID_STRENGTHEN:
+			continue
+		statuses[sid] = maxi(0, int(statuses[sid]) - 1)
+		if int(statuses[sid]) <= 0:
+			statuses.erase(sid)
+	status_changed.emit()
 
 
 func is_dead() -> bool:

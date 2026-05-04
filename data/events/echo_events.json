@@ -4,9 +4,24 @@
     "name": "精卫衔木",
     "story": "你看到一只小鸟，无声地从西山衔来枯枝，又投入海中。海始终未填，它始终未停。",
     "options": [
-      {"label": "上前帮她衔一段", "type": "card", "card": "huang.jingwei_fill", "preview": "获得：《精卫·恒念》"},
-      {"label": "告诉她海是填不满的", "type": "fragments", "amount": 30, "preview": "+30 灵韵碎片"},
-      {"label": "默默坐下，直到天亮", "type": "max_hp", "amount": 5, "preview": "+5 最大气血（永久）"}
+      {
+        "label": "上前帮她衔一段",
+        "type": "card",
+        "card": "huang.jingwei_fill",
+        "preview": "获得：《精卫·恒念》"
+      },
+      {
+        "label": "告诉她海是填不满的",
+        "type": "fragments",
+        "amount": 30,
+        "preview": "+30 灵韵碎片"
+      },
+      {
+        "label": "默默坐下，直到天亮",
+        "type": "max_hp",
+        "amount": 5,
+        "preview": "+5 最大气血（永久）"
+      }
     ]
   },
   {
@@ -14,9 +29,24 @@
     "name": "扶桑朝露",
     "story": "扶桑神木的露珠悬在叶尖，太阳即将从你身后升起。汤谷之上，传说一日落则一日升。",
     "options": [
-      {"label": "用碎片接一滴露", "type": "heal_full_cost", "cost": 15, "preview": "失去 15 碎片，回满气血"},
-      {"label": "凝视太阳的方向", "type": "card", "card": "shan.fusang", "preview": "获得：《扶桑·朝露》"},
-      {"label": "拿一片叶子回去", "type": "exp", "amount": 30, "preview": "+30 EXP"}
+      {
+        "label": "用碎片接一滴露",
+        "type": "heal_full_cost",
+        "cost": 15,
+        "preview": "失去 15 碎片，回满气血"
+      },
+      {
+        "label": "凝视太阳的方向",
+        "type": "card",
+        "card": "shan.fusang",
+        "preview": "获得：《扶桑·朝露》"
+      },
+      {
+        "label": "拿一片叶子回去",
+        "type": "exp",
+        "amount": 30,
+        "preview": "+30 EXP"
+      }
     ]
   },
   {
@@ -24,9 +54,24 @@
     "name": "应龙呼云",
     "story": "天上一道金色光闪过，是有翼之龙。它向你低声示意，让你看见远处的山雨。",
     "options": [
-      {"label": "向应龙稽首致谢", "type": "card", "card": "hai.yinglong_call", "preview": "获得：《应龙·呼云》"},
-      {"label": "记下这片云的形状", "type": "exp", "amount": 35, "preview": "+35 EXP"},
-      {"label": "在雨中走一段", "type": "heal", "amount": 25, "preview": "+25 气血"}
+      {
+        "label": "向应龙稽首致谢",
+        "type": "card",
+        "card": "hai.yinglong_call",
+        "preview": "获得：《应龙·呼云》"
+      },
+      {
+        "label": "记下这片云的形状",
+        "type": "exp",
+        "amount": 35,
+        "preview": "+35 EXP"
+      },
+      {
+        "label": "在雨中走一段",
+        "type": "heal",
+        "amount": 25,
+        "preview": "+25 气血"
+      }
     ]
   },
   {
@@ -34,9 +79,25 @@
     "name": "西风渔者",
     "story": "你遇到一位老渔夫，他正用残破的网捕一只虚幻的文鳐鱼。他抬起头，眼神温和。",
     "options": [
-      {"label": "送他几块灵韵碎片", "type": "card_cost", "card": "hai.wenyao_evade", "cost": 10, "preview": "失去 10 碎片，获得《文鳐·夜遁》"},
-      {"label": "教他更好的捕鱼之法", "type": "exp", "amount": 25, "preview": "+25 EXP"},
-      {"label": "默默离开", "type": "heal", "amount": 10, "preview": "+10 气血"}
+      {
+        "label": "送他几块灵韵碎片",
+        "type": "card_cost",
+        "card": "hai.wenyao_evade",
+        "cost": 10,
+        "preview": "失去 10 碎片，获得《文鳐·夜遁》"
+      },
+      {
+        "label": "教他更好的捕鱼之法",
+        "type": "exp",
+        "amount": 25,
+        "preview": "+25 EXP"
+      },
+      {
+        "label": "默默离开",
+        "type": "heal",
+        "amount": 10,
+        "preview": "+10 气血"
+      }
     ]
   },
   {
@@ -44,9 +105,24 @@
     "name": "夸父石",
     "story": "你遇到一块写着「夸父」的石碑。传说夸父逐日而亡，化身为山，杖落地为桃林。",
     "options": [
-      {"label": "为夸父点一柱香", "type": "card", "card": "huang.kuafu_pursue", "preview": "获得：《夸父·逐日》"},
-      {"label": "拾一颗石碑边的桃子", "type": "heal", "amount": 30, "preview": "+30 气血"},
-      {"label": "默念几句典籍", "type": "exp", "amount": 20, "preview": "+20 EXP；解锁图鉴：夸父"}
+      {
+        "label": "为夸父点一柱香",
+        "type": "card",
+        "card": "huang.kuafu_pursue",
+        "preview": "获得：《夸父·逐日》"
+      },
+      {
+        "label": "拾一颗石碑边的桃子",
+        "type": "heal",
+        "amount": 30,
+        "preview": "+30 气血"
+      },
+      {
+        "label": "默念几句典籍",
+        "type": "exp",
+        "amount": 20,
+        "preview": "+20 EXP；解锁图鉴：夸父"
+      }
     ]
   },
   {
@@ -54,9 +130,201 @@
     "name": "刑天舞戚",
     "story": "你看见一具无头之躯，仍在以乳为目、以脐为口，操干戚而舞。陶渊明诗云：刑天舞干戚，猛志固常在。",
     "options": [
-      {"label": "向他鞠躬", "type": "card", "card": "huang.xingtian_axe", "preview": "获得：《刑天·舞戚》"},
-      {"label": "献上你的灵韵碎片", "type": "max_hp_cost", "cost": 25, "amount": 10, "preview": "失去 25 碎片，+10 最大气血（永久）"},
-      {"label": "悄悄写下他的故事", "type": "exp", "amount": 40, "preview": "+40 EXP"}
+      {
+        "label": "向他鞠躬",
+        "type": "card",
+        "card": "huang.xingtian_axe",
+        "preview": "获得：《刑天·舞戚》"
+      },
+      {
+        "label": "献上你的灵韵碎片",
+        "type": "max_hp_cost",
+        "cost": 25,
+        "amount": 10,
+        "preview": "失去 25 碎片，+10 最大气血（永久）"
+      },
+      {
+        "label": "悄悄写下他的故事",
+        "type": "exp",
+        "amount": 40,
+        "preview": "+40 EXP"
+      }
+    ]
+  },
+  {
+    "id": "west_luwu_gate",
+    "chapter": 1,
+    "name": "陆吾石门",
+    "story": "一座白石门横在山脊上，门缝里传来九尾扫过岩面的声音。",
+    "options": [
+      {
+        "label": "以山经名义报上来处",
+        "type": "card",
+        "card": "shan.luwu_gate",
+        "preview": "获得：《陆吾·镇门》",
+        "result": "你报出南山旧闻与西山名号，石门上的虎纹缓缓亮起，一枚镇门符落入掌心。"
+      },
+      {
+        "label": "献上碎片修补门纹",
+        "type": "max_hp_cost",
+        "cost": 20,
+        "amount": 8,
+        "preview": "失去 20 碎片，最大 HP +8",
+        "result": "碎片嵌入门纹，白石裂缝闭合。门后的山风反哺你的气脉。"
+      },
+      {
+        "label": "绕门而行，记下山势",
+        "type": "exp",
+        "amount": 45,
+        "preview": "+45 EXP",
+        "result": "你绕过石门，发现山势如九尾展开，之后判断西山路径会更从容。"
+      }
+    ]
+  },
+  {
+    "id": "west_yingzhao_patrol",
+    "chapter": 1,
+    "name": "英招巡山",
+    "story": "虎纹鸟翼的神使从石林上方掠过，马蹄没有落地。",
+    "options": [
+      {
+        "label": "跟随巡山路线",
+        "type": "card",
+        "card": "shan.yingzhao_patrol",
+        "preview": "获得：《英招·巡山》",
+        "result": "英招没有回头，却放慢了半步。你记下它巡山的步法，化作新的卡牌。"
+      },
+      {
+        "label": "在石林中休整",
+        "type": "heal",
+        "amount": 30,
+        "preview": "+30 HP",
+        "result": "石林挡住寒风，铜铃声从远处传来，你的伤口渐渐止住。"
+      },
+      {
+        "label": "把路线刻入木简",
+        "type": "exp",
+        "amount": 35,
+        "preview": "+35 EXP",
+        "result": "木简上的路线连成虎纹，西山的岔路在你眼里清晰了一些。"
+      }
+    ]
+  },
+  {
+    "id": "west_tiangou_watch",
+    "chapter": 1,
+    "name": "天狗守夜",
+    "story": "白首天狗蹲在断墙上，对着无月的夜空低吠。",
+    "options": [
+      {
+        "label": "听懂御凶之声",
+        "type": "card",
+        "card": "hai.tiangou_ward",
+        "preview": "获得：《天狗·御凶》",
+        "result": "天狗低吠三声，断墙阴影退去。你学会了以声驱凶的方法。"
+      },
+      {
+        "label": "分给它一些碎片",
+        "type": "fragments",
+        "amount": 35,
+        "preview": "+35 碎片",
+        "result": "天狗用鼻尖推回一小堆更纯净的碎片，像是在承认你的善意。"
+      },
+      {
+        "label": "守夜到天明",
+        "type": "heal",
+        "amount": 20,
+        "preview": "+20 HP",
+        "result": "你与天狗守到天明，夜色退去时，白虎境的寒意也减轻了。"
+      }
+    ]
+  },
+  {
+    "id": "west_xuangui_pool",
+    "chapter": 1,
+    "name": "旋龟回潭",
+    "story": "白石潭里，一只鸟首旋龟缓缓转身，蛇尾在水面画圆。",
+    "options": [
+      {
+        "label": "抄下壳上的回纹",
+        "type": "card",
+        "card": "hai.xuan_gui_shell",
+        "preview": "获得：《旋龟·回壳》",
+        "result": "旋龟壳纹一圈圈收束，你抄下最后一笔时，水面映出护身之法。"
+      },
+      {
+        "label": "饮一口清潭水",
+        "type": "heal_full_cost",
+        "cost": 18,
+        "preview": "失去 18 碎片，回满 HP",
+        "result": "潭水冷得刺骨，却把疲惫一并带走。碎片沉入水底，换来完整气息。"
+      },
+      {
+        "label": "听劈木般的回声",
+        "type": "exp",
+        "amount": 40,
+        "preview": "+40 EXP",
+        "result": "回声像劈木一样层层裂开，你从其中听出旋龟转身的规律。"
+      }
+    ]
+  },
+  {
+    "id": "west_gudiao_cry",
+    "chapter": 1,
+    "name": "蛊雕夜啼",
+    "story": "裂谷深处传来婴儿般的哭声，有角的巨雕伏在崖影里。",
+    "options": [
+      {
+        "label": "直面哭声来源",
+        "type": "card",
+        "card": "huang.gudiao_cry",
+        "preview": "获得：《蛊雕·夜啼》",
+        "result": "你没有退后。哭声忽然转为尖啸，崖影中落下一枚带角羽符。"
+      },
+      {
+        "label": "封住耳朵快速通过",
+        "type": "exp",
+        "amount": 30,
+        "preview": "+30 EXP",
+        "result": "你压住心神穿过裂谷，终于分辨出哭声只是蛊雕诱敌的回音。"
+      },
+      {
+        "label": "留下碎片安抚崖影",
+        "type": "card_cost",
+        "card": "huang.zheng_pounce",
+        "cost": 12,
+        "preview": "失去 12 碎片，获得：《狰·击石》",
+        "result": "碎片落入崖影，另一侧传来狰击石的节奏，盖过了蛊雕夜啼。"
+      }
+    ]
+  },
+  {
+    "id": "west_zheng_echo",
+    "chapter": 1,
+    "name": "狰的击石声",
+    "story": "五尾赤豹在山石间一闪而过，独角轻触岩壁。",
+    "options": [
+      {
+        "label": "模仿它的节奏",
+        "type": "card",
+        "card": "huang.zheng_pounce",
+        "preview": "获得：《狰·击石》",
+        "result": "你跟上独角击石的节奏，赤豹回望一眼，五尾扫出一道荒系战法。"
+      },
+      {
+        "label": "收集震落石片",
+        "type": "fragments",
+        "amount": 40,
+        "preview": "+40 碎片",
+        "result": "岩壁被震落的石片里夹着灵韵，你挑出能用的部分收好。"
+      },
+      {
+        "label": "静待回声消散",
+        "type": "max_hp",
+        "amount": 6,
+        "preview": "最大 HP +6",
+        "result": "你静坐到回声完全消散，胸口余震转为更稳定的气血。"
+      }
     ]
   }
 ]

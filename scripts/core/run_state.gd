@@ -30,6 +30,10 @@ var exp_to_next: int = 10
 
 ## 通关进度（3 个 BOSS 都击败 = 真正通关）
 const BOSSES_TO_CLEAR: int = 3
+const CHAPTER_SOUTH: int = 0
+const CHAPTER_WEST: int = 1
+
+var current_chapter_index: int = CHAPTER_SOUTH
 var bosses_defeated: int = 0
 
 ## 探索地图状态：从地图进入战斗时由地图写入；战斗结束后地图据此恢复
@@ -74,6 +78,7 @@ func reset_for_new_run(character: String = "fang_xun") -> void:
 	hand_size = INITIAL_HAND_COUNT
 	per_turn_draw = PER_TURN_DRAW_COUNT
 	current_floor = 0
+	current_chapter_index = CHAPTER_SOUTH
 	next_battle_enemy_ids = PackedStringArray(["hu_diao", "lu_shu"])
 	level = 1
 	exp_value = 0
@@ -93,6 +98,54 @@ func reset_for_new_run(character: String = "fang_xun") -> void:
 		if c != null:
 			run_deck.append(c)
 	deck_changed.emit()
+
+
+
+func has_next_chapter() -> bool:
+	return current_chapter_index < CHAPTER_WEST
+
+
+func advance_to_next_chapter() -> void:
+	if not has_next_chapter():
+		return
+	current_chapter_index += 1
+	current_floor = current_chapter_index
+	bosses_defeated = 0
+	hp = max_hp
+	energy = max_energy
+	next_battle_enemy_ids = PackedStringArray(["zheng_beast", "tian_gou"])
+	map_data = {}
+	last_entity_id = ""
+	last_battle_was_boss = false
+	last_battle_won = false
+	seed_value = randi()
+	hp_changed.emit(hp, max_hp)
+	energy_changed.emit(energy, max_energy)
+	exp_changed.emit(exp_value, exp_to_next)
+
+
+func reset_map_progress_to_first_chapter() -> void:
+	current_chapter_index = CHAPTER_SOUTH
+	current_floor = 0
+	hp = MAX_HP_INIT
+	max_hp = MAX_HP_INIT
+	energy = MAX_ENERGY_INIT
+	max_energy = MAX_ENERGY_INIT
+	hand_size = INITIAL_HAND_COUNT
+	per_turn_draw = PER_TURN_DRAW_COUNT
+	level = 1
+	exp_value = 0
+	exp_to_next = 10
+	bosses_defeated = 0
+	next_battle_enemy_ids = PackedStringArray(["hu_diao", "lu_shu"])
+	map_data = {}
+	last_entity_id = ""
+	last_battle_was_boss = false
+	last_battle_won = false
+	seed_value = randi()
+	hp_changed.emit(hp, max_hp)
+	energy_changed.emit(energy, max_energy)
+	exp_changed.emit(exp_value, exp_to_next)
 
 
 func add_card_to_deck(card: Card) -> void:

@@ -11,6 +11,7 @@ const ID_ROOT: String = "root"               # 根脉：回合开始获得护盾
 const ID_RESONANCE_SHAN: String = "resonance_shan"  # 山经共鸣
 const ID_RESONANCE_HAI: String = "resonance_hai"
 const ID_RESONANCE_HUANG: String = "resonance_huang"
+const ID_SCHOLAR: String = "scholar"         # 学子心：预留成长效果
 
 
 static func display_name(id: String) -> String:
@@ -23,6 +24,7 @@ static func display_name(id: String) -> String:
 		ID_RESONANCE_SHAN: return "山经共鸣"
 		ID_RESONANCE_HAI: return "海经共鸣"
 		ID_RESONANCE_HUANG: return "荒经共鸣"
+		ID_SCHOLAR: return "学子心"
 	return id
 
 

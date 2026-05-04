@@ -113,6 +113,7 @@ func _run_enemy_phase() -> void:
 			battle_lost.emit()
 			return
 		e.advance_intent()
+		e.on_turn_end()
 	if _alive_enemies().is_empty():
 		emit_signal("log_message", "敌人尽数化散，灵韵归位。")
 		battle_won.emit()
@@ -125,7 +126,11 @@ func _run_enemy_phase() -> void:
 func can_play(card: Card) -> bool:
 	if not is_player_turn:
 		return false
-	return RunState.energy >= card.cost
+	return RunState.energy >= _effective_card_cost(card)
+
+
+func effective_card_cost(card: Card) -> int:
+	return _effective_card_cost(card)
 
 
 func play_card(card: Card, target: BattleEnemy = null) -> bool:
@@ -149,8 +154,10 @@ func play_card_at_index(hand_index: int, target: BattleEnemy = null) -> bool:
 		return false
 
 	# 扣灵韵
-	RunState.energy -= card.cost
+	var effective_cost: int = _effective_card_cost(card)
+	RunState.energy -= effective_cost
 	RunState.energy_changed.emit(RunState.energy, RunState.max_energy)
+	_consume_school_discount(card)
 
 	# 源卡先离开手牌，再结算效果。只有卡牌自身标记为 exhaust 时才消耗。
 	var should_exhaust: bool = card.exhaust
@@ -165,6 +172,7 @@ func play_card_at_index(hand_index: int, target: BattleEnemy = null) -> bool:
 	# 结算效果（此时抽牌不会把源卡一起留在手牌里）
 	for eff in card.effects:
 		_resolve_effect(eff, card, target)
+	_resolve_card_bonus_effects(card, target)
 
 	# 图鉴 / 音效 / UI
 	if card.id != "":
@@ -180,6 +188,41 @@ func play_card_at_index(hand_index: int, target: BattleEnemy = null) -> bool:
 		emit_signal("log_message", "敌人尽数化散，灵韵归位。")
 		battle_won.emit()
 	return true
+
+
+func _effective_card_cost(card: Card) -> int:
+	var discount: int = _school_discount(card.school)
+	return maxi(0, card.cost - discount)
+
+
+func _school_discount(school: int) -> int:
+	match school:
+		Card.School.SHAN:
+			return int(player.statuses.get(StatusEffect.ID_RESONANCE_SHAN, 0))
+		Card.School.HAI:
+			return int(player.statuses.get(StatusEffect.ID_RESONANCE_HAI, 0))
+		Card.School.HUANG:
+			return int(player.statuses.get(StatusEffect.ID_RESONANCE_HUANG, 0))
+	return 0
+
+
+func _consume_school_discount(card: Card) -> void:
+	if card.school == Card.School.NEUTRAL:
+		return
+	var status_id: String = ""
+	match card.school:
+		Card.School.SHAN:
+			status_id = StatusEffect.ID_RESONANCE_SHAN
+		Card.School.HAI:
+			status_id = StatusEffect.ID_RESONANCE_HAI
+		Card.School.HUANG:
+			status_id = StatusEffect.ID_RESONANCE_HUANG
+	if status_id == "" or not player.statuses.has(status_id):
+		return
+	player.statuses[status_id] = maxi(0, int(player.statuses[status_id]) - 1)
+	if int(player.statuses[status_id]) <= 0:
+		player.statuses.erase(status_id)
+	player.status_changed.emit()
 
 
 func _recover_cards_if_empty() -> void:
@@ -216,6 +259,10 @@ func _apply_resonance(school: int) -> void:
 func _resolve_effect(eff: CardEffect, source_card: Card, target: BattleEnemy) -> void:
 	match eff.kind:
 		CardEffect.Kind.DAMAGE:
+			if eff.target == CardEffect.Target.NONE or eff.target == CardEffect.Target.SELF:
+				RunState.take_damage(eff.amount)
+				emit_signal("log_message", "→ 自身承受 %d 伤害" % eff.amount)
+				return
 			var targets: Array[BattleEnemy] = _select_targets(eff.target, target)
 			for tgt in targets:
 				var raw := StatusEffect.calc_damage_modifier(player.statuses, tgt.statuses, eff.amount)
@@ -251,6 +298,37 @@ func _resolve_effect(eff: CardEffect, source_card: Card, target: BattleEnemy) ->
 		CardEffect.Kind.SUMMON_ALLY:
 			# 预留
 			pass
+
+
+func _resolve_card_bonus_effects(card: Card, target: BattleEnemy) -> void:
+	match card.id:
+		"neutral.warrior_oath":
+			if player.block > 0:
+				_deal_bonus_damage(card, target, "护盾在身，侠者誓追加一击")
+		"hai.bifang_dance":
+			if target != null and not target.is_dead() and target.statuses.has(StatusEffect.ID_WET):
+				_deal_bonus_damage(card, target, "目标湿润，毕方闪羽追加一击")
+		"huang.xingtian_axe":
+			if deck != null and deck.hand.is_empty():
+				_deal_bonus_damage(card, target, "手牌已空，刑天舞戚追加一击")
+
+
+func _deal_bonus_damage(card: Card, target: BattleEnemy, message: String) -> void:
+	if target == null or target.is_dead():
+		return
+	var amount: int = _first_damage_amount(card)
+	if amount <= 0:
+		return
+	var raw := StatusEffect.calc_damage_modifier(player.statuses, target.statuses, amount)
+	target.take_damage(raw)
+	emit_signal("log_message", "→ %s：%s，造成 %d 伤害" % [target.data.display_name, message, raw])
+
+
+func _first_damage_amount(card: Card) -> int:
+	for eff in card.effects:
+		if eff.kind == CardEffect.Kind.DAMAGE:
+			return eff.amount
+	return 0
 
 
 func _select_targets(t: int, single: BattleEnemy) -> Array[BattleEnemy]:

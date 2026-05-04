@@ -29,15 +29,32 @@ func load_save() -> bool:
 		return false
 	var text := f.get_as_text()
 	f.close()
+	return load_from_text(text)
+
+
+func load_from_text(text: String, warn: bool = true) -> bool:
 	var data: Variant = JSON.parse_string(text)
+	return _apply_payload(data, warn)
+
+
+func _apply_payload(data: Variant, warn: bool = true) -> bool:
 	if not (data is Dictionary):
-		push_warning("[SaveSystem] 存档格式不正确")
+		_warn(warn, "[SaveSystem] 存档格式不正确")
 		return false
 	var version: int = data.get("version", 0)
 	if version != SAVE_VERSION:
-		push_warning("[SaveSystem] 存档版本不匹配 (saved=%d, current=%d)" % [version, SAVE_VERSION])
-	GameState.from_dict(data.get("game_state", {}))
+		_warn(warn, "[SaveSystem] 存档版本不匹配 (saved=%d, current=%d)" % [version, SAVE_VERSION])
+	var raw_game_state: Variant = data.get("game_state", {})
+	if not (raw_game_state is Dictionary):
+		_warn(warn, "[SaveSystem] 存档 game_state 格式不正确")
+		return false
+	GameState.from_dict(raw_game_state)
 	return true
+
+
+func _warn(enabled: bool, message: String) -> void:
+	if enabled:
+		push_warning(message)
 
 
 func clear_save() -> void:

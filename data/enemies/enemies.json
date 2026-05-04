@@ -3,7 +3,11 @@
     "id": "hu_diao",
     "display_name": "迷雾狐裔",
     "max_hp": 22,
-    "intent_pattern": ["ATTACK:6", "BLOCK:4", "ATTACK:7"],
+    "intent_pattern": [
+      "ATTACK:6",
+      "BLOCK:4",
+      "ATTACK:7"
+    ],
     "classic_quote": "青丘之山有兽焉，其状如狐而九尾，其音如婴儿，能食人。",
     "translation": "本是青丘九尾狐的远支，被忘川之雾扭曲后失去本性，成了游荡的孤魂。"
   },
@@ -11,7 +15,11 @@
     "id": "lu_shu",
     "display_name": "鹿蜀",
     "max_hp": 26,
-    "intent_pattern": ["ATTACK:5", "BUFF:1", "ATTACK:8"],
+    "intent_pattern": [
+      "ATTACK:5",
+      "BUFF:1",
+      "ATTACK:8"
+    ],
     "classic_quote": "杻阳之山有兽焉，其状如马而白首，其文如虎而赤尾，其音如谣，其名曰鹿蜀，佩之宜子孙。（《山海经·南山经》）",
     "translation": "鹿蜀本是吉兽，传说佩戴它的皮毛可使子孙昌盛。被忘川扰乱后却躁动不安。",
     "awaken_options": [
@@ -27,7 +35,11 @@
     "id": "cong_cong",
     "display_name": "从从",
     "max_hp": 18,
-    "intent_pattern": ["ATTACK:4", "ATTACK:4", "BLOCK:6"],
+    "intent_pattern": [
+      "ATTACK:4",
+      "ATTACK:4",
+      "BLOCK:6"
+    ],
     "classic_quote": "栒状之山有兽焉，其状如犬，六足，其名曰从从，其鸣自叫。（《山海经·东山经》）",
     "translation": "从从是六足犬形之兽，叫声像在自呼其名。被忘川所扰，已分不清同类。"
   },
@@ -35,7 +47,12 @@
     "id": "lei_beast",
     "display_name": "类",
     "max_hp": 30,
-    "intent_pattern": ["ATTACK:3", "ATTACK:3", "DEBUFF:1", "ATTACK:9"],
+    "intent_pattern": [
+      "ATTACK:3",
+      "ATTACK:3",
+      "DEBUFF:1",
+      "ATTACK:9"
+    ],
     "classic_quote": "亶爰之山有兽焉，其状如狸而有髦，其名曰类，自为牝牡，食者不妒。",
     "translation": "类自含雌雄两性，本象征'和'与'容'。今被忘川扰乱，失去了那份从容。"
   },
@@ -44,7 +61,12 @@
     "display_name": "迷误·穷奇",
     "max_hp": 56,
     "is_elite": true,
-    "intent_pattern": ["ATTACK:10", "BUFF:2", "ATTACK:12", "BLOCK:8"],
+    "intent_pattern": [
+      "ATTACK:10",
+      "BUFF:2",
+      "ATTACK:12",
+      "BLOCK:8"
+    ],
     "classic_quote": "邽山有兽焉，其状如牛，猬毛，名曰穷奇，音如獆狗，是食人。（《山海经·西山经》）",
     "translation": "穷奇形如刺猬牛，本是守山之兽。今被忘川深度侵蚀，把每一个进入山的人都当成入侵者。",
     "awaken_options": [
@@ -130,5 +152,179 @@
     ],
     "awaken_correct_index": 0,
     "awaken_card_id": "hai.bifang_dance"
+  },
+  {
+    "id": "zheng_beast",
+    "display_name": "狰",
+    "max_hp": 28,
+    "intent_pattern": [
+      "ATTACK:7",
+      "ATTACK:5",
+      "DEBUFF:1"
+    ],
+    "classic_quote": "章莪之山有兽焉，其状如赤豹，五尾一角，其音如击石，其名曰狰。",
+    "translation": "狰是赤豹五尾、头生一角的西山异兽，声如击石。",
+    "awaken_options": [
+      "狰状如赤豹，五尾一角，声音像击石。",
+      "狰不是独足火鸟。",
+      "狰不是白首马身。",
+      "狰不是旋龟。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "huang.zheng_pounce"
+  },
+  {
+    "id": "tian_gou",
+    "display_name": "天狗",
+    "max_hp": 32,
+    "intent_pattern": [
+      "BLOCK:6",
+      "ATTACK:8",
+      "ATTACK:6"
+    ],
+    "classic_quote": "阴山有兽焉，其状如狸而白首，名曰天狗，其音如榴榴，可以御凶。",
+    "translation": "天狗本是可御凶的白首灵兽，守夜巡山。",
+    "awaken_options": [
+      "天狗状如狸而白首，声音如榴榴，可御凶。",
+      "天狗不是毕方。",
+      "天狗不是从从。",
+      "天狗不是陆吾。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "hai.tiangou_ward"
+  },
+  {
+    "id": "xuan_gui",
+    "display_name": "旋龟",
+    "max_hp": 36,
+    "intent_pattern": [
+      "BLOCK:10",
+      "ATTACK:6",
+      "BUFF:1",
+      "ATTACK:7"
+    ],
+    "classic_quote": "杻阳之山，怪水出焉，其中多旋龟，其状如龟而鸟首虺尾，其音如判木。",
+    "translation": "旋龟有龟身、鸟首、蛇尾，壳纹如水涡。",
+    "awaken_options": [
+      "旋龟状如龟，鸟首虺尾，声音像劈木。",
+      "旋龟不是赤豹。",
+      "旋龟不是英招。",
+      "旋龟不是天狗。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "hai.xuan_gui_shell"
+  },
+  {
+    "id": "gu_diao",
+    "display_name": "蛊雕",
+    "max_hp": 40,
+    "intent_pattern": [
+      "ATTACK:9",
+      "DEBUFF:1",
+      "ATTACK:11"
+    ],
+    "classic_quote": "鹿吴之山，多蛊雕，其状如雕而有角，其音如婴儿之音。",
+    "translation": "蛊雕似雕而有角，啼声如婴儿。",
+    "awaken_options": [
+      "蛊雕像雕而有角，声音像婴儿啼哭。",
+      "蛊雕不是毕方。",
+      "蛊雕不是从从。",
+      "蛊雕不是鹿蜀。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "huang.gudiao_cry"
+  },
+  {
+    "id": "elite_yingzhao",
+    "display_name": "山巡·英招",
+    "max_hp": 76,
+    "is_elite": true,
+    "intent_pattern": [
+      "ATTACK:12",
+      "BLOCK:10",
+      "BUFF:2",
+      "ATTACK:14"
+    ],
+    "classic_quote": "槐江之山，神英招司之，其状马身而人面，虎文而鸟翼。",
+    "translation": "英招马身人面，虎文鸟翼，巡守天帝平圃。",
+    "awaken_options": [
+      "英招马身人面，虎文鸟翼。",
+      "英招不是旋龟。",
+      "英招不是天狗。",
+      "英招不是毕方。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "shan.yingzhao_patrol"
+  },
+  {
+    "id": "boss_luwu_weak",
+    "display_name": "少司·陆吾",
+    "max_hp": 95,
+    "is_boss": true,
+    "intent_pattern": [
+      "ATTACK:8",
+      "BLOCK:10",
+      "ATTACK:10",
+      "BUFF:1"
+    ],
+    "classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
+    "translation": "初醒的陆吾尚未完全展开九尾，但已能以虎爪守门。",
+    "awaken_options": [
+      "陆吾虎身九尾，人面虎爪。",
+      "陆吾不是狰。",
+      "陆吾不是毕方。",
+      "陆吾不是从从。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "shan.luwu_gate"
+  },
+  {
+    "id": "boss_luwu",
+    "display_name": "昆仑司门·陆吾",
+    "max_hp": 140,
+    "is_boss": true,
+    "intent_pattern": [
+      "ATTACK:10",
+      "BLOCK:14",
+      "ATTACK:12",
+      "DEBUFF:2",
+      "BUFF:2",
+      "ATTACK:14"
+    ],
+    "classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
+    "translation": "守昆仑下都的司门山神，九尾在石门后如旌旗展开。",
+    "awaken_options": [
+      "陆吾为昆仑山神，虎身九尾，人面虎爪。",
+      "陆吾不是巨鱼。",
+      "陆吾不是羽民。",
+      "陆吾不是鹿蜀。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "shan.luwu_gate"
+  },
+  {
+    "id": "boss_luwu_strong",
+    "display_name": "九尾镇岳·陆吾",
+    "max_hp": 205,
+    "is_boss": true,
+    "intent_pattern": [
+      "ATTACK:12",
+      "BLOCK:16",
+      "ATTACK:18",
+      "BUFF:3",
+      "DEBUFF:2",
+      "ATTACK:16",
+      "BLOCK:12"
+    ],
+    "classic_quote": "陆吾司天之九部及帝之囿时，虎身九尾，人面虎爪，威镇昆仑。",
+    "translation": "九尾镇岳形态的陆吾，既是守门者也是审问者。",
+    "awaken_options": [
+      "陆吾司天之九部与帝之囿时，虎身九尾，人面虎爪。",
+      "陆吾不是狰。",
+      "陆吾不是蛊雕。",
+      "陆吾不是旋龟。"
+    ],
+    "awaken_correct_index": 0,
+    "awaken_card_id": "shan.luwu_gate"
   }
 ]

@@ -9,7 +9,6 @@ const SFX_POLYPHONY: int = 8
 
 var _sfx_players: Array[AudioStreamPlayer] = []
 var _bgm_player: AudioStreamPlayer = null
-var _bgm_playback: AudioStreamGeneratorPlayback = null
 var _current_theme: String = ""
 var _bgm_t: float = 0.0
 ## 同名 SFX 节流（避免一秒内重复多次，听起来刺耳）
@@ -25,6 +24,8 @@ const SFX_THROTTLE: Dictionary = {
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	if _is_headless():
+		return
 	# SFX 池
 	for i in SFX_POLYPHONY:
 		var p := AudioStreamPlayer.new()
@@ -41,9 +42,28 @@ func _ready() -> void:
 	add_child(_bgm_player)
 
 
+func _exit_tree() -> void:
+	stop_bgm()
+	for p in _sfx_players:
+		if is_instance_valid(p):
+			p.stop()
+			p.stream = null
+	if _bgm_player != null and is_instance_valid(_bgm_player):
+		_bgm_player.stop()
+		_bgm_player.stream = null
+	_sfx_players.clear()
+	_sfx_last_play_time.clear()
+
+
 # ====================== SFX ======================
 
+func _is_headless() -> bool:
+	return DisplayServer.get_name() == "headless"
+
+
 func play_sfx(name: String) -> void:
+	if _is_headless():
+		return
 	# 节流：同名 SFX 在间隔内只放一次
 	var now: float = Time.get_ticks_msec() / 1000.0
 	if SFX_THROTTLE.has(name):
@@ -150,6 +170,10 @@ func _generate_sfx(name: String) -> AudioStreamWAV:
 # ====================== BGM ======================
 
 func play_bgm(theme: String) -> void:
+	if _is_headless():
+		return
+	if _bgm_player == null:
+		return
 	if theme == _current_theme and _bgm_player.playing:
 		return
 	_current_theme = theme
@@ -157,28 +181,28 @@ func play_bgm(theme: String) -> void:
 	if _bgm_player.playing:
 		_bgm_player.stop()
 	if theme == "":
-		_bgm_playback = null
 		return
 	_bgm_player.play()
-	_bgm_playback = _bgm_player.get_stream_playback()
 
 
 func stop_bgm() -> void:
 	_current_theme = ""
-	_bgm_playback = null
-	if _bgm_player.playing:
+	if _bgm_player != null and _bgm_player.playing:
 		_bgm_player.stop()
 
 
 func _process(_delta: float) -> void:
-	if _bgm_playback == null or _current_theme == "":
+	if _bgm_player == null or not _bgm_player.playing or _current_theme == "":
+		return
+	var playback: AudioStreamGeneratorPlayback = _bgm_player.get_stream_playback()
+	if playback == null:
 		return
 	var melody: Array = _melody(_current_theme)
 	var bass: Array = _bass(_current_theme)
 	if melody.is_empty():
 		return
 	var tempo: float = _tempo(_current_theme)
-	var frames: int = _bgm_playback.get_frames_available()
+	var frames: int = playback.get_frames_available()
 	for i in frames:
 		_bgm_t += 1.0 / SAMPLE_RATE
 		var step_idx: int = int(_bgm_t / tempo) % melody.size()
@@ -200,7 +224,7 @@ func _process(_delta: float) -> void:
 		if bf > 0.1:
 			bass_sample = sin(_bgm_t * bf * TAU) * 0.06
 		var s: float = lead_sample + bass_sample
-		_bgm_playback.push_frame(Vector2(s, s))
+		playback.push_frame(Vector2(s, s))
 
 
 func _tempo(theme: String) -> float:

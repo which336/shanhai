@@ -28,13 +28,16 @@ func _set_descendant_mouse_filter_ignore(root: Node) -> void:
 		_set_descendant_mouse_filter_ignore(child)
 
 
-func setup(c: Card, idx: int = -1) -> void:
+func setup(c: Card, idx: int = -1, display_cost: int = -1) -> void:
 	card = c
 	hand_index = idx
 	if not is_node_ready():
 		await ready
 	_title.text = c.title
-	_cost.text = "费 %d" % c.cost
+	var shown_cost: int = c.cost if display_cost < 0 else display_cost
+	_cost.text = "费 %d" % shown_cost
+	if shown_cost < c.cost:
+		_cost.text = "费 %d→%d" % [c.cost, shown_cost]
 	_school.text = c.get_school_name()
 	_description.text = _make_card_summary(c.get_resolved_description(), 34)
 	# 卡面只显示极短引文，完整原文进图鉴看；短摘要可避免导出后字体差异造成溢出。

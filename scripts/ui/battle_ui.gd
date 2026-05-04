@@ -62,9 +62,9 @@ func _fix_runtime_layout() -> void:
 	var viewport_size: Vector2 = get_viewport_rect().size
 	if viewport_size.x <= 0 or viewport_size.y <= 0:
 		viewport_size = Vector2(1280, 720)
+	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	position = Vector2.ZERO
 	size = viewport_size
-	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	offset_left = 0
 	offset_top = 0
 	offset_right = viewport_size.x
@@ -239,7 +239,7 @@ func _refresh_hand() -> void:
 		var card: Card = _battle.deck.hand[i]
 		var view: CardView = CARD_VIEW_SCENE.instantiate()
 		_hand.add_child(view)
-		view.setup(card, i)
+		view.setup(card, i, _battle.effective_card_cost(card))
 		view.play_requested.connect(_on_card_view_play_requested)
 
 
@@ -266,9 +266,10 @@ func _on_card_view_play_requested(view: CardView) -> void:
 		return
 	_last_play_time_ms = now_ms
 	# 灵韵不足：日志 + 屏幕中央醒目提示
-	if RunState.energy < card.cost:
-		_append_log("[color=#e8a060][b]灵韵不足[/b]：吟咏 [color=#e6c97a]%s[/color] 需要 %d 灵韵，当前 %d。[/color]" % [card.title, card.cost, RunState.energy])
-		_show_toast("灵韵不足！(%d / %d)" % [RunState.energy, card.cost])
+	var effective_cost: int = _battle.effective_card_cost(card)
+	if RunState.energy < effective_cost:
+		_append_log("[color=#e8a060][b]灵韵不足[/b]：吟咏 [color=#e6c97a]%s[/color] 需要 %d 灵韵，当前 %d。[/color]" % [card.title, effective_cost, RunState.energy])
+		_show_toast("灵韵不足！(%d / %d)" % [RunState.energy, effective_cost])
 		return
 	# 选目标
 	var target: BattleEnemy = null
@@ -316,7 +317,12 @@ func _rebuild_enemy_list() -> void:
 			intent_label.text = "意图：—"
 		else:
 			match it.kind:
-				EnemyData.IntentKind.ATTACK: intent_label.text = "意图：将攻击 %d" % it.amount
+				EnemyData.IntentKind.ATTACK:
+					var actual: int = StatusEffect.calc_damage_modifier(enemy.statuses, _battle.player.statuses, it.amount)
+					if actual != it.amount:
+						intent_label.text = "意图：将攻击 %d → %d" % [it.amount, actual]
+					else:
+						intent_label.text = "意图：将攻击 %d" % it.amount
 				EnemyData.IntentKind.BLOCK: intent_label.text = "意图：自我守护 %d" % it.amount
 				EnemyData.IntentKind.BUFF: intent_label.text = "意图：自我强化"
 				EnemyData.IntentKind.DEBUFF: intent_label.text = "意图：施加易伤"

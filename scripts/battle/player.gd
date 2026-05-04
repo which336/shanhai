@@ -19,6 +19,7 @@ func reset_for_battle() -> void:
 ## 受到攻击伤害（先扣护盾再扣 HP）
 func take_damage(raw: int) -> int:
 	var dmg: int = raw
+	var was_vulnerable: bool = statuses.has(StatusEffect.ID_VULNERABLE)
 	if block > 0:
 		var absorbed: int = mini(block, dmg)
 		block -= absorbed
@@ -26,6 +27,11 @@ func take_damage(raw: int) -> int:
 		block_changed.emit(block)
 	if dmg > 0:
 		RunState.take_damage(dmg)
+	if was_vulnerable:
+		statuses[StatusEffect.ID_VULNERABLE] = maxi(0, int(statuses[StatusEffect.ID_VULNERABLE]) - 1)
+		if int(statuses.get(StatusEffect.ID_VULNERABLE, 0)) <= 0:
+			statuses.erase(StatusEffect.ID_VULNERABLE)
+		status_changed.emit()
 	return dmg
 
 
@@ -58,6 +64,10 @@ func on_turn_end() -> void:
 	for sid in statuses.keys():
 		if sid.begins_with("resonance_"):
 			statuses.erase(sid)
+		elif sid == StatusEffect.ID_VULNERABLE:
+			continue
+		elif sid == StatusEffect.ID_ROOT:
+			continue
 		else:
 			statuses[sid] = max(0, statuses[sid] - 1)
 			if statuses[sid] <= 0:
