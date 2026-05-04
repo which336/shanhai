@@ -3,7 +3,8 @@
 - Started the v0.6.5 content-rhythm pass focused on event and reward feedback instead of new chapters.
 - Updated event result panels to show both narrative outcome text and an explicit actual reward/expense summary.
 - Updated treasure result panels to use the same explicit reward summary pattern.
-- Added regression checks ensuring event and treasure results include reward summaries.
+- Updated non-final Boss victory panels to label reward lines as explicit change summaries.
+- Added regression checks ensuring event, treasure, and Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.
 
 ## v0.6.4 - 2026-05-04

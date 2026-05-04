@@ -528,6 +528,12 @@ func _check_boss_reward(map) -> void:
 	_expect(int(_game_state.fragments) > before_fragments, "west boss reward should grant fragments")
 	_expect(_run_state.run_deck.size() == before_deck_size + 1, "west boss reward should add reward card")
 	_expect(bool(_game_state.call("is_codex_unlocked", "card.shan.luwu_gate")), "west boss reward should unlock codex for reward card")
+	_run_state.bosses_defeated = 1
+	map.call("_show_boss_victory", "boss_mid", "陆吾")
+	var victory_text = map.get("_victory_text")
+	_expect(victory_text != null, "boss victory text should exist")
+	if victory_text != null:
+		_expect(str(victory_text.text).find("本次变化") >= 0, "boss victory should summarize actual reward")
 
 
 func _check_codex_beast_entries() -> void:

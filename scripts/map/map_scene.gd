@@ -1746,7 +1746,7 @@ func _show_boss_victory(kind: String, name: String) -> void:
 			"boss_weak": reward_line = "+30 碎片  +20 EXP  +20 HP"
 			"boss_mid":  reward_line = "+60 碎片  +40 EXP  +35 HP"
 			"boss_hard": reward_line = "+120 碎片  +80 EXP  +50 HP"
-	_victory_text.text = "你击败了 BOSS：[ %s ]\n%s\n\n章节进度：%d / %d\n地图上还有更强的 BOSS 等你。" % [name, reward_line, defeated, total]
+	_victory_text.text = "你击败了 BOSS：[ %s ]\n本次变化：%s\n\n章节进度：%d / %d\n地图上还有更强的 BOSS 等你。" % [name, reward_line, defeated, total]
 	_victory_btn.text = "继续探索"
 
 func _show_victory() -> void:
