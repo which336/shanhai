@@ -1254,7 +1254,8 @@ func _use_rest(e: Dictionary) -> void:
 	var story: String = str(e.get("story", ""))
 	if story.is_empty():
 		story = "白羽与铜铃在山风中轻响，守山人的旧闻暂时压住了疲惫。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "你在驿站休整片刻，翻读古卷，气息逐渐平稳。"
-	_show_event_panel(name, "%s\n\n你恢复了 %d 点气血。" % [story, amount], [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
+	var result_text := _result_body_with_change(story, "恢复 %d HP" % amount)
+	_show_event_panel(name, result_text, [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
 
 
 func _on_confirm_no() -> void:

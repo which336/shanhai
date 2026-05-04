@@ -450,6 +450,7 @@ func _check_rest_use(map, map_data: Dictionary) -> void:
 		_expect(str(title_label.text) == str(rest_entity.get("name", "")), "rest should use entity title")
 	if body_label != null:
 		_expect(str(body_label.text).find("白羽") >= 0 or str(body_label.text).find("铜铃") >= 0, "west rest should use entity story")
+		_expect(str(body_label.text).find("本次变化") >= 0, "west rest panel should summarize actual heal")
 
 
 func _check_treasure_open(map, map_data: Dictionary) -> void:

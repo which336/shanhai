@@ -5,7 +5,8 @@
 - Updated treasure result panels to use the same explicit reward summary pattern.
 - Updated non-final Boss victory panels to label reward lines as explicit change summaries.
 - Updated shop purchases to keep an explicit latest-change summary in the shop panel.
-- Added regression checks ensuring event, treasure, shop, and Boss results include reward summaries.
+- Updated rest station result panels to use the same explicit heal summary pattern.
+- Added regression checks ensuring event, treasure, rest station, shop, and Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.
 
 ## v0.6.4 - 2026-05-04
