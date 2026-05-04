@@ -7,6 +7,7 @@
 - Updated shop purchases to keep an explicit latest-change summary in the shop panel.
 - Persisted shop inventory and sold state per shop node so reopening the same shop cannot refresh or rebuy sold items.
 - Updated rest station result panels to use the same explicit heal summary pattern.
+- Expanded the isometric visual ground layer beyond the true map bounds to hide gray edge exposure near camera limits.
 - Added regression checks ensuring event, treasure, rest station, shop, non-final Boss, and final Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.
 

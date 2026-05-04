@@ -89,6 +89,7 @@ const ISO_CAMERA_ZOOM: float = 1.55
 const ISO_ENEMY_SPRITE_SCALE: float = 1.42
 const WARRIOR_TOP_SCALE: float = 0.52
 const WARRIOR_ISO_SCALE: float = 0.72
+const ISO_VISUAL_GROUND_PADDING: int = 8
 const ISO_FLOOR_TILESET_NAME: String = "forest"
 const ISO_WALL_TILESET_NAME: String = "village"
 # 等距世界像素边界（动态计算）
@@ -1960,26 +1961,38 @@ func _draw_isometric() -> void:
 		visible_rect.position + Vector2(0, visible_rect.size.y),
 		visible_rect.position + visible_rect.size,
 	]
-	var x_min: int = WORLD_W - 1
-	var x_max: int = 0
-	var y_min: int = WORLD_H - 1
-	var y_max: int = 0
+	var view_x_min: int = WORLD_W - 1
+	var view_x_max: int = 0
+	var view_y_min: int = WORLD_H - 1
+	var view_y_max: int = 0
 	for corner in corners:
 		var g: Vector2i = _iso_screen_to_grid(corner)
-		x_min = mini(x_min, g.x)
-		x_max = maxi(x_max, g.x)
-		y_min = mini(y_min, g.y)
-		y_max = maxi(y_max, g.y)
-	x_min = clampi(x_min - 6, 0, WORLD_W - 1)
-	x_max = clampi(x_max + 6, 0, WORLD_W - 1)
-	y_min = clampi(y_min - 6, 0, WORLD_H - 1)
-	y_max = clampi(y_max + 6, 0, WORLD_H - 1)
+		view_x_min = mini(view_x_min, g.x)
+		view_x_max = maxi(view_x_max, g.x)
+		view_y_min = mini(view_y_min, g.y)
+		view_y_max = maxi(view_y_max, g.y)
+	var floor_x_min: int = view_x_min - 6 - ISO_VISUAL_GROUND_PADDING
+	var floor_x_max: int = view_x_max + 6 + ISO_VISUAL_GROUND_PADDING
+	var floor_y_min: int = view_y_min - 6 - ISO_VISUAL_GROUND_PADDING
+	var floor_y_max: int = view_y_max + 6 + ISO_VISUAL_GROUND_PADDING
+	var x_min: int = clampi(view_x_min - 6, 0, WORLD_W - 1)
+	var x_max: int = clampi(view_x_max + 6, 0, WORLD_W - 1)
+	var y_min: int = clampi(view_y_min - 6, 0, WORLD_H - 1)
+	var y_max: int = clampi(view_y_max + 6, 0, WORLD_H - 1)
 
 	# 收集视野内所有内容，分 4 层绘制
+	var floor_list: Array = []
 	var tile_list: Array = []
 	var tree_list: Array = []
 	var entity_list: Array = []
 	var player_item: Dictionary = {}
+
+	for y in range(floor_y_min, floor_y_max + 1):
+		for x in range(floor_x_min, floor_x_max + 1):
+			var floor_center: Vector2 = _grid_to_pixel(Vector2i(x, y))
+			if not visible_rect.has_point(floor_center):
+				continue
+			floor_list.append({"x": x, "y": y, "center": floor_center})
 
 	for y in range(y_min, y_max + 1):
 		for x in range(x_min, x_max + 1):
@@ -2023,14 +2036,14 @@ func _draw_isometric() -> void:
 		floor_col_offset = clampi(1, 0, cols - 1)
 		floor_col_count = max(1, cols - floor_col_offset)
 	var is_west_floor: bool = RunState.current_chapter_index >= RunState.CHAPTER_WEST
-	for t in tile_list:
+	for t in floor_list:
 		var center: Vector2 = t.center
 		var r := Rect2(center.x - ISO_HALF_W, center.y - ISO_HALF_H, ISO_TILE_W, ISO_FLOOR_H)
 		if is_west_floor:
 			var dirt_color: Color = Color("#7a4d24") if (int(t.x) + int(t.y)) % 2 == 0 else Color("#6a411f")
 			_draw_iso_floor_diamond(center, dirt_color)
 		if has_tex:
-			var local_col: int = (int(t.x) * 7 + int(t.y) * 3) % floor_col_count
+			var local_col: int = posmod(int(t.x) * 7 + int(t.y) * 3, floor_col_count)
 			var gcol: int = clampi(floor_col_offset + local_col, 0, cols - 1)
 			draw_texture_rect_region(td.tex, r, Rect2(gcol * ts, floor_row * ts, ts, ISO_FLOOR_H))
 		else:
