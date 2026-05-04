@@ -3,10 +3,10 @@
 - Started the v0.6.5 content-rhythm pass focused on event and reward feedback instead of new chapters.
 - Updated event result panels to show both narrative outcome text and an explicit actual reward/expense summary.
 - Updated treasure result panels to use the same explicit reward summary pattern.
-- Updated non-final Boss victory panels to label reward lines as explicit change summaries.
+- Updated Boss victory and final purification panels to label reward lines as explicit change summaries.
 - Updated shop purchases to keep an explicit latest-change summary in the shop panel.
 - Updated rest station result panels to use the same explicit heal summary pattern.
-- Added regression checks ensuring event, treasure, rest station, shop, and Boss results include reward summaries.
+- Added regression checks ensuring event, treasure, rest station, shop, non-final Boss, and final Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.
 
 ## v0.6.4 - 2026-05-04

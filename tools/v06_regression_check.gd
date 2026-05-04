@@ -550,6 +550,11 @@ func _check_boss_reward(map) -> void:
 	_expect(victory_text != null, "boss victory text should exist")
 	if victory_text != null:
 		_expect(str(victory_text.text).find("本次变化") >= 0, "boss victory should summarize actual reward")
+	_run_state.bosses_defeated = int(_run_state.BOSSES_TO_CLEAR)
+	map.call("_show_boss_victory", "boss_hard", "蛊雕")
+	if victory_text != null:
+		_expect(str(victory_text.text).find("本次变化") >= 0, "final boss victory should summarize actual reward")
+		_expect(str(victory_text.text).find("全境净化") >= 0, "final boss victory should keep completion copy")
 
 
 func _check_codex_beast_entries() -> void:

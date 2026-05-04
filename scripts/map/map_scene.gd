@@ -1729,33 +1729,37 @@ func _grant_boss_reward(kind: String) -> void:
 			GameState.unlock_codex("card." + card_id)
 
 
+func _boss_reward_line(kind: String) -> String:
+	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+		match kind:
+			"boss_weak": return "+45 碎片  +35 EXP  +25 HP  +《英招巡山》"
+			"boss_mid":  return "+85 碎片  +60 EXP  +40 HP  +《陆吾镇门》"
+			"boss_hard": return "+150 碎片  +100 EXP  +60 HP  +《蛊雕夜啼》"
+			_: return "+45 碎片  +35 EXP  +25 HP"
+	match kind:
+		"boss_weak": return "+30 碎片  +20 EXP  +20 HP"
+		"boss_mid":  return "+60 碎片  +40 EXP  +35 HP"
+		"boss_hard": return "+120 碎片  +80 EXP  +50 HP"
+		_: return "+20 碎片  +15 EXP  +10 HP"
+
+
 func _show_boss_victory(kind: String, name: String) -> void:
 	_victory.visible = true
 	var defeated: int = RunState.bosses_defeated
 	var total: int = RunState.BOSSES_TO_CLEAR
 	var chapter_name: String = str(data.get("title", _chapter_config().get("title", "南山 · 朱雀庭")))
+	var reward_line: String = _boss_reward_line(kind)
 	if defeated >= total:
 		if RunState.has_next_chapter():
 			_pending_chapter_advance = true
-			_victory_text.text = "%s 已净化！\n你已唤醒本章所有 %d 位 BOSS。\n西方白石之门已经打开，下一章「西山 · 白虎境」正在等待。\n\n进入下一章会保留卡组、碎片、等级和最大生命，并回满生命。" % [chapter_name, total]
+			_victory_text.text = "%s 已净化！\n你已唤醒本章所有 %d 位 BOSS。\n西方白石之门已经打开，下一章「西山 · 白虎境」正在等待。\n\n本次变化：%s\n\n进入下一章会保留卡组、碎片、等级和最大生命，并回满生命。" % [chapter_name, total, reward_line]
 			_victory_btn.text = "进入西山 · 白虎境"
 		else:
 			_pending_chapter_advance = false
-			_victory_text.text = "v0.6 全境净化！\n你已连续完成「南山 · 朱雀庭」与「西山 · 白虎境」。\n被遗忘的山海生灵重新被讲述，新的篇章将在后续版本开放。\n\n（按下方按钮回到主菜单。）"
+			_victory_text.text = "v0.6 全境净化！\n你已连续完成「南山 · 朱雀庭」与「西山 · 白虎境」。\n被遗忘的山海生灵重新被讲述，新的篇章将在后续版本开放。\n\n本次变化：%s\n\n（按下方按钮回到主菜单。）" % reward_line
 			_victory_btn.text = "回到主菜单"
 		return
 	_pending_chapter_advance = false
-	var reward_line: String = ""
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
-		match kind:
-			"boss_weak": reward_line = "+45 碎片  +35 EXP  +25 HP  +《英招巡山》"
-			"boss_mid":  reward_line = "+85 碎片  +60 EXP  +40 HP  +《陆吾镇门》"
-			"boss_hard": reward_line = "+150 碎片  +100 EXP  +60 HP  +《蛊雕夜啼》"
-	else:
-		match kind:
-			"boss_weak": reward_line = "+30 碎片  +20 EXP  +20 HP"
-			"boss_mid":  reward_line = "+60 碎片  +40 EXP  +35 HP"
-			"boss_hard": reward_line = "+120 碎片  +80 EXP  +50 HP"
 	_victory_text.text = "你击败了 BOSS：[ %s ]\n本次变化：%s\n\n章节进度：%d / %d\n地图上还有更强的 BOSS 等你。" % [name, reward_line, defeated, total]
 	_victory_btn.text = "继续探索"
 
