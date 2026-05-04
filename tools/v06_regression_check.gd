@@ -504,6 +504,7 @@ func _check_event_choice_result(map, map_data: Dictionary) -> void:
 		_expect(str(title_label.text) == "回响结果", "event choice should show result panel")
 	if body_label != null:
 		_expect(not str(body_label.text).is_empty(), "event result panel should not be empty")
+		_expect(str(body_label.text).find("本次变化") >= 0, "event result panel should summarize actual reward")
 
 
 func _check_shop_copy(map) -> void:

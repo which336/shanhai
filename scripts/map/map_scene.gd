@@ -1379,7 +1379,16 @@ func _on_event_choice(opt: Dictionary) -> void:
 	var result_text: String = str(opt.get("result", ""))
 	if result_text.is_empty():
 		result_text = msg if msg != "" else "回响渐渐散去，没有发生额外变化。"
+	result_text = _event_result_body(result_text, msg)
 	_show_event_panel("回响结果", result_text, [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
+
+
+func _event_result_body(result_text: String, reward_text: String) -> String:
+	if reward_text.is_empty():
+		return result_text
+	if result_text.is_empty() or result_text == reward_text:
+		return "本次变化：%s" % reward_text
+	return "%s\n\n本次变化：%s" % [result_text, reward_text]
 
 
 ## 把奖励 dict 应用到玩家。返回简短反馈文字

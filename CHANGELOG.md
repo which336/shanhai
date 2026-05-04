@@ -1,3 +1,10 @@
+## v0.6.5 - 2026-05-05
+
+- Started the v0.6.5 content-rhythm pass focused on event and reward feedback instead of new chapters.
+- Updated event result panels to show both narrative outcome text and an explicit actual reward/expense summary.
+- Added a regression check ensuring event choice results include the reward summary.
+- Updated project/menu version metadata to 0.6.5.
+
 ## v0.6.4 - 2026-05-04
 
 - Improved exploration movement with full-step checks, axis sliding, and a small isometric corner nudge to reduce turn/corner sticking without loosening collision.
