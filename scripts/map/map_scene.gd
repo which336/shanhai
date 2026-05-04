@@ -101,6 +101,7 @@ var _shop_items: Array = []
 var _shop_buttons: Array = []
 var _shop_title: String = "古玩铺"
 var _shop_story: String = "店主戴狐面具，玻璃柜中陈列着几样东西。"
+var _shop_last_result: String = ""
 var _pending_reset_map: bool = false
 var _pending_chapter_advance: bool = false
 var _debug_chapter_toggle: Button = null
@@ -1482,6 +1483,7 @@ func _append_shop_card(cid: String, west_cards: Array, offered_cards: Dictionary
 func _enter_shop(e: Dictionary) -> void:
 	_shop_items.clear()
 	_shop_buttons.clear()
+	_shop_last_result = ""
 	_shop_title = str(e.get("name", "白石古肆" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "古玩铺"))
 	_shop_story = str(e.get("story", ""))
 	if _shop_story.is_empty():
@@ -1544,7 +1546,10 @@ func _show_shop_panel() -> void:
 
 
 func _refresh_shop_body() -> void:
-	_event_body.text = "%s\n\n你的灵韵碎片：%d" % [_shop_story, GameState.fragments]
+	var body := "%s\n\n你的灵韵碎片：%d" % [_shop_story, GameState.fragments]
+	if not _shop_last_result.is_empty():
+		body += "\n\n本次变化：%s" % _shop_last_result
+	_event_body.text = body
 
 
 func _refresh_shop_buttons() -> void:
@@ -1638,13 +1643,17 @@ func _on_shop_buy(idx: int) -> void:
 			RunState.add_card_to_deck(card)
 			GameState.unlock_codex("card." + card.id)
 			_add_floating_text(_player_pixel + Vector2(0, -36), "+" + card.title, Color(1.0, 0.85, 0.4))
+			_shop_last_result = "购买《%s》  -%d 碎片" % [card.title, price]
 		"heal":
-			RunState.heal(int(item.get("amount", 0)))
+			var amount: int = int(item.get("amount", 0))
+			RunState.heal(amount)
+			_shop_last_result = "恢复 %d HP  -%d 碎片" % [amount, price]
 		"max_hp":
 			var amt: int = int(item.get("amount", 0))
 			RunState.max_hp += amt
 			RunState.hp = mini(RunState.max_hp, RunState.hp + amt)
 			RunState.hp_changed.emit(RunState.hp, RunState.max_hp)
+			_shop_last_result = "最大 HP +%d  -%d 碎片" % [amt, price]
 	_refresh_shop_body()
 	_refresh_shop_buttons()
 	_update_status()

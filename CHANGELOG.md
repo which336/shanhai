@@ -4,7 +4,8 @@
 - Updated event result panels to show both narrative outcome text and an explicit actual reward/expense summary.
 - Updated treasure result panels to use the same explicit reward summary pattern.
 - Updated non-final Boss victory panels to label reward lines as explicit change summaries.
-- Added regression checks ensuring event, treasure, and Boss results include reward summaries.
+- Updated shop purchases to keep an explicit latest-change summary in the shop panel.
+- Added regression checks ensuring event, treasure, shop, and Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.
 
 ## v0.6.4 - 2026-05-04

@@ -517,6 +517,21 @@ func _check_shop_copy(map) -> void:
 		_expect(str(title_label.text) == "白石古肆", "west shop should use entity title")
 	if body_label != null:
 		_expect(str(body_label.text).find("虎纹面具") >= 0, "west shop should use entity story")
+	var raw_items: Variant = map.get("_shop_items")
+	var items: Array = raw_items if raw_items is Array else []
+	var buy_index := -1
+	for i in items.size():
+		var raw_item: Variant = items[i]
+		if raw_item is Dictionary:
+			var item_type := str(raw_item.get("type", ""))
+			if item_type == "card" or item_type == "heal" or item_type == "max_hp":
+				buy_index = i
+				break
+	_expect(buy_index >= 0, "shop should have purchasable item")
+	if buy_index >= 0:
+		map.call("_on_shop_buy", buy_index)
+		if body_label != null:
+			_expect(str(body_label.text).find("本次变化") >= 0, "shop purchase should summarize actual change")
 
 
 func _check_boss_reward(map) -> void:
