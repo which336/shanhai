@@ -473,6 +473,7 @@ func _check_treasure_open(map, map_data: Dictionary) -> void:
 		_expect(str(title_label.text) == "白石秘匣", "west treasure panel should use entity title")
 	if body_label != null:
 		_expect(str(body_label.text).find("白虎境") >= 0, "west treasure panel should use entity story")
+		_expect(str(body_label.text).find("本次变化") >= 0, "west treasure panel should summarize actual reward")
 
 
 func _check_event_choice_result(map, map_data: Dictionary) -> void:

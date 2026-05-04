@@ -1336,8 +1336,10 @@ func _open_treasure(e: Dictionary) -> void:
 	var story: String = str(e.get("story", ""))
 	if story.is_empty():
 		story = "石匣半埋在褐土与灰岩之间，匣面刻着白虎境的旧纹。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "你打开了一只布满苔藓的山海宝匣。"
-	var text: String = "%s\n\n%s" % [story, str(loot.get("text", "（空）"))]
-	_apply_reward(loot)
+	var reward_text: String = _apply_reward(loot)
+	if reward_text.is_empty():
+		reward_text = str(loot.get("text", "（空）"))
+	var text: String = _result_body_with_change(story, reward_text)
 	AudioEngine.play_sfx("pickup")
 	data["entities"].erase(e)
 	_minimap.queue_redraw()
@@ -1379,11 +1381,11 @@ func _on_event_choice(opt: Dictionary) -> void:
 	var result_text: String = str(opt.get("result", ""))
 	if result_text.is_empty():
 		result_text = msg if msg != "" else "回响渐渐散去，没有发生额外变化。"
-	result_text = _event_result_body(result_text, msg)
+	result_text = _result_body_with_change(result_text, msg)
 	_show_event_panel("回响结果", result_text, [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
 
 
-func _event_result_body(result_text: String, reward_text: String) -> String:
+func _result_body_with_change(result_text: String, reward_text: String) -> String:
 	if reward_text.is_empty():
 		return result_text
 	if result_text.is_empty() or result_text == reward_text:
