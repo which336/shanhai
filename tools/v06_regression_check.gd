@@ -308,6 +308,7 @@ func _check_west_map_scene() -> void:
 		await process_frame
 		_check_shop_copy(map, shop_entity)
 		_check_shop_items(Array(map.get("_shop_items")))
+	_check_battle_confirm_reward_preview(map)
 	_check_boss_reward(map)
 	map.queue_free()
 
@@ -564,6 +565,22 @@ func _check_shop_copy(map, shop_entity: Dictionary) -> void:
 		map.call("_on_shop_buy", buy_index)
 		_expect(int(_game_state.fragments) == after_buy_fragments, "reopened sold shop item should not charge fragments again")
 		_expect(after_buy_fragments < before_fragments, "shop purchase should charge fragments once")
+
+
+func _check_battle_confirm_reward_preview(map) -> void:
+	var confirm_text = map.get("_confirm_text")
+	_expect(confirm_text != null, "confirm text label should exist")
+	if confirm_text == null:
+		return
+	map.call("_show_confirm", {"kind": "enemy", "name": "狰", "story": "击石声在山谷中回响。", "enemies": ["zheng_beast", "tian_gou"]})
+	_expect(str(confirm_text.text).find("胜利奖励") >= 0, "normal battle confirm should preview reward")
+	_expect(str(confirm_text.text).find("+10 碎片") >= 0, "normal battle confirm should preview scaled fragments")
+	map.call("_show_confirm", {"kind": "elite", "name": "英招", "story": "白羽精英巡守山门。"})
+	_expect(str(confirm_text.text).find("胜利奖励") >= 0, "elite battle confirm should preview reward")
+	_expect(str(confirm_text.text).find("唤醒卡") < 0, "elite battle confirm should not promise missing awaken card")
+	map.call("_show_confirm", {"kind": "boss_mid", "name": "陆吾", "story": "白石门前的守境者。"})
+	_expect(str(confirm_text.text).find("胜利奖励") >= 0, "boss battle confirm should preview reward")
+	_expect(str(confirm_text.text).find("陆吾镇门") >= 0, "boss battle confirm should preview reward card")
 
 
 func _check_boss_reward(map) -> void:

@@ -9,7 +9,8 @@
 - Updated rest station result panels to use the same explicit heal summary pattern.
 - Expanded the isometric visual ground layer beyond the true map bounds to hide gray edge exposure near camera limits.
 - Added non-boss battle reward result panels when returning to the map after normal or elite fights.
-- Added regression checks ensuring non-boss battles, event, treasure, rest station, shop, non-final Boss, and final Boss results include reward summaries.
+- Added truthful battle reward previews to normal, elite, and Boss confirmation prompts.
+- Added regression checks ensuring battle reward previews, non-boss battles, event, treasure, rest station, shop, non-final Boss, and final Boss results include reward summaries.
 - Updated project/menu version metadata to 0.6.5.
 
 ## v0.6.4 - 2026-05-04

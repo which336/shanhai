@@ -230,7 +230,7 @@ func _init_enemy_runtime(e: Dictionary) -> void:
 		_enemy_facing[str(e["id"])] = Vector2i(0, 1)
 
 
-func _grant_non_boss_battle_reward(beaten_kind: String, enemy_count: int = 1) -> Dictionary:
+func _non_boss_battle_reward_values(beaten_kind: String, enemy_count: int = 1) -> Dictionary:
 	var fragments_gain: int = 0
 	var exp_gain: int = 0
 	var text: String = ""
@@ -246,9 +246,22 @@ func _grant_non_boss_battle_reward(beaten_kind: String, enemy_count: int = 1) ->
 		text = "+%d 碎片  +%d EXP" % [fragments_gain, exp_gain]
 	else:
 		return {}
+	return {"fragments": fragments_gain, "exp": exp_gain, "text": text}
+
+
+func _non_boss_battle_reward_text(beaten_kind: String, enemy_count: int = 1) -> String:
+	return str(_non_boss_battle_reward_values(beaten_kind, enemy_count).get("text", ""))
+
+
+func _grant_non_boss_battle_reward(beaten_kind: String, enemy_count: int = 1) -> Dictionary:
+	var reward := _non_boss_battle_reward_values(beaten_kind, enemy_count)
+	if reward.is_empty():
+		return {}
+	var fragments_gain: int = int(reward.get("fragments", 0))
+	var exp_gain: int = int(reward.get("exp", 0))
 	GameState.add_fragments(fragments_gain)
 	RunState.add_exp(exp_gain)
-	return {"fragments": fragments_gain, "exp": exp_gain, "text": text}
+	return reward
 
 
 func _non_boss_battle_result_body(beaten_kind: String, beaten_name: String, reward: Dictionary) -> String:
@@ -1211,10 +1224,11 @@ func _show_confirm(e: Dictionary) -> void:
 	var story: String = e.get("story", "")
 	match kind:
 		"enemy":
-			_confirm_text.text = "前方传来低吼，是被忘川扰乱的异兽：\n[ %s ]\n%s\n是否进入战斗？" % [name, story]
+			var enemy_count: int = maxi(1, Array(e.get("enemies", [])).size())
+			_confirm_text.text = "前方传来低吼，是被忘川扰乱的异兽：\n[ %s ]\n%s\n胜利奖励：%s\n是否进入战斗？" % [name, story, _non_boss_battle_reward_text(kind, enemy_count)]
 			_confirm_yes.text = "迎战"
 		"elite":
-			_confirm_text.text = "前方是被深度侵蚀的精英：\n[ %s ]\n%s\n挑战胜利可获得唤醒卡。" % [name, story]
+			_confirm_text.text = "前方是被深度侵蚀的精英：\n[ %s ]\n%s\n胜利奖励：%s" % [name, story, _non_boss_battle_reward_text(kind, 1)]
 			_confirm_yes.text = "挑战"
 		"boss_weak", "boss_mid", "boss_hard":
 			var diff_word: String = {"boss_weak": "（弱）", "boss_mid": "（中等）", "boss_hard": "（强，谨慎）"}[kind]
@@ -1224,7 +1238,7 @@ func _show_confirm(e: Dictionary) -> void:
 			var buff: String = ""
 			if energy_b > 0 or hand_b > 0:
 				buff = "\n[等级 Lv.%d 卡牌战斗加成：每回合 +%d 灵韵，起手 +%d 抽牌]" % [lv, energy_b, hand_b]
-			_confirm_text.text = "BOSS%s：\n[ %s ]\n%s%s\n是否决战？" % [diff_word, name, story, buff]
+			_confirm_text.text = "BOSS%s：\n[ %s ]\n%s%s\n胜利奖励：%s\n是否决战？" % [diff_word, name, story, buff, _boss_reward_line(kind)]
 			_confirm_yes.text = "决战"
 		"shop":
 			_confirm_text.text = "[ %s ]\n%s\n用灵韵碎片可在此购买卡牌、回血、永久增益。" % [name, story]
