@@ -174,6 +174,7 @@ func _ready() -> void:
 				var reward: Dictionary = _grant_non_boss_battle_reward(beaten_kind, beaten_enemy_count)
 				if not reward.is_empty():
 					_add_floating_text(_player_pixel + Vector2(0, -50), str(reward.get("text", "")), Color(1.0, 0.95, 0.55))
+					_show_non_boss_battle_result(beaten_kind, beaten_name, reward)
 		RunState.last_entity_id = ""
 		RunState.last_battle_was_boss = false
 		RunState.last_battle_won = false
@@ -248,6 +249,22 @@ func _grant_non_boss_battle_reward(beaten_kind: String, enemy_count: int = 1) ->
 	GameState.add_fragments(fragments_gain)
 	RunState.add_exp(exp_gain)
 	return {"fragments": fragments_gain, "exp": exp_gain, "text": text}
+
+
+func _non_boss_battle_result_body(beaten_kind: String, beaten_name: String, reward: Dictionary) -> String:
+	var name: String = beaten_name
+	if name.is_empty():
+		name = "精英异兽" if beaten_kind == "elite" else "异兽"
+	var story: String = "你击退了被忘川扰乱的异兽：[ %s ]。" % name
+	if beaten_kind == "elite":
+		story = "你唤醒了被深度侵蚀的精英：[ %s ]。" % name
+	return _result_body_with_change(story, str(reward.get("text", "")))
+
+
+func _show_non_boss_battle_result(beaten_kind: String, beaten_name: String, reward: Dictionary) -> void:
+	var title: String = "精英战收益" if beaten_kind == "elite" else "战斗收益"
+	var body: String = _non_boss_battle_result_body(beaten_kind, beaten_name, reward)
+	_show_event_panel(title, body, [{"label": "继续探索", "callback": Callable(self, "_close_event_panel")}])
 
 
 func _grid_center_pixel(g: Vector2i) -> Vector2:

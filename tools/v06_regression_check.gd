@@ -381,6 +381,21 @@ func _check_non_boss_reward_scaling() -> void:
 	var west_elite: Dictionary = map.call("_grant_non_boss_battle_reward", "elite", 1)
 	_expect(int(west_elite.get("fragments", 0)) == 32, "west elite should grant 32 fragments")
 	_expect(int(west_elite.get("exp", 0)) == 24, "west elite should grant 24 exp")
+	map.call("_show_non_boss_battle_result", "enemy", "狰", west_enemy)
+	var title_label = map.get("_event_title")
+	var body_label = map.get("_event_body")
+	_expect(title_label != null, "non-boss battle result title should exist")
+	_expect(body_label != null, "non-boss battle result body should exist")
+	if title_label != null:
+		_expect(str(title_label.text) == "战斗收益", "normal battle result should use reward title")
+	if body_label != null:
+		_expect(str(body_label.text).find("本次变化") >= 0, "normal battle result should summarize actual reward")
+		_expect(str(body_label.text).find("狰") >= 0, "normal battle result should keep enemy name")
+	map.call("_show_non_boss_battle_result", "elite", "英招", west_elite)
+	if title_label != null:
+		_expect(str(title_label.text) == "精英战收益", "elite battle result should use reward title")
+	if body_label != null:
+		_expect(str(body_label.text).find("本次变化") >= 0, "elite battle result should summarize actual reward")
 	map.queue_free()
 
 
