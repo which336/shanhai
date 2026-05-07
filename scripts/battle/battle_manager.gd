@@ -9,6 +9,7 @@ signal card_played(card: Card, target: BattleEnemy)
 signal battle_won()
 signal battle_lost()
 signal log_message(text: String)
+signal ally_changed(ally: Dictionary)
 
 @export var enemy_ids: PackedStringArray = PackedStringArray()
 
@@ -18,6 +19,17 @@ signal log_message(text: String)
 var deck: Deck = null
 var turn_number: int = 0
 var is_player_turn: bool = true
+var active_ally: Dictionary = {}
+
+const ALLY_DEFS: Dictionary = {
+	"ally_heluo": {"id": "ally_heluo", "display_name": "河罗鱼", "duration": 3, "action_kind": "draw", "amount": 1, "school": Card.School.HAI},
+	"ally_feiyi": {"id": "ally_feiyi", "display_name": "肥遗", "duration": 3, "action_kind": "damage_lowest", "amount": 5, "school": Card.School.HUANG},
+	"ally_zhuhuai": {"id": "ally_zhuhuai", "display_name": "诸怀", "duration": 3, "action_kind": "block", "amount": 6, "school": Card.School.SHAN},
+	"ally_xiao": {"id": "ally_xiao", "display_name": "嚣", "duration": 3, "action_kind": "draw", "amount": 1, "school": Card.School.HAI},
+	"ally_xiangliu": {"id": "ally_xiangliu", "display_name": "相柳影", "duration": 3, "action_kind": "damage_lowest", "amount": 7, "school": Card.School.HUANG},
+	"ally_zhulong": {"id": "ally_zhulong", "display_name": "烛龙残照", "duration": 3, "action_kind": "damage_lowest", "amount": 9, "school": Card.School.HAI},
+	"ally_qinglong": {"id": "ally_qinglong", "display_name": "青龙残影", "duration": 3, "action_kind": "damage_lowest", "amount": 11, "school": Card.School.HAI},
+}
 
 ## 本回合内已出某流派的次数（用于"共鸣"机制）
 var school_count_this_turn: Dictionary = {}
@@ -36,20 +48,22 @@ func _setup_battle() -> void:
 	# 等级提供的额外资源（鼓励先在地图刷经验再打 BOSS）
 	var lv: int = RunState.level
 	var energy_bonus: int = 0
-	if lv >= 3:
+	if lv >= 4:
 		energy_bonus += 1
-	if lv >= 7:
+	if lv >= 8:
 		energy_bonus += 1
 	RunState.max_energy = RunState.MAX_ENERGY_INIT + energy_bonus
 	# 等级影响摸牌：保留手牌规则下，升级提高后续回合的追加摸牌。
 	var draw_bonus: int = 0
-	if lv >= 5:
+	if lv >= 6:
 		draw_bonus += 1
 	RunState.hand_size = RunState.INITIAL_HAND_COUNT
 	RunState.per_turn_draw = RunState.PER_TURN_DRAW_COUNT + draw_bonus
 
 	# 玩家
 	player.reset_for_battle()
+	active_ally.clear()
+	ally_changed.emit({})
 
 	# 敌人
 	for child in enemies_container.get_children():
@@ -90,6 +104,11 @@ func _start_player_turn() -> void:
 	var draw_count: int = RunState.hand_size if turn_number == 1 else RunState.per_turn_draw
 	_recover_cards_if_empty()
 	deck.draw(draw_count)
+	_tick_ally_turn()
+	if _alive_enemies().is_empty():
+		emit_signal("log_message", "同伴清除了最后的敌人。")
+		battle_won.emit()
+		return
 	turn_changed.emit(true, turn_number)
 	emit_signal("log_message", "—— 第 %d 回合 · 玩家回合 ——" % turn_number)
 
@@ -101,13 +120,16 @@ func end_player_turn() -> void:
 	# 回合结束不再弃掉未使用手牌；玩家可以保留手牌到下一轮。
 	player.on_turn_end()
 	turn_changed.emit(false, turn_number)
-	_run_enemy_phase()
+	await _run_enemy_phase()
 
 
 func _run_enemy_phase() -> void:
+	emit_signal("log_message", "—— 第 %d 回合 · 敌方行动 ——" % turn_number)
+	await get_tree().create_timer(0.35).timeout
 	for e in _alive_enemies():
 		e.on_turn_start()
 		e.act_on(player)
+		await get_tree().create_timer(0.18).timeout
 		if RunState.is_dead():
 			emit_signal("log_message", "你被击倒了……忘川带你回到了现实。")
 			battle_lost.emit()
@@ -296,8 +318,62 @@ func _resolve_effect(eff: CardEffect, source_card: Card, target: BattleEnemy) ->
 			# 暂不实现，预留
 			pass
 		CardEffect.Kind.SUMMON_ALLY:
-			# 预留
-			pass
+			_summon_ally(eff.status_id, eff.amount)
+
+
+func _summon_ally(ally_id: String, requested_duration: int) -> void:
+	if not ALLY_DEFS.has(ally_id):
+		emit_signal("log_message", "未找到同伴定义：%s" % ally_id)
+		return
+	var def: Dictionary = ALLY_DEFS[ally_id]
+	var duration: int = requested_duration if requested_duration > 0 else int(def.get("duration", 3))
+	active_ally = def.duplicate(true)
+	active_ally["turns"] = duration
+	active_ally["last_action"] = "等待下个玩家回合开始行动"
+	ally_changed.emit(active_ally.duplicate(true))
+	emit_signal("log_message", "召唤同伴：%s（%d 回合）" % [str(active_ally.get("display_name", ally_id)), duration])
+
+
+func _tick_ally_turn() -> void:
+	if active_ally.is_empty():
+		return
+	var action_kind: String = str(active_ally.get("action_kind", ""))
+	var amount: int = int(active_ally.get("amount", 0))
+	var action_text: String = ""
+	match action_kind:
+		"damage_lowest":
+			var target := _lowest_hp_enemy()
+			if target != null:
+				var dealt: int = target.take_damage(amount)
+				action_text = "对 %s 造成 %d 伤害" % [target.data.display_name, dealt]
+			else:
+				action_text = "没有可攻击目标"
+		"block":
+			player.gain_block(amount)
+			action_text = "为玩家获得 %d 护盾" % amount
+		"draw":
+			if deck != null:
+				deck.draw(maxi(1, amount))
+			action_text = "抽 %d 张牌" % maxi(1, amount)
+		_:
+			action_text = "没有配置行动"
+	active_ally["last_action"] = action_text
+	active_ally["turns"] = int(active_ally.get("turns", 0)) - 1
+	emit_signal("log_message", "%s：%s" % [str(active_ally.get("display_name", "同伴")), action_text])
+	if int(active_ally.get("turns", 0)) <= 0:
+		emit_signal("log_message", "%s 离场。" % str(active_ally.get("display_name", "同伴")))
+		active_ally.clear()
+		ally_changed.emit({})
+	else:
+		ally_changed.emit(active_ally.duplicate(true))
+
+
+func _lowest_hp_enemy() -> BattleEnemy:
+	var choice: BattleEnemy = null
+	for e in _alive_enemies():
+		if choice == null or e.hp < choice.hp:
+			choice = e
+	return choice
 
 
 func _resolve_card_bonus_effects(card: Card, target: BattleEnemy) -> void:

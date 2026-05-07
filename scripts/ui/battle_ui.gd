@@ -4,14 +4,20 @@ extends Control
 
 const CARD_VIEW_SCENE: PackedScene = preload("res://scenes/battle/card_view.tscn")
 const AWAKEN_SCENE: PackedScene = preload("res://scenes/awaken/awaken.tscn")
+const PixelSprites = preload("res://scripts/map/pixel_sprites.gd")
+const BG_ZHUQUE: Texture2D = preload("res://assets/textures/backgrounds/zhuque.png")
+const BG_BAIHU: Texture2D = preload("res://assets/textures/backgrounds/baihu.png")
+const BG_XUANWU: Texture2D = preload("res://assets/textures/backgrounds/xuanwu.png")
+const BG_QINGLONG: Texture2D = preload("res://assets/textures/backgrounds/qinglong.png")
+const BG_QILIN: Texture2D = preload("res://assets/textures/backgrounds/qilin.png")
 
 @onready var _battle: Node2D = get_node("../Battle")
+@onready var _stage: Control = $BattleStage
 @onready var _hp: Label = $TopBar/HP
 @onready var _energy: Label = $TopBar/Energy
 @onready var _block: Label = $TopBar/Block
 @onready var _turn: Label = $TopBar/Turn
-@onready var _hand: Container = $HandArea
-@onready var _enemies_panel: VBoxContainer = $EnemiesPanel
+@onready var _hand: Control = $HandArea
 @onready var _log: RichTextLabel = $LogArea
 @onready var _end_turn_btn: Button = $EndTurnButton
 @onready var _back_btn: Button = $BackButton
@@ -21,15 +27,35 @@ const AWAKEN_SCENE: PackedScene = preload("res://scenes/awaken/awaken.tscn")
 
 var _selected_enemy: BattleEnemy = null
 var _last_play_time_ms: int = 0     # 防止快速重建 UI 时同一鼠标按下事件触发多次出牌
+var _ally_label: Label = null
+var _enemy_detail_panel: PanelContainer = null
+var _enemy_detail_title: Label = null
+var _enemy_detail_body: Label = null
+var _hand_status_label: Label = null
+var _hand_page_label: Label = null
+var _hand_prev_button: Button = null
+var _hand_next_button: Button = null
+var _hovered_hand_index: int = -1
+var _hand_page_index: int = 0
+var _hand_tweens: Dictionary = {}
 const PLAY_CLICK_THROTTLE_MS: int = 80
+const HAND_PAGE_SIZE: int = 10
 
 
 func _ready() -> void:
 	z_index = 100
+	_ensure_ally_label()
+	_ensure_enemy_detail_panel()
+	_ensure_hand_status_label()
+	_ensure_hand_page_controls()
 	# 兜底：用代码固定关键 UI 区域，避免手写 .tscn 的布局属性在不同窗口/DPI 下失效。
 	_fix_runtime_layout()
 	# 初始隐藏结果面板
 	_result_panel.visible = false
+	_result_panel.z_index = 350
+	if _stage != null and _stage.has_method("bind_battle"):
+		_stage.call("bind_battle", _battle)
+	_fix_runtime_layout()
 	# 绑信号
 	_battle.battle_started.connect(_on_battle_started)
 	_battle.turn_changed.connect(_on_turn_changed)
@@ -37,6 +63,8 @@ func _ready() -> void:
 	_battle.battle_lost.connect(_on_battle_lost)
 	_battle.log_message.connect(_append_log)
 	_battle.card_played.connect(_on_card_played)
+	if _battle.has_signal("ally_changed"):
+		_battle.ally_changed.connect(_on_ally_changed)
 
 	RunState.hp_changed.connect(_on_hp_changed)
 	RunState.energy_changed.connect(_on_energy_changed)
@@ -50,12 +78,286 @@ func _ready() -> void:
 	_rebuild_enemy_list()
 	_refresh_hand()
 	_refresh_top()
+	_on_ally_changed(_battle.get("active_ally"))
 	_wait_for_battle_ready()
+
+
+func _ensure_ally_label() -> void:
+	if _ally_label != null:
+		return
+	_ally_label = Label.new()
+	_ally_label.name = "AllyStatus"
+	_ally_label.visible = false
+	_ally_label.add_theme_color_override("font_color", Color(0.72, 0.9, 1.0))
+	_ally_label.add_theme_font_size_override("font_size", 16)
+	add_child(_ally_label)
+
+
+func _ensure_enemy_detail_panel() -> void:
+	if _enemy_detail_panel != null:
+		return
+	_enemy_detail_panel = PanelContainer.new()
+	_enemy_detail_panel.name = "EnemyDetailPanel"
+	_enemy_detail_panel.visible = false
+	_enemy_detail_panel.z_index = 45
+	_enemy_detail_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(0.06, 0.07, 0.11, 0.92)
+	panel_style.border_color = Color(0.52, 0.62, 0.76, 0.85)
+	panel_style.set_border_width_all(1)
+	panel_style.set_corner_radius_all(6)
+	panel_style.content_margin_left = 10
+	panel_style.content_margin_right = 10
+	panel_style.content_margin_top = 8
+	panel_style.content_margin_bottom = 8
+	_enemy_detail_panel.add_theme_stylebox_override("panel", panel_style)
+	add_child(_enemy_detail_panel)
+
+	var v := VBoxContainer.new()
+	v.name = "V"
+	v.add_theme_constant_override("separation", 4)
+	_enemy_detail_panel.add_child(v)
+
+	_enemy_detail_title = Label.new()
+	_enemy_detail_title.name = "Title"
+	_enemy_detail_title.add_theme_font_size_override("font_size", 16)
+	_enemy_detail_title.add_theme_color_override("font_color", Color(1.0, 0.88, 0.54))
+	_enemy_detail_title.clip_text = true
+	_enemy_detail_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	v.add_child(_enemy_detail_title)
+
+	_enemy_detail_body = Label.new()
+	_enemy_detail_body.name = "Body"
+	_enemy_detail_body.add_theme_font_size_override("font_size", 14)
+	_enemy_detail_body.add_theme_color_override("font_color", Color(0.82, 0.9, 1.0))
+	_enemy_detail_body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(_enemy_detail_body)
+
+
+func _ensure_hand_status_label() -> void:
+	if _hand_status_label != null:
+		return
+	_hand_status_label = Label.new()
+	_hand_status_label.name = "HandStatus"
+	_hand_status_label.z_index = 80
+	_hand_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hand_status_label.add_theme_font_size_override("font_size", 15)
+	_hand_status_label.add_theme_color_override("font_color", Color(0.94, 0.86, 0.56))
+	add_child(_hand_status_label)
+
+
+func _ensure_hand_page_controls() -> void:
+	if _hand_page_label != null:
+		return
+	_hand_prev_button = Button.new()
+	_hand_prev_button.name = "HandPrevPage"
+	_hand_prev_button.text = "<"
+	_hand_prev_button.focus_mode = Control.FOCUS_NONE
+	_hand_prev_button.z_index = 90
+	_hand_prev_button.pressed.connect(_on_hand_prev_page)
+	add_child(_hand_prev_button)
+
+	_hand_next_button = Button.new()
+	_hand_next_button.name = "HandNextPage"
+	_hand_next_button.text = ">"
+	_hand_next_button.focus_mode = Control.FOCUS_NONE
+	_hand_next_button.z_index = 90
+	_hand_next_button.pressed.connect(_on_hand_next_page)
+	add_child(_hand_next_button)
+
+	_hand_page_label = Label.new()
+	_hand_page_label.name = "HandPage"
+	_hand_page_label.z_index = 90
+	_hand_page_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hand_page_label.add_theme_font_size_override("font_size", 15)
+	_hand_page_label.add_theme_color_override("font_color", Color(0.94, 0.86, 0.56))
+	add_child(_hand_page_label)
+
+
+func _on_ally_changed(ally: Variant) -> void:
+	if _ally_label == null:
+		return
+	if not (ally is Dictionary):
+		_ally_label.visible = false
+		_ally_label.text = ""
+		return
+	var d: Dictionary = ally
+	if d.is_empty():
+		_ally_label.visible = false
+		_ally_label.text = ""
+		return
+	_ally_label.visible = true
+	var action: String = str(d.get("last_action", "等待行动"))
+	_ally_label.text = "同伴：%s（%d 回合）  %s" % [str(d.get("display_name", "同伴")), int(d.get("turns", 0)), action]
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED and is_node_ready():
 		_fix_runtime_layout()
+
+
+func _draw() -> void:
+	var viewport_size := size
+	if viewport_size.x <= 0 or viewport_size.y <= 0:
+		return
+	var hand_top := _hand.position.y if _hand != null else viewport_size.y * 0.6
+	_draw_chapter_background(viewport_size, 0.0, viewport_size.y)
+	_draw_battle_readability_overlays(viewport_size, hand_top)
+
+
+func _draw_chapter_background(viewport_size: Vector2, stage_top: float, hand_top: float) -> void:
+	var chapter := int(RunState.current_chapter_index)
+	var bg := _chapter_background_texture(chapter)
+	if bg != null:
+		var stage_rect := Rect2(Vector2.ZERO, viewport_size)
+		_draw_cover_texture(bg, stage_rect, _chapter_background_focus(chapter))
+		return
+	match chapter:
+		RunState.CHAPTER_WEST:
+			_draw_west_cliffs(viewport_size, stage_top, hand_top)
+		RunState.CHAPTER_NORTH:
+			_draw_north_water(viewport_size, stage_top, hand_top)
+		RunState.CHAPTER_EAST:
+			_draw_east_bamboo(viewport_size, stage_top, hand_top)
+		RunState.CHAPTER_CENTRAL:
+			_draw_central_altar(viewport_size, stage_top, hand_top)
+		_:
+			_draw_south_forest(viewport_size, stage_top, hand_top)
+
+
+func _draw_battle_readability_overlays(viewport_size: Vector2, hand_top: float) -> void:
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.0, 0.0, 0.0, 0.22))
+	draw_rect(Rect2(0, 0, viewport_size.x, 64.0), Color(0.015, 0.018, 0.03, 0.58))
+	draw_rect(Rect2(0, 64.0, viewport_size.x, 92.0), Color(0.0, 0.0, 0.0, 0.18))
+	draw_rect(Rect2(0, hand_top - 96.0, viewport_size.x, 96.0), Color(0.0, 0.0, 0.0, 0.18))
+	draw_rect(Rect2(0, hand_top, viewport_size.x, viewport_size.y - hand_top), Color(0.025, 0.028, 0.045, 0.62))
+
+
+func _chapter_background_texture(chapter: int) -> Texture2D:
+	match chapter:
+		RunState.CHAPTER_WEST:
+			return BG_BAIHU
+		RunState.CHAPTER_NORTH:
+			return BG_XUANWU
+		RunState.CHAPTER_EAST:
+			return BG_QINGLONG
+		RunState.CHAPTER_CENTRAL:
+			return BG_QILIN
+		_:
+			return BG_ZHUQUE
+
+
+func _chapter_background_focus(chapter: int) -> Vector2:
+	match chapter:
+		RunState.CHAPTER_WEST:
+			return Vector2(0.5, 0.56)
+		RunState.CHAPTER_NORTH:
+			return Vector2(0.5, 0.5)
+		RunState.CHAPTER_EAST:
+			return Vector2(0.5, 0.58)
+		RunState.CHAPTER_CENTRAL:
+			return Vector2(0.5, 0.6)
+		_:
+			return Vector2(0.5, 0.59)
+
+
+func _draw_cover_texture(texture: Texture2D, dest: Rect2, focus: Vector2) -> void:
+	var tex_size := texture.get_size()
+	if tex_size.x <= 0.0 or tex_size.y <= 0.0 or dest.size.x <= 0.0 or dest.size.y <= 0.0:
+		return
+	var dest_aspect := dest.size.x / dest.size.y
+	var tex_aspect := tex_size.x / tex_size.y
+	var source := Rect2(Vector2.ZERO, tex_size)
+	if tex_aspect > dest_aspect:
+		source.size.x = tex_size.y * dest_aspect
+		source.position.x = clampf(tex_size.x * focus.x - source.size.x * 0.5, 0.0, tex_size.x - source.size.x)
+	else:
+		source.size.y = tex_size.x / dest_aspect
+		source.position.y = clampf(tex_size.y * focus.y - source.size.y * 0.5, 0.0, tex_size.y - source.size.y)
+	draw_texture_rect_region(texture, dest, source)
+
+
+func _draw_south_forest(viewport_size: Vector2, stage_top: float, hand_top: float) -> void:
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.025, 0.045, 0.055, 1.0))
+	draw_rect(Rect2(0, stage_top, viewport_size.x, hand_top - stage_top), Color(0.035, 0.08, 0.065, 0.72))
+	draw_circle(Vector2(viewport_size.x * 0.82, stage_top + 52.0), 24.0, Color(0.95, 0.82, 0.48, 0.2))
+	_draw_forest_layer(viewport_size, hand_top - 172.0, Color(0.035, 0.105, 0.075, 0.92), 78.0, 54.0)
+	_draw_forest_layer(viewport_size, hand_top - 118.0, Color(0.025, 0.08, 0.06, 0.98), 62.0, 68.0)
+	_draw_ground_band(viewport_size, hand_top, Color(0.07, 0.105, 0.065, 1.0), Color(0.15, 0.22, 0.13, 0.75))
+	for i in 10:
+		var x := fposmod(float(i) * 137.0 + 43.0, viewport_size.x)
+		var y := stage_top + 86.0 + float(i % 4) * 34.0
+		draw_circle(Vector2(x, y), 1.6, Color(0.95, 0.78, 0.38, 0.32))
+
+
+func _draw_west_cliffs(viewport_size: Vector2, _stage_top: float, hand_top: float) -> void:
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.05, 0.045, 0.05, 1.0))
+	var horizon := hand_top - 172.0
+	_draw_ridge(viewport_size, horizon - 58.0, Color(0.12, 0.1, 0.12, 0.95), 90.0)
+	_draw_ridge(viewport_size, horizon + 12.0, Color(0.17, 0.13, 0.11, 0.98), 64.0)
+	_draw_ground_band(viewport_size, hand_top, Color(0.16, 0.12, 0.09, 1.0), Color(0.55, 0.36, 0.18, 0.55))
+
+
+func _draw_north_water(viewport_size: Vector2, _stage_top: float, hand_top: float) -> void:
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.025, 0.055, 0.09, 1.0))
+	var water_top := hand_top - 154.0
+	_draw_ridge(viewport_size, water_top - 54.0, Color(0.055, 0.09, 0.13, 0.92), 74.0)
+	draw_rect(Rect2(0, water_top, viewport_size.x, hand_top - water_top), Color(0.04, 0.12, 0.16, 0.9))
+	for i in 9:
+		var y := water_top + 20.0 + float(i) * 18.0
+		draw_line(Vector2(40.0 + float(i % 2) * 32.0, y), Vector2(viewport_size.x - 70.0, y + 4.0), Color(0.28, 0.56, 0.62, 0.18), 2.0)
+	_draw_ground_band(viewport_size, hand_top, Color(0.045, 0.08, 0.095, 1.0), Color(0.26, 0.58, 0.66, 0.42))
+
+
+func _draw_east_bamboo(viewport_size: Vector2, stage_top: float, hand_top: float) -> void:
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.045, 0.065, 0.07, 1.0))
+	_draw_bamboo_layer(viewport_size, stage_top + 46.0, hand_top - 34.0, Color(0.08, 0.18, 0.11, 0.7))
+	_draw_ridge(viewport_size, hand_top - 185.0, Color(0.08, 0.14, 0.1, 0.9), 54.0)
+	_draw_ground_band(viewport_size, hand_top, Color(0.08, 0.17, 0.08, 1.0), Color(0.48, 0.67, 0.23, 0.45))
+
+
+func _draw_central_altar(viewport_size: Vector2, _stage_top: float, hand_top: float) -> void:
+	draw_rect(Rect2(Vector2.ZERO, viewport_size), Color(0.045, 0.042, 0.06, 1.0))
+	var center := Vector2(viewport_size.x * 0.5, hand_top - 112.0)
+	draw_circle(center, 150.0, Color(0.16, 0.13, 0.18, 0.65))
+	draw_circle(center, 90.0, Color(0.24, 0.2, 0.16, 0.5))
+	_draw_ridge(viewport_size, hand_top - 208.0, Color(0.08, 0.075, 0.095, 0.9), 78.0)
+	_draw_ground_band(viewport_size, hand_top, Color(0.095, 0.08, 0.105, 1.0), Color(0.62, 0.5, 0.2, 0.5))
+
+
+func _draw_forest_layer(viewport_size: Vector2, base_y: float, color: Color, step: float, height: float) -> void:
+	var x := -step
+	while x < viewport_size.x + step:
+		var top := base_y - height - fposmod(x * 0.37, 28.0)
+		draw_rect(Rect2(x + step * 0.42, top + height * 0.45, 6.0, height * 0.7), color.darkened(0.32))
+		draw_colored_polygon(PackedVector2Array([
+			Vector2(x, base_y), Vector2(x + step * 0.5, top), Vector2(x + step, base_y)
+		]), color)
+		x += step
+
+
+func _draw_bamboo_layer(viewport_size: Vector2, top_y: float, bottom_y: float, color: Color) -> void:
+	var x := 24.0
+	while x < viewport_size.x:
+		draw_line(Vector2(x, bottom_y), Vector2(x + 18.0, top_y), color, 3.0)
+		draw_line(Vector2(x + 12.0, bottom_y - 58.0), Vector2(x + 48.0, bottom_y - 96.0), color.lightened(0.12), 2.0)
+		x += 54.0
+
+
+func _draw_ridge(viewport_size: Vector2, base_y: float, color: Color, height: float) -> void:
+	var points := PackedVector2Array()
+	points.append(Vector2(0, base_y + height))
+	for i in 7:
+		var x := viewport_size.x * float(i) / 6.0
+		var y := base_y - (height * (0.35 + 0.55 * absf(sin(float(i) * 1.47))))
+		points.append(Vector2(x, y))
+	points.append(Vector2(viewport_size.x, base_y + height))
+	draw_colored_polygon(points, color)
+
+
+func _draw_ground_band(viewport_size: Vector2, hand_top: float, fill: Color, line: Color) -> void:
+	draw_rect(Rect2(0, hand_top - 70.0, viewport_size.x, 70.0), fill)
+	draw_line(Vector2(0, hand_top - 10.0), Vector2(viewport_size.x, hand_top - 10.0), line, 2.0)
 
 
 func _fix_runtime_layout() -> void:
@@ -70,36 +372,71 @@ func _fix_runtime_layout() -> void:
 	offset_right = viewport_size.x
 	offset_bottom = viewport_size.y
 
+	var hand_h: float = clampf(viewport_size.y * 0.24, 150.0, 220.0)
+	var stage_top: float = 56.0
+	var stage_h: float = maxf(220.0, viewport_size.y - hand_h - 88.0)
+
+	if _stage != null:
+		_stage.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_stage.position = Vector2(16, stage_top)
+		_stage.size = Vector2(maxf(640.0, viewport_size.x - 32.0), stage_h)
+		_stage.z_index = 10
+
 	$TopBar.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	$TopBar.position = Vector2(16, 12)
 	$TopBar.size = Vector2(maxf(760, viewport_size.x - 180), 36)
 
-	# HandArea 用 HFlowContainer，自动多行换行（卡牌多时不会被切到屏外）
 	_hand.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_hand.position = Vector2(16, maxf(280, viewport_size.y - 370))
-	_hand.size = Vector2(maxf(980, viewport_size.x - 32), 350)
-	if _hand is FlowContainer:
-		(_hand as FlowContainer).alignment = FlowContainer.ALIGNMENT_CENTER
-	_hand.add_theme_constant_override("h_separation", 8)
-	_hand.add_theme_constant_override("v_separation", 8)
+	_hand.position = Vector2(16, viewport_size.y - hand_h - 16.0)
+	_hand.size = Vector2(maxf(640, viewport_size.x - 32), hand_h)
+	_hand.clip_contents = false
+	_hand.z_index = 30
 
-	# HandArea 高度 350，所以 EnemiesPanel/LogArea 顶部留 60，底部留 380
-	var top_block_h: float = maxf(220.0, viewport_size.y - 410.0)
-	_enemies_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_enemies_panel.position = Vector2(maxf(640, viewport_size.x - 360), 64)
-	_enemies_panel.size = Vector2(340, top_block_h)
+	var info_h: float = minf(176.0, maxf(128.0, stage_h - 52.0))
 
 	_log.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	_log.position = Vector2(16, 64)
-	_log.size = Vector2(520, top_block_h)
+	_log.size = Vector2(clampf(viewport_size.x * 0.22, 260.0, 340.0), info_h)
+
+	if _ally_label != null:
+		_ally_label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_ally_label.position = Vector2(16, 42)
+		_ally_label.size = Vector2(maxf(520, viewport_size.x - 420), 24)
+
+	if _enemy_detail_panel != null:
+		var detail_y: float = 92.0
+		var detail_h: float = clampf(stage_top + stage_h - detail_y - 12.0, 104.0, 176.0)
+		_enemy_detail_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_enemy_detail_panel.position = Vector2(maxf(520, viewport_size.x - 300), detail_y)
+		_enemy_detail_panel.size = Vector2(284, detail_h)
+
+	if _hand_status_label != null:
+		_hand_status_label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_hand_status_label.position = Vector2(16, _hand.position.y - 28.0)
+		_hand_status_label.size = Vector2(maxf(520, viewport_size.x - 380), 24)
+
+	if _hand_page_label != null:
+		var page_x: float = maxf(640.0, viewport_size.x - 196.0)
+		var page_y: float = _hand.position.y - 14.0
+		_hand_prev_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_hand_prev_button.position = Vector2(page_x, page_y)
+		_hand_prev_button.size = Vector2(34, 26)
+		_hand_page_label.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_hand_page_label.position = Vector2(page_x + 38.0, page_y + 2.0)
+		_hand_page_label.size = Vector2(68, 22)
+		_hand_next_button.set_anchors_preset(Control.PRESET_TOP_LEFT)
+		_hand_next_button.position = Vector2(page_x + 110.0, page_y)
+		_hand_next_button.size = Vector2(34, 26)
 
 	_end_turn_btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_end_turn_btn.position = Vector2(maxf(640, viewport_size.x - 200), maxf(64 + top_block_h - 4, viewport_size.y - 410))
+	_end_turn_btn.position = Vector2(maxf(520, viewport_size.x - 208), _hand.position.y - 58.0)
 	_end_turn_btn.size = Vector2(180, 42)
 
 	_back_btn.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	_back_btn.position = Vector2(maxf(640, viewport_size.x - 140), 12)
 	_back_btn.size = Vector2(124, 34)
+	_layout_hand(_hovered_hand_index, false)
+	queue_redraw()
 
 
 # ========== 信号回调 ==========
@@ -108,6 +445,7 @@ func _on_battle_started() -> void:
 	_rebuild_enemy_list()
 	_refresh_hand()
 	_refresh_top()
+	_on_ally_changed(_battle.get("active_ally"))
 
 
 ## BattleManager 使用 call_deferred 初始化；如果 UI 的 _ready 先跑完，
@@ -132,12 +470,16 @@ func _on_turn_changed(is_player: bool, turn_no: int) -> void:
 	_rebuild_enemy_list()
 	_refresh_hand()
 	_refresh_top()
+	_refresh_hand_status()
+	_on_ally_changed(_battle.get("active_ally"))
 
 
 func _on_card_played(_card: Card, _target: BattleEnemy) -> void:
 	_refresh_hand()
 	_refresh_top()
 	_rebuild_enemy_list()
+	_refresh_hand_status()
+	_on_ally_changed(_battle.get("active_ally"))
 
 
 func _on_hp_changed(hp: int, mx: int) -> void:
@@ -169,6 +511,8 @@ func _run_awaken_chain(list: Array[BattleEnemy], idx: int) -> void:
 		_show_result(true)
 		return
 	var aw: AwakenView = AWAKEN_SCENE.instantiate()
+	aw.z_index = 400
+	aw.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(aw)
 	aw.setup(list[idx].data)
 	aw.closed.connect(func ():
@@ -223,6 +567,9 @@ func _refresh_top() -> void:
 	_energy.text = "灵韵 %d / %d" % [RunState.energy, RunState.max_energy]
 	_block.text = "护盾 %d" % _battle.player.block
 	_turn.text = "第 %d 回合 · %s" % [_battle.turn_number, "你的回合" if _battle.is_player_turn else "对手回合"]
+	if not _battle.is_player_turn:
+		_turn.text = "第 %d 回合 · 敌方行动" % _battle.turn_number
+	_end_turn_btn.disabled = not _battle.is_player_turn
 
 
 func _refresh_hand() -> void:
@@ -233,14 +580,144 @@ func _refresh_hand() -> void:
 			old_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			old_view.visible = false
 		c.queue_free()
+	_hand_tweens.clear()
+	_hovered_hand_index = -1
 	if _battle.deck == null:
 		return
-	for i in _battle.deck.hand.size():
+	_clamp_hand_page()
+	var start_index: int = _hand_page_index * HAND_PAGE_SIZE
+	var end_index: int = mini(start_index + HAND_PAGE_SIZE, _battle.deck.hand.size())
+	for i in range(start_index, end_index):
+		var local_index: int = i - start_index
 		var card: Card = _battle.deck.hand[i]
 		var view: CardView = CARD_VIEW_SCENE.instantiate()
 		_hand.add_child(view)
 		view.setup(card, i, _battle.effective_card_cost(card))
+		view.set_fan_expanded(false)
 		view.play_requested.connect(_on_card_view_play_requested)
+		view.mouse_entered.connect(_on_hand_card_hovered.bind(local_index))
+		view.mouse_exited.connect(_on_hand_card_unhovered.bind(local_index))
+	_layout_hand(_hovered_hand_index, false)
+	_refresh_hand_status()
+	_refresh_top()
+
+
+func _refresh_hand_status() -> void:
+	if _hand_status_label == null:
+		return
+	var hand_count: int = _battle.deck.hand.size() if _battle != null and _battle.deck != null else 0
+	var page_suffix := ""
+	if _hand_page_count() > 1:
+		page_suffix = " · 当前显示 %d-%d" % [_hand_page_index * HAND_PAGE_SIZE + 1, mini((_hand_page_index + 1) * HAND_PAGE_SIZE, hand_count)]
+	_hand_status_label.text = "手牌 %d · 无上限，回合间保留%s" % [hand_count, page_suffix]
+	_hand_status_label.add_theme_color_override("font_color", Color(0.94, 0.86, 0.56))
+	_refresh_hand_page_controls()
+
+
+func _hand_page_count() -> int:
+	var hand_count: int = _battle.deck.hand.size() if _battle != null and _battle.deck != null else 0
+	return maxi(1, int(ceil(float(hand_count) / float(HAND_PAGE_SIZE))))
+
+
+func _clamp_hand_page() -> void:
+	_hand_page_index = clampi(_hand_page_index, 0, _hand_page_count() - 1)
+
+
+func _refresh_hand_page_controls() -> void:
+	if _hand_page_label == null:
+		return
+	_clamp_hand_page()
+	var page_count := _hand_page_count()
+	var show_pages := page_count > 1
+	_hand_prev_button.visible = show_pages
+	_hand_next_button.visible = show_pages
+	_hand_page_label.visible = show_pages
+	_hand_page_label.text = "%d / %d" % [_hand_page_index + 1, page_count]
+	_hand_prev_button.disabled = _hand_page_index <= 0
+	_hand_next_button.disabled = _hand_page_index >= page_count - 1
+
+
+func _on_hand_prev_page() -> void:
+	_hand_page_index = maxi(0, _hand_page_index - 1)
+	_refresh_hand()
+
+
+func _on_hand_next_page() -> void:
+	_hand_page_index = mini(_hand_page_count() - 1, _hand_page_index + 1)
+	_refresh_hand()
+
+
+func _on_hand_card_hovered(index: int) -> void:
+	_hovered_hand_index = index
+	_layout_hand(index, true)
+
+
+func _on_hand_card_unhovered(index: int) -> void:
+	if _hovered_hand_index != index:
+		return
+	_hovered_hand_index = -1
+	_layout_hand(-1, true)
+
+
+func _layout_hand(focused_index: int = -1, animate: bool = true) -> void:
+	if _hand == null:
+		return
+	var cards: Array[CardView] = []
+	for child in _hand.get_children():
+		if child is CardView:
+			cards.append(child)
+	var count := cards.size()
+	if count <= 0:
+		return
+	var collapsed := CardView.FAN_COLLAPSED_SIZE
+	var expanded := CardView.FAN_EXPANDED_SIZE
+	var center_x := _hand.size.x * 0.5
+	var base_y := maxf(4.0, _hand.size.y - collapsed.y + 64.0)
+	var spread := clampf(_hand.size.x / maxf(1.0, float(count)) * 0.42, 38.0, 74.0)
+	if focused_index >= 0:
+		spread = maxf(spread, expanded.x * 0.48)
+	for i in count:
+		var card := cards[i]
+		var rel := float(i) - float(count - 1) * 0.5
+		var expanded_now := i == focused_index
+		var x := center_x + rel * spread - collapsed.x * 0.5
+		var y := base_y + absf(rel) * 5.0
+		var rot := deg_to_rad(rel * 3.2)
+		if focused_index >= 0:
+			var direction := 0
+			if i < focused_index:
+				direction = -1
+			elif i > focused_index:
+				direction = 1
+			if direction != 0:
+				x += float(direction) * expanded.x * 0.44
+			if expanded_now:
+				x = clampf(center_x + rel * spread - expanded.x * 0.5, 12.0, _hand.size.x - expanded.x - 12.0)
+				y = maxf(0.0, _hand.size.y - expanded.y - 2.0)
+				rot = 0.0
+			else:
+				y += 44.0
+		card.set_fan_expanded(expanded_now)
+		card.pivot_offset = card.size * 0.5
+		card.z_index = 100 + i + (100 if expanded_now else 0)
+		_move_hand_card(card, Vector2(x, y), rot, animate)
+
+
+func _move_hand_card(card: CardView, target_pos: Vector2, target_rot: float, animate: bool) -> void:
+	if card == null or not is_instance_valid(card):
+		return
+	if _hand_tweens.has(card):
+		var old: Tween = _hand_tweens[card]
+		if old != null:
+			old.kill()
+	if not animate:
+		card.position = target_pos
+		card.rotation = target_rot
+		return
+	var tw := create_tween().set_parallel(true).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_hand_tweens[card] = tw
+	tw.tween_property(card, "position", target_pos, 0.12)
+	tw.tween_property(card, "rotation", target_rot, 0.12)
 
 
 func _on_card_view_play_requested(view: CardView) -> void:
@@ -284,54 +761,155 @@ func _on_card_view_play_requested(view: CardView) -> void:
 
 
 func _rebuild_enemy_list() -> void:
-	for c in _enemies_panel.get_children():
-		c.queue_free()
+	if _selected_enemy == null or _selected_enemy.is_dead():
+		_selected_enemy = _first_alive_enemy()
+	_refresh_enemy_detail()
+
+
+func _first_alive_enemy() -> BattleEnemy:
+	if _battle == null or _battle.enemies_container == null:
+		return null
 	for enemy_node in _battle.enemies_container.get_children():
-		if not (enemy_node is BattleEnemy):
-			continue
-		var enemy: BattleEnemy = enemy_node
-		var row := PanelContainer.new()
-		row.custom_minimum_size = Vector2(320, 88)
-		var v := VBoxContainer.new()
-		row.add_child(v)
-		var name_label := Label.new()
-		name_label.name = "Name"
-		var hp_label := Label.new()
-		hp_label.name = "HP"
-		var intent_label := Label.new()
-		intent_label.name = "Intent"
-		var status_label := Label.new()
-		status_label.name = "Status"
-		v.add_child(name_label)
-		v.add_child(hp_label)
-		v.add_child(intent_label)
-		v.add_child(status_label)
-		_enemies_panel.add_child(row)
-		var elite_tag: String = "  ★精英" if enemy.data.is_elite else ""
-		var boss_tag: String = "  ☉BOSS" if enemy.data.is_boss else ""
-		var dead_tag: String = "  （已化散）" if enemy.is_dead() else ""
-		name_label.text = enemy.data.display_name + elite_tag + boss_tag + dead_tag
-		hp_label.text = "HP %d / %d  护盾 %d" % [enemy.hp, enemy.max_hp, enemy.block]
-		var it: EnemyData.Intent = enemy.current_intent
-		if it == null or enemy.is_dead():
-			intent_label.text = "意图：—"
-		else:
-			match it.kind:
-				EnemyData.IntentKind.ATTACK:
-					var actual: int = StatusEffect.calc_damage_modifier(enemy.statuses, _battle.player.statuses, it.amount)
-					if actual != it.amount:
-						intent_label.text = "意图：将攻击 %d → %d" % [it.amount, actual]
-					else:
-						intent_label.text = "意图：将攻击 %d" % it.amount
-				EnemyData.IntentKind.BLOCK: intent_label.text = "意图：自我守护 %d" % it.amount
-				EnemyData.IntentKind.BUFF: intent_label.text = "意图：自我强化"
-				EnemyData.IntentKind.DEBUFF: intent_label.text = "意图：施加易伤"
-				_: intent_label.text = "意图：踟蹰"
-		var statuses: PackedStringArray = PackedStringArray()
-		for sid in enemy.statuses.keys():
-			var sid_str: String = sid
-			statuses.append("[%s x%d]" % [StatusEffect.display_name(sid_str), int(enemy.statuses[sid_str])])
-		status_label.text = "状态：" + (" ".join(statuses) if statuses.size() > 0 else "—")
+		if enemy_node is BattleEnemy and not enemy_node.is_dead():
+			return enemy_node
+	return null
+
+
+func _enemy_intent_tag(enemy: BattleEnemy) -> String:
+	var it: EnemyData.Intent = enemy.current_intent
+	if it == null or enemy.is_dead():
+		return ""
+	match it.kind:
+		EnemyData.IntentKind.ATTACK:
+			var actual: int = StatusEffect.calc_damage_modifier(enemy.statuses, _battle.player.statuses, it.amount)
+			if actual != it.amount:
+				return " · 将攻击 %d->%d" % [it.amount, actual]
+			return " · 将攻击 %d" % it.amount
+		EnemyData.IntentKind.BLOCK:
+			return " · 守护 %d" % it.amount
+		EnemyData.IntentKind.BUFF:
+			return " · 强化"
+		EnemyData.IntentKind.DEBUFF:
+			return " · 施加易伤"
+		_:
+			return ""
+
+
+func _refresh_enemy_detail() -> void:
+	if _enemy_detail_panel == null or _enemy_detail_title == null or _enemy_detail_body == null:
+		return
+	if _selected_enemy == null or _selected_enemy.data == null:
+		_enemy_detail_panel.visible = false
+		return
+	var enemy := _selected_enemy
+	_enemy_detail_panel.visible = true
+	var tags: PackedStringArray = PackedStringArray()
+	if enemy.data.is_boss:
+		tags.append("BOSS")
+	if enemy.data.is_elite:
+		tags.append("精英")
+	if enemy.is_dead():
+		tags.append("已化散")
+	_enemy_detail_title.text = enemy.data.display_name + (" · " + " / ".join(tags) if not tags.is_empty() else "")
+	var statuses: PackedStringArray = PackedStringArray()
+	for sid in enemy.statuses.keys():
+		var sid_str: String = sid
+		statuses.append("%s x%d" % [StatusEffect.display_name(sid_str), int(enemy.statuses[sid_str])])
+	_enemy_detail_body.text = "HP %d / %d    护盾 %d\n意图：%s\n状态：%s" % [
+		enemy.hp,
+		enemy.max_hp,
+		enemy.block,
+		_enemy_intent_detail(enemy),
+		"、".join(statuses) if statuses.size() > 0 else "—",
+	]
+
+
+func _enemy_intent_detail(enemy: BattleEnemy) -> String:
+	var it: EnemyData.Intent = enemy.current_intent
+	if it == null or enemy.is_dead():
+		return "—"
+	match it.kind:
+		EnemyData.IntentKind.ATTACK:
+			var actual: int = StatusEffect.calc_damage_modifier(enemy.statuses, _battle.player.statuses, it.amount)
+			if actual != it.amount:
+				return "将攻击 %d -> %d" % [it.amount, actual]
+			return "将攻击 %d" % it.amount
+		EnemyData.IntentKind.BLOCK:
+			return "自我守护 %d" % it.amount
+		EnemyData.IntentKind.BUFF:
+			return "自我强化"
+		EnemyData.IntentKind.DEBUFF:
+			return "施加易伤"
+		_:
+			return "踟蹰"
+
+
+func _on_enemy_row_input(event: InputEvent, enemy: BattleEnemy) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_selected_enemy = enemy
+		_rebuild_enemy_list()
+
+
+func _enemy_portrait_texture(enemy: BattleEnemy) -> Texture2D:
+	if enemy == null or enemy.data == null:
+		return null
+	var key: String = _enemy_portrait_key(enemy)
+	if key.is_empty():
+		return null
+	return PixelSprites.texture(key, PixelSprites.DIR_DOWN, 0)
+
+
+func _enemy_portrait_key(enemy: BattleEnemy) -> String:
+	var enemy_id: String = enemy.data.id
+	match enemy_id:
+		"he_luo_fish":
+			return "enemy.he_luo_fish"
+		"fei_yi":
+			return "enemy.fei_yi"
+		"zhuhuai":
+			return "enemy.zhuhuai"
+		"xiao_beast":
+			return "enemy.xiao_beast"
+		"dang_kang":
+			return "enemy.dang_kang"
+		"qiu_yu":
+			return "enemy.qiu_yu"
+		"ling_ling":
+			return "enemy.ling_ling"
+		"zhu_ru":
+			return "enemy.zhu_ru"
+		"kui":
+			return "enemy.kui"
+		"tu_lou":
+			return "enemy.tu_lou"
+		"jiao_beast":
+			return "enemy.jiao_beast"
+		"wen_lin":
+			return "enemy.wen_lin"
+		"elite_xiangliu_shadow":
+			return "elite_xiangliu_shadow"
+		"elite_yinglong_young":
+			return "elite_yinglong_young"
+		"elite_ji_meng":
+			return "elite_ji_meng"
+		"boss_zhulong_weak", "boss_zhulong", "boss_zhulong_strong":
+			return enemy_id
+		"boss_qinglong_weak", "boss_qinglong", "boss_qinglong_strong":
+			return enemy_id
+		"boss_qilin_weak", "boss_qilin", "boss_qilin_strong":
+			return enemy_id
+		"boss_bifang_weak":
+			return "boss_weak"
+		"boss_bifang":
+			return "boss_mid"
+		"boss_bifang_strong":
+			return "boss_hard"
+		_:
+			if enemy.data.is_boss:
+				return enemy_id
+			if enemy.data.is_elite:
+				return "elite_yingzhao" if enemy_id == "elite_yingzhao" else "elite"
+			return "enemy." + enemy_id
 
 
 func _append_log(text: String) -> void:

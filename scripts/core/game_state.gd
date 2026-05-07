@@ -4,6 +4,56 @@ extends Node
 
 signal codex_unlocked(entry_id: String)
 signal fragments_changed(amount: int)
+signal bookmarks_changed()
+
+const BOOKMARK_NONE: String = ""
+const BOOKMARK_RESEARCH: String = "research"
+const BOOKMARK_SHAN: String = "shan"
+const BOOKMARK_HAI: String = "hai"
+const BOOKMARK_HUANG: String = "huang"
+
+const BOOKMARK_DEFS: Array[Dictionary] = [
+	{
+		"id": BOOKMARK_RESEARCH,
+		"title": "研读藏签",
+		"school": "中立",
+		"cost": 80,
+		"codex_required": 5,
+		"remove_card": "neutral.strike",
+		"add_card": "neutral.scroll_study",
+		"description": "开局将 1 张「击」替换为「古卷研读」。",
+	},
+	{
+		"id": BOOKMARK_SHAN,
+		"title": "山藏签",
+		"school": "山经",
+		"cost": 120,
+		"codex_required": 8,
+		"remove_card": "neutral.guard",
+		"add_card": "shan.fusang",
+		"description": "开局将 1 张「守」替换为「扶桑·朝露」。",
+	},
+	{
+		"id": BOOKMARK_HAI,
+		"title": "海藏签",
+		"school": "海经",
+		"cost": 160,
+		"codex_required": 12,
+		"remove_card": "neutral.guard",
+		"add_card": "hai.wenyao_evade",
+		"description": "开局将 1 张「守」替换为「文鳐·夜遁」。",
+	},
+	{
+		"id": BOOKMARK_HUANG,
+		"title": "荒藏签",
+		"school": "荒经",
+		"cost": 200,
+		"codex_required": 16,
+		"remove_card": "neutral.strike",
+		"add_card": "huang.qiongqi_lash",
+		"description": "开局将 1 张「击」替换为「穷奇·裂风」。",
+	},
+]
 
 
 func _ready() -> void:
@@ -51,6 +101,8 @@ func _unhandled_input(event: InputEvent) -> void:
 var unlocked_codex: Dictionary = {}     # entry_id -> true
 var fragments: int = 0                  # 典籍碎片（meta 货币）
 var unlocked_characters: Array[String] = ["fang_xun"]
+var unlocked_bookmarks: Dictionary = {}
+var active_bookmark_id: String = BOOKMARK_NONE
 var settings: Dictionary = {
 	"locale": "zh_CN",
 	"sfx_volume": 0.8,
@@ -81,12 +133,68 @@ func get_codex_completion_ratio(total: int) -> float:
 	return float(unlocked_codex.size()) / float(total)
 
 
+func bookmark_defs() -> Array[Dictionary]:
+	return BOOKMARK_DEFS.duplicate(true)
+
+
+func bookmark_def(bookmark_id: String) -> Dictionary:
+	for def in BOOKMARK_DEFS:
+		if str(def.get("id", "")) == bookmark_id:
+			return def.duplicate(true)
+	return {}
+
+
+func is_bookmark_unlocked(bookmark_id: String) -> bool:
+	return unlocked_bookmarks.has(bookmark_id)
+
+
+func can_unlock_bookmark(bookmark_id: String) -> bool:
+	var def := bookmark_def(bookmark_id)
+	if def.is_empty() or is_bookmark_unlocked(bookmark_id):
+		return false
+	if fragments < int(def.get("cost", 0)):
+		return false
+	return unlocked_codex.size() >= int(def.get("codex_required", 0))
+
+
+func unlock_bookmark(bookmark_id: String) -> bool:
+	if not can_unlock_bookmark(bookmark_id):
+		return false
+	var def := bookmark_def(bookmark_id)
+	add_fragments(-int(def.get("cost", 0)))
+	unlocked_bookmarks[bookmark_id] = true
+	if active_bookmark_id == BOOKMARK_NONE:
+		active_bookmark_id = bookmark_id
+	bookmarks_changed.emit()
+	return true
+
+
+func set_active_bookmark(bookmark_id: String) -> bool:
+	if bookmark_id == BOOKMARK_NONE:
+		active_bookmark_id = BOOKMARK_NONE
+		bookmarks_changed.emit()
+		return true
+	if not is_bookmark_unlocked(bookmark_id):
+		return false
+	active_bookmark_id = bookmark_id
+	bookmarks_changed.emit()
+	return true
+
+
+func active_bookmark_def() -> Dictionary:
+	if active_bookmark_id == BOOKMARK_NONE:
+		return {}
+	return bookmark_def(active_bookmark_id)
+
+
 ## 序列化 / 反序列化
 func to_dict() -> Dictionary:
 	return {
 		"unlocked_codex": unlocked_codex.keys(),
 		"fragments": fragments,
 		"unlocked_characters": unlocked_characters,
+		"unlocked_bookmarks": unlocked_bookmarks.keys(),
+		"active_bookmark_id": active_bookmark_id,
 		"settings": settings,
 	}
 
@@ -100,6 +208,14 @@ func from_dict(data: Dictionary) -> void:
 	unlocked_characters.clear()
 	for c in chars:
 		unlocked_characters.append(c)
+	unlocked_bookmarks.clear()
+	for bookmark_id in data.get("unlocked_bookmarks", []):
+		var bookmark_id_str := str(bookmark_id)
+		if not bookmark_def(bookmark_id_str).is_empty():
+			unlocked_bookmarks[bookmark_id_str] = true
+	active_bookmark_id = str(data.get("active_bookmark_id", BOOKMARK_NONE))
+	if active_bookmark_id != BOOKMARK_NONE and not unlocked_bookmarks.has(active_bookmark_id):
+		active_bookmark_id = BOOKMARK_NONE
 	var s = data.get("settings", null)
 	if s is Dictionary:
 		settings = s

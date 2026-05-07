@@ -8,6 +8,7 @@ var draw_pile: Array[Card] = []
 var hand: Array[Card] = []
 var discard_pile: Array[Card] = []
 var exhaust_pile: Array[Card] = []
+var source_deck: Array[Card] = []
 
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -17,10 +18,12 @@ func init_from_deck(deck_cards: Array[Card], seed_value: int = 0) -> void:
 	hand.clear()
 	discard_pile.clear()
 	exhaust_pile.clear()
+	source_deck.clear()
 	for c in deck_cards:
 		var card_copy: Card = c.duplicate(true) as Card
 		if card_copy != null:
 			draw_pile.append(card_copy)
+			source_deck.append(card_copy.duplicate(true) as Card)
 	if seed_value != 0:
 		rng.seed = seed_value
 	else:
@@ -44,16 +47,26 @@ func draw(amount: int) -> Array[Card]:
 	for i in amount:
 		if draw_pile.is_empty():
 			if discard_pile.is_empty():
-				break
-			draw_pile.append_array(discard_pile)
-			discard_pile.clear()
+				_refill_draw_from_source()
+			else:
+				draw_pile.append_array(discard_pile)
+				discard_pile.clear()
 			shuffle_draw()
+		if draw_pile.is_empty():
+			break
 		var c: Card = draw_pile.pop_back()
 		hand.append(c)
 		drawn.append(c)
 	hand_changed.emit()
 	piles_changed.emit()
 	return drawn
+
+
+func _refill_draw_from_source() -> void:
+	for c in source_deck:
+		var copy: Card = c.duplicate(true) as Card
+		if copy != null:
+			draw_pile.append(copy)
 
 
 func discard_card(card: Card) -> bool:

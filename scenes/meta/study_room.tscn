@@ -1,0 +1,82 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckj5e8tnp5r09"]
+
+[ext_resource type="Script" path="res://scripts/meta/study_room.gd" id="1_study"]
+
+[node name="StudyRoom" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_study")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.075, 0.12, 1)
+
+[node name="Root" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 28.0
+offset_top = 24.0
+offset_right = -28.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Root"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 34
+text = "祖父书房"
+horizontal_alignment = 1
+
+[node name="Header" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+theme_override_constants/separation = 28
+
+[node name="Fragments" type="Label" parent="Root/Header"]
+layout_mode = 2
+text = "典籍碎片：0"
+
+[node name="Active" type="Label" parent="Root/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "当前藏签：未启用藏签"
+
+[node name="ListScroll" type="ScrollContainer" parent="Root"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="List" type="VBoxContainer" parent="Root/ListScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Footer" type="HBoxContainer" parent="Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BackButton" type="Button" parent="Root/Footer"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 40)
+text = "返回"
+
+[node name="ClearButton" type="Button" parent="Root/Footer"]
+layout_mode = 2
+custom_minimum_size = Vector2(140, 40)
+text = "停用藏签"
+
+[node name="Message" type="Label" parent="Root/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = ""
