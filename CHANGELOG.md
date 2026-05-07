@@ -1,3 +1,66 @@
+## v0.8.0 - 2026-05-06
+
+- Added Chapter 5 `中山 · 麒麟台` as an internal development chapter, extending progression through South, West, North, East, and Central.
+- Added Central Mountain enemy, elite, and three-tier Qilin Boss pools with theme-first sourcing and real codex/source fields.
+- Added 12 Central cards and 8 Central events, expanding loaded content targets to 74 cards, 40 events, and 40 enemies.
+- Connected Central shop, treasure, normal/elite battle rewards, Boss rewards, debug jumping, map generation, minimap colors, sprite keys, and battle portraits to dedicated Central pools.
+- Added dedicated Central top-down `192x192` and isometric `512x512` PNG atlases generated in a yellow-earth, jade-altar, Qilin-platform visual style.
+- Updated project/export/menu version metadata, README, CHANGELOG, and GDD to 0.8.0.
+- Follow-up source-stability pass: corrected README/GDD chapter wording so East/Qinglong stays v0.7 Chapter 4 and Central/Qilin stays v0.8 Chapter 5.
+- Removed export-unsafe PNG fallback loading from `PixelSprites` and switched regression sprite dimension checks to imported `Texture2D` resources.
+- Added `tools/v08_keynode_smoke.gd` for a focused headless check of the v0.8 delivery nodes: menu version, East/Central maps, battle portraits, chapter flow, and five-realm final settlement.
+
+## v0.7.0 - 2026-05-06
+
+- Added Chapter 4 `东山 · 青龙原` as an internal development chapter, extending the playable loop through South, West, North, and East without exporting a demo build.
+- Switched chapter ownership wording to a theme-first rule: chapter themes follow the five directions / five elements / emotional arc, while codex entries keep each creature's true textual source.
+- Added East Mountain enemy, elite, and three-tier Qinglong Boss pools; `cong_cong` remains treated as already introduced content instead of a new East monster.
+- Added 12 East cards and expanded content to 62 loaded cards, 32 events, and 32 enemies, with East shop, treasure, normal/elite battle, and Boss rewards using dedicated East pools.
+- Added dedicated East top-down and isometric PNG sprite atlases, registered map sprite keys, and connected battle portraits to the same resources.
+- Extended debug chapter jumping, chapter completion flow, and regression coverage for four-chapter progression, East map generation, East assets, rewards, codex unlocks, and the v0.7 four-realm settlement.
+- Updated project/export/menu version metadata, README, CHANGELOG, and GDD to 0.7.0.
+
+## v0.6.8 - 2026-05-05
+
+- Added dedicated North chapter pixel sprite atlases for He Luo Fish, Fei Yi, Zhuhuai, Xiao, Xiangliu Shadow, and three Zhulong Boss tiers.
+- Registered North top/iso sprite keys and replaced Chapter 3 fallback sprite keys so North map entities no longer reuse South/West monsters.
+- Added battle enemy portraits sourced from the same sprite registry without introducing full battle animation playback.
+- Improved summon ally readability in shop/battle copy while keeping the single-slot 3-turn ally rules unchanged.
+- Extended `tools/v06_regression_check.gd` to verify North sprite dimensions, texture key resolution, map sprite keys, and battle portrait rendering.
+- Updated project/export/menu version metadata to 0.6.8.
+
+## v0.6.7 - 2026-05-05
+
+- Added Chapter 3 `北山 · 玄武渊` with north map config, north enemy pool, 3 Zhulong boss tiers, and v0.6.7 three-chapter clear settlement.
+- Expanded content to 50 cards, 24 events, and 24 enemies; north cards/enemies include codex and awaken reward coverage.
+- Implemented `SUMMON_ALLY` with a single ally slot, 3-turn duration, automatic turn-start actions, replacement behavior, and battle UI status display.
+- Added north/global event coverage and north shop/treasure/Boss reward pools while keeping summon cards mostly tied to awaken rewards.
+- Extended `tools/v06_regression_check.gd` for north chapter flow, content counts, north map generation, and summon ally behavior.
+- Updated project/export/menu version metadata to 0.6.7.
+
+## v0.6.6 - 2026-05-05
+
+- Added a final run settlement summary to the v0.6 full-clear panel after Chapter 2 completion.
+- The summary now shows level, EXP, HP, energy, fragments, deck size, codex unlock progress, and cleared chapters.
+- Updated main menu codex totals to count both card and beast entries, matching the codex view and final settlement.
+- Added regression checks for the full-clear settlement summary and main menu codex total.
+- Updated project/export/menu version metadata to 0.6.6.
+
+## v0.6.5 - 2026-05-05
+
+- Started the v0.6.5 content-rhythm pass focused on event and reward feedback instead of new chapters.
+- Updated event result panels to show both narrative outcome text and an explicit actual reward/expense summary.
+- Updated treasure result panels to use the same explicit reward summary pattern.
+- Updated Boss victory and final purification panels to label reward lines as explicit change summaries.
+- Updated shop purchases to keep an explicit latest-change summary in the shop panel.
+- Persisted shop inventory and sold state per shop node so reopening the same shop cannot refresh or rebuy sold items.
+- Updated rest station result panels to use the same explicit heal summary pattern.
+- Expanded the isometric visual ground layer beyond the true map bounds to hide gray edge exposure near camera limits.
+- Added non-boss battle reward result panels when returning to the map after normal or elite fights.
+- Added truthful battle reward previews to normal, elite, and Boss confirmation prompts.
+- Added regression checks ensuring battle reward previews, non-boss battles, event, treasure, rest station, shop, non-final Boss, and final Boss results include reward summaries.
+- Updated project/menu version metadata to 0.6.5.
+
 ## v0.6.4 - 2026-05-04
 
 - Improved exploration movement with full-step checks, axis sliding, and a small isometric corner nudge to reduce turn/corner sticking without loosening collision.

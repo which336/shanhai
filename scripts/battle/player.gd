@@ -4,6 +4,7 @@ class_name BattlePlayer extends Node2D
 
 signal block_changed(amount: int)
 signal status_changed()
+signal damaged(amount: int)
 
 var block: int = 0
 var statuses: Dictionary = {}     # status_id -> stack
@@ -27,6 +28,7 @@ func take_damage(raw: int) -> int:
 		block_changed.emit(block)
 	if dmg > 0:
 		RunState.take_damage(dmg)
+		damaged.emit(dmg)
 	if was_vulnerable:
 		statuses[StatusEffect.ID_VULNERABLE] = maxi(0, int(statuses[StatusEffect.ID_VULNERABLE]) - 1)
 		if int(statuses.get(StatusEffect.ID_VULNERABLE, 0)) <= 0:

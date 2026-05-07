@@ -28,7 +28,7 @@ anchor_right = 0.5
 offset_left = -300.0
 offset_top = 80.0
 offset_right = 300.0
-offset_bottom = 200.0
+offset_bottom = 240.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 64
 text = "山海拾遗录"
@@ -75,6 +75,10 @@ text = "山海图鉴"
 layout_mode = 2
 text = "退出"
 
+[node name="StudyButton" type="Button" parent="V"]
+layout_mode = 2
+text = "祖父书房"
+
 [node name="Info" type="Label" parent="V"]
 layout_mode = 2
 text = "山海图鉴：0 / 0"
@@ -93,5 +97,5 @@ offset_right = 400.0
 offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 0
-text = "肉鸽 + 卡牌构筑 · 山海经文化 · MVP v0.6.4   |   战斗中按 ESC 返回主菜单"
+text = "肉鸽 + 卡牌构筑 · 山海经文化 · MVP v0.8.0   |   战斗中按 ESC 返回主菜单"
 horizontal_alignment = 1

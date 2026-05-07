@@ -89,6 +89,7 @@ const ISO_CAMERA_ZOOM: float = 1.55
 const ISO_ENEMY_SPRITE_SCALE: float = 1.42
 const WARRIOR_TOP_SCALE: float = 0.52
 const WARRIOR_ISO_SCALE: float = 0.72
+const ISO_VISUAL_GROUND_PADDING: int = 8
 const ISO_FLOOR_TILESET_NAME: String = "forest"
 const ISO_WALL_TILESET_NAME: String = "village"
 # 等距世界像素边界（动态计算）
@@ -101,6 +102,10 @@ var _shop_items: Array = []
 var _shop_buttons: Array = []
 var _shop_title: String = "古玩铺"
 var _shop_story: String = "店主戴狐面具，玻璃柜中陈列着几样东西。"
+var _shop_last_result: String = ""
+var _shop_entity: Dictionary = {}
+var _shop_entity_id: String = ""
+var _shop_items_by_entity_id: Dictionary = {}
 var _pending_reset_map: bool = false
 var _pending_chapter_advance: bool = false
 var _debug_chapter_toggle: Button = null
@@ -146,6 +151,8 @@ func _ready() -> void:
 		RunState.map_data = data
 	else:
 		data = RunState.map_data
+		_apply_chapter_visual_overrides()
+		RunState.map_data = data
 
 	if RunState.last_entity_id != "":
 		var was_boss: bool = RunState.last_battle_was_boss
@@ -169,6 +176,7 @@ func _ready() -> void:
 				var reward: Dictionary = _grant_non_boss_battle_reward(beaten_kind, beaten_enemy_count)
 				if not reward.is_empty():
 					_add_floating_text(_player_pixel + Vector2(0, -50), str(reward.get("text", "")), Color(1.0, 0.95, 0.55))
+					_show_non_boss_battle_result(beaten_kind, beaten_name, reward)
 		RunState.last_entity_id = ""
 		RunState.last_battle_was_boss = false
 		RunState.last_battle_won = false
@@ -224,25 +232,79 @@ func _init_enemy_runtime(e: Dictionary) -> void:
 		_enemy_facing[str(e["id"])] = Vector2i(0, 1)
 
 
-func _grant_non_boss_battle_reward(beaten_kind: String, enemy_count: int = 1) -> Dictionary:
+func _non_boss_battle_reward_values(beaten_kind: String, enemy_count: int = 1) -> Dictionary:
 	var fragments_gain: int = 0
 	var exp_gain: int = 0
 	var text: String = ""
 	if beaten_kind == "elite":
-		fragments_gain = 32 if RunState.current_chapter_index >= RunState.CHAPTER_WEST else 20
-		exp_gain = 24 if RunState.current_chapter_index >= RunState.CHAPTER_WEST else 15
+		if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+			fragments_gain = 66
+			exp_gain = 52
+		elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+			fragments_gain = 54
+			exp_gain = 42
+		elif RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+			fragments_gain = 42
+			exp_gain = 32
+		elif RunState.current_chapter_index == RunState.CHAPTER_WEST:
+			fragments_gain = 32
+			exp_gain = 24
+		else:
+			fragments_gain = 20
+			exp_gain = 15
 		text = "精英已唤醒  +%d 碎片  +%d EXP" % [fragments_gain, exp_gain]
 	elif beaten_kind == "enemy":
-		var base_fragments: int = 8 if RunState.current_chapter_index >= RunState.CHAPTER_WEST else 5
-		var base_exp: int = 8 if RunState.current_chapter_index >= RunState.CHAPTER_WEST else 5
+		var base_fragments: int = 5
+		var base_exp: int = 5
+		if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+			base_fragments = 17
+			base_exp = 15
+		elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+			base_fragments = 14
+			base_exp = 12
+		elif RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+			base_fragments = 11
+			base_exp = 10
+		elif RunState.current_chapter_index == RunState.CHAPTER_WEST:
+			base_fragments = 8
+			base_exp = 8
 		fragments_gain = base_fragments + maxi(0, enemy_count - 1) * 2
 		exp_gain = base_exp + maxi(1, enemy_count) * 2
 		text = "+%d 碎片  +%d EXP" % [fragments_gain, exp_gain]
 	else:
 		return {}
+	return {"fragments": fragments_gain, "exp": exp_gain, "text": text}
+
+
+func _non_boss_battle_reward_text(beaten_kind: String, enemy_count: int = 1) -> String:
+	return str(_non_boss_battle_reward_values(beaten_kind, enemy_count).get("text", ""))
+
+
+func _grant_non_boss_battle_reward(beaten_kind: String, enemy_count: int = 1) -> Dictionary:
+	var reward := _non_boss_battle_reward_values(beaten_kind, enemy_count)
+	if reward.is_empty():
+		return {}
+	var fragments_gain: int = int(reward.get("fragments", 0))
+	var exp_gain: int = int(reward.get("exp", 0))
 	GameState.add_fragments(fragments_gain)
 	RunState.add_exp(exp_gain)
-	return {"fragments": fragments_gain, "exp": exp_gain, "text": text}
+	return reward
+
+
+func _non_boss_battle_result_body(beaten_kind: String, beaten_name: String, reward: Dictionary) -> String:
+	var name: String = beaten_name
+	if name.is_empty():
+		name = "精英异兽" if beaten_kind == "elite" else "异兽"
+	var story: String = "你击退了被忘川扰乱的异兽：[ %s ]。" % name
+	if beaten_kind == "elite":
+		story = "你唤醒了被深度侵蚀的精英：[ %s ]。" % name
+	return _result_body_with_change(story, str(reward.get("text", "")))
+
+
+func _show_non_boss_battle_result(beaten_kind: String, beaten_name: String, reward: Dictionary) -> void:
+	var title: String = "精英战收益" if beaten_kind == "elite" else "战斗收益"
+	var body: String = _non_boss_battle_result_body(beaten_kind, beaten_name, reward)
+	_show_event_panel(title, body, [{"label": "继续探索", "callback": Callable(self, "_close_event_panel")}])
 
 
 func _grid_center_pixel(g: Vector2i) -> Vector2:
@@ -499,7 +561,113 @@ func _setup_camera() -> void:
 
 
 func _chapter_config() -> Dictionary:
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+	if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		return {
+			"chapter_index": RunState.CHAPTER_CENTRAL,
+			"title": "中山 · 麒麟台",
+			"top_floor_tileset": "central_altar",
+			"iso_floor_tileset": "central_altar",
+			"iso_wall_tileset": "central_altar",
+			"cluster_min": 175,
+			"cluster_max": 220,
+			"enemy_min": 40,
+			"enemy_max": 52,
+			"elite_count": 4,
+			"treasure_min": 9,
+			"treasure_max": 11,
+			"treasure_name": "麒麟台玉匣",
+			"treasure_story": "黄土台阶收束五方灵韵，玉匣上刻着方圆相抱的纹路。",
+			"shop_name": "中土玉市",
+			"shop_story": "商旅在祭坛外铺开玉片、陶符和旧简，专收五境余响。",
+			"rest_name": "方圆息台",
+			"rest_story": "土坛中央微微发暖，五方风声在这里归于平稳。",
+			"bosses": [
+				{"id": "boss_weak", "kind": "boss_weak", "label": "弱", "name": "玉角·麒麟", "story": "麒麟幼影踏上黄土祭台，玉角尚未完全凝光。", "enemy_id": "boss_qilin_weak", "sprite_key": "boss_qilin_weak"},
+				{"id": "boss_mid", "kind": "boss_mid", "label": "中", "name": "土德·麒麟", "story": "麒麟以土德调停五方，方圆纹随其步伐一圈圈亮起。", "enemy_id": "boss_qilin", "sprite_key": "boss_qilin"},
+				{"id": "boss_hard", "kind": "boss_hard", "label": "强", "name": "五境归一·麒麟", "story": "五境余响汇入中央，麒麟台上只剩归一的沉稳光焰。", "enemy_id": "boss_qilin_strong", "sprite_key": "boss_qilin_strong"},
+			],
+			"elite": {"kind": "elite", "label": "精", "name": "雨师·计蒙", "story": "龙首人身的雨师立在玉台边缘，雨令与土气相互调和。", "enemies": ["elite_ji_meng"], "sprite_key": "elite_ji_meng"},
+			"enemy_packs": [
+				_enemy_pack("kui", "夔", "一足如鼓，雷声在中土祭坛下回荡。", 62, 10),
+				_enemy_pack("tu_lou", "土蝼", "四角兽影守着黄土台阶，饥意与土气一同翻涌。", 58, 9),
+				_enemy_pack("jiao_beast", "狡", "豹文犬身、牛角高举，所过之处五谷先有异兆。", 54, 9),
+				_enemy_pack("wen_lin", "闻獜", "鳞光贴地而行，像是在替归一路径辨认方向。", 50, 8),
+			],
+		}
+	if RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		return {
+			"chapter_index": RunState.CHAPTER_EAST,
+			"title": "东山 · 青龙原",
+			"top_floor_tileset": "east_meadow",
+			"iso_floor_tileset": "east_meadow",
+			"iso_floor_row": 0,
+			"iso_floor_col_offset": 0,
+			"iso_floor_col_count": 4,
+			"iso_wall_tileset": "east_bamboo",
+			"cluster_min": 150,
+			"cluster_max": 210,
+			"enemy_min": 38,
+			"enemy_max": 50,
+			"elite_count": 4,
+			"treasure_min": 8,
+			"treasure_max": 10,
+			"treasure_name": "青木秘匣",
+			"treasure_story": "木匣藏在新生藤蔓之间，匣面刻着青龙鳞纹与雨后芽痕。",
+			"shop_name": "青芽市集",
+			"shop_story": "竹帘后传来雨声，摊上摆着春木符、青玉种和东山旧简。",
+			"rest_name": "青原驿亭",
+			"rest_story": "驿亭立在风雨刚停的坡地上，檐角有细小新芽探出。",
+			"bosses": [
+				{"id": "boss_weak", "kind": "boss_weak", "label": "弱", "name": "初鳞·青龙", "story": "青鳞尚未连成完整龙影，春雷只在云后轻响。", "enemy_id": "boss_qinglong_weak", "sprite_key": "boss_qinglong_weak"},
+				{"id": "boss_mid", "kind": "boss_mid", "label": "中", "name": "雨令·青龙", "story": "掌雨与生发的东方龙影在青原上盘旋，草木随其呼吸伏起。", "enemy_id": "boss_qinglong", "sprite_key": "boss_qinglong"},
+				{"id": "boss_hard", "kind": "boss_hard", "label": "强", "name": "春雷镇原·青龙", "story": "完整醒来的东方青龙，雷雨、木气与希望同时汇聚。", "enemy_id": "boss_qinglong_strong", "sprite_key": "boss_qinglong_strong"},
+			],
+			"elite": {"kind": "elite", "label": "英", "name": "应龙幼影", "story": "有翼的龙影在雨后低空巡游，仍记得替万物开路的本能。", "enemies": ["elite_yinglong_young"], "sprite_key": "elite_yinglong_young"},
+			"enemy_packs": [
+				_enemy_pack("dang_kang", "当康", "豚形有牙的丰穰瑞兽，被忘川扰乱后只剩躁动的鸣叫。", 48, 8),
+				_enemy_pack("qiu_yu", "犰狳", "兔形鸟喙、鸱目蛇尾，见人则眠，惊醒时引来虫鸣。", 44, 7),
+				_enemy_pack("ling_ling", "軨軨", "牛形虎文，鸣声低沉如钦，影子里带着大水的预兆。", 58, 9),
+				_enemy_pack("zhu_ru", "朱獳", "狐形而有鱼翼，出没处常让人心生惊惧。", 50, 8),
+			],
+		}
+	if RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+		return {
+			"chapter_index": RunState.CHAPTER_NORTH,
+			"title": "北山 · 玄武渊",
+			"top_floor_tileset": "stone_floor",
+			"iso_floor_tileset": "dungeon",
+			"iso_floor_row": 0,
+			"iso_floor_col_offset": 2,
+			"iso_floor_col_count": 1,
+			"iso_wall_tileset": "dungeon",
+			"iso_wall_col": 1,
+			"cluster_min": 170,
+			"cluster_max": 235,
+			"enemy_min": 36,
+			"enemy_max": 48,
+			"elite_count": 4,
+			"treasure_min": 7,
+			"treasure_max": 9,
+			"treasure_name": "玄冰秘匣",
+			"treasure_story": "冰匣半沉在寒水边，匣面浮着龟蛇相缠的旧纹。",
+			"shop_name": "寒市旧肆",
+			"shop_story": "无人的摊位亮着青白灯火，骨哨、冻墨和北山残简静静排开。",
+			"rest_name": "玄渊驿亭",
+			"rest_story": "驿亭背靠黑水，檐下铜铃随寒雾轻响，暂时压住了深渊里的回声。",
+			"bosses": [
+				{"id": "boss_weak", "kind": "boss_weak", "label": "弱", "name": "微明·烛龙", "story": "刚从玄渊里睁开半只眼的烛龙，昼夜之力仍不稳定。", "enemy_id": "boss_zhulong_weak", "sprite_key": "boss_zhulong_weak"},
+				{"id": "boss_mid", "kind": "boss_mid", "label": "中", "name": "玄渊·烛龙", "story": "烛龙呼吸牵动寒暑，黑水随它的眼睑开合而明灭。", "enemy_id": "boss_zhulong", "sprite_key": "boss_zhulong"},
+				{"id": "boss_hard", "kind": "boss_hard", "label": "强", "name": "昼夜镇渊·烛龙", "story": "完整醒来的北方神影，视为昼、瞑为夜，建议带足第三章卡组优势再挑战。", "enemy_id": "boss_zhulong_strong", "sprite_key": "boss_zhulong_strong"},
+			],
+			"elite": {"kind": "elite", "label": "精", "name": "相柳毒影", "story": "九首毒影伏在黑水边，所触之处都留下难以清除的湿毒。", "enemies": ["elite_xiangliu_shadow"], "sprite_key": "elite_xiangliu_shadow"},
+			"enemy_packs": [
+				{"name": "河罗鱼", "story": "一首十身的寒水异鱼，犬吠般的声音在潭底来回折返。", "enemies": ["he_luo_fish"], "enemy_id": "he_luo_fish", "sprite_key": "enemy.he_luo_fish", "hp": 42, "max_hp": 42, "atk": 7},
+				{"name": "肥遗", "story": "一首两身的蛇影横过雪泥，尾迹指向两个不同方向。", "enemies": ["fei_yi"], "enemy_id": "fei_yi", "sprite_key": "enemy.fei_yi", "hp": 46, "max_hp": 46, "atk": 8},
+				{"name": "诸怀", "story": "四角猛兽守在黑水岸边，人目安静地盯着每个靠近者。", "enemies": ["zhuhuai"], "enemy_id": "zhuhuai", "sprite_key": "enemy.zhuhuai", "hp": 54, "max_hp": 54, "atk": 9},
+				{"name": "嚣", "story": "四翼一目的异鸟掠过寒雾，犬尾扫乱水面倒影。", "enemies": ["xiao_beast"], "enemy_id": "xiao_beast", "sprite_key": "enemy.xiao_beast", "hp": 40, "max_hp": 40, "atk": 6},
+			],
+		}
+	if RunState.current_chapter_index == RunState.CHAPTER_WEST:
 		return {
 			"chapter_index": RunState.CHAPTER_WEST,
 			"title": "西山 · 白虎境",
@@ -574,12 +742,26 @@ func _chapter_title() -> String:
 	return "%s   (第 %d 章)" % [title, RunState.current_chapter_index + 1]
 
 
+func _apply_chapter_visual_overrides() -> void:
+	if data.is_empty():
+		return
+	var cfg: Dictionary = _chapter_config()
+	data["top_floor_tileset"] = str(cfg.get("top_floor_tileset", data.get("top_floor_tileset", "grass")))
+	data["iso_floor_tileset"] = str(cfg.get("iso_floor_tileset", data.get("iso_floor_tileset", "forest")))
+	data["iso_floor_row"] = int(cfg.get("iso_floor_row", data.get("iso_floor_row", 0)))
+	data["iso_floor_col_offset"] = int(cfg.get("iso_floor_col_offset", data.get("iso_floor_col_offset", 0)))
+	data["iso_floor_col_count"] = int(cfg.get("iso_floor_col_count", data.get("iso_floor_col_count", 2)))
+	data["iso_wall_tileset"] = str(cfg.get("iso_wall_tileset", data.get("iso_wall_tileset", "village")))
+	data["iso_wall_col"] = int(cfg.get("iso_wall_col", data.get("iso_wall_col", -1)))
+
+
 func _chapter_event_pool(cfg: Dictionary) -> Array:
 	var chapter: int = int(cfg.get("chapter_index", 0))
 	var result: Array = []
 	var events: Array = EventDatabase.load_all()
 	for ev in events:
-		if int(ev.get("chapter", 0)) == chapter:
+		var event_chapter: int = int(ev.get("chapter", 0))
+		if event_chapter == chapter or event_chapter == -1:
 			result.append(ev)
 	return result
 
@@ -663,7 +845,7 @@ func _generate_map() -> Dictionary:
 		entities.append(b)
 		occupied[p] = true
 
-	var elite_template: Dictionary = Dictionary(cfg.get("elite", {}))
+	var elite_template: Dictionary = cfg.get("elite", {})
 	for i in int(cfg.get("elite_count", 4)):
 		var p: Vector2i = _pick_free_pos(rng, int(WORLD_W * 0.20), int(WORLD_W * 0.88), 3, WORLD_H - 4, tiles, occupied)
 		if p != Vector2i(-1, -1):
@@ -704,8 +886,8 @@ func _generate_map() -> Dictionary:
 		var p: Vector2i = _pick_free_pos(rng, 4, WORLD_W - 4, 3, WORLD_H - 4, tiles, occupied)
 		if p != Vector2i(-1, -1):
 			var loot: Dictionary = _roll_treasure_loot(rng)
-			var treasure_name: String = "白石秘匣" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "山海宝匣"
-			var treasure_story: String = "石匣半埋在褐土与灰岩之间，匣面刻着白虎境的旧纹。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "匣中收着被山风吹散的灵韵。"
+			var treasure_name: String = str(cfg.get("treasure_name", "白石秘匣" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "山海宝匣"))
+			var treasure_story: String = str(cfg.get("treasure_story", "石匣半埋在褐土与灰岩之间，匣面刻着白虎境的旧纹。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "匣中收着被山风吹散的灵韵。"))
 			entities.append({"id": "treasure_%d" % i, "kind": "treasure", "pos": p, "label": "宝", "name": treasure_name, "story": treasure_story, "loot": loot})
 			occupied[p] = true
 
@@ -735,6 +917,7 @@ func _generate_map() -> Dictionary:
 		"iso_floor_col_count": int(cfg.get("iso_floor_col_count", 2)),
 		"iso_floor_tileset": str(cfg.get("iso_floor_tileset", "forest")),
 		"iso_wall_tileset": str(cfg.get("iso_wall_tileset", "village")),
+		"iso_wall_col": int(cfg.get("iso_wall_col", -1)),
 		"tiles": tiles,
 		"player": player,
 		"entities": entities,
@@ -766,6 +949,42 @@ func _roll_treasure_loot(rng: RandomNumberGenerator) -> Dictionary:
 			{"type": "card", "card": "hai.tiangou_ward", "text": "卡牌：《天狗辟邪》"},
 			{"type": "card", "card": "huang.zheng_pounce", "text": "卡牌：《狰的扑击》"},
 			{"type": "card", "card": "huang.gudiao_cry", "text": "卡牌：《蛊雕夜啼》"},
+		])
+	if RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+		pool.append_array([
+			{"type": "fragments", "amount": 85, "text": "灵韵碎片 +85"},
+			{"type": "exp", "amount": 90, "text": "EXP +90"},
+			{"type": "heal", "amount": 65, "text": "HP +65"},
+			{"type": "max_hp", "amount": 14, "text": "最大 HP +14"},
+			{"type": "card", "card": "hai.beishan_mist", "text": "获得卡牌：《北渊寒雾》"},
+			{"type": "card", "card": "shan.black_ridge_guard", "text": "获得卡牌：《玄岭守势》"},
+			{"type": "card", "card": "hai.cold_current", "text": "获得卡牌：《伏流击石》"},
+			{"type": "card", "card": "huang.memory_venom", "text": "获得卡牌：《记忆余毒》"},
+			{"type": "card", "card": "hai.deep_pool_reflection", "text": "获得卡牌：《深潭返照》"},
+		])
+	elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		pool.append_array([
+			{"type": "fragments", "amount": 105, "text": "灵韵碎片 +105"},
+			{"type": "exp", "amount": 115, "text": "EXP +115"},
+			{"type": "heal", "amount": 76, "text": "HP +76"},
+			{"type": "max_hp", "amount": 16, "text": "最大 HP +16"},
+			{"type": "card", "card": "shan.dangkang_harvest", "text": "获得卡牌：《当康鸣穰》"},
+			{"type": "card", "card": "shan.spring_root", "text": "获得卡牌：《春根复萌》"},
+			{"type": "card", "card": "hai.yinglong_rainpath", "text": "获得卡牌：《应龙开泽》"},
+			{"type": "card", "card": "huang.lingling_floodcall", "text": "获得卡牌：《軨軨水兆》"},
+			{"type": "card", "card": "neutral.seed_catalog", "text": "获得卡牌：《青简种录》"},
+		])
+	elif RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		pool.append_array([
+			{"type": "fragments", "amount": 130, "text": "碎片 +130"},
+			{"type": "exp", "amount": 140, "text": "EXP +140"},
+			{"type": "heal", "amount": 88, "text": "HP +88"},
+			{"type": "max_hp", "amount": 18, "text": "最大 HP +18"},
+			{"type": "card", "card": "shan.qilin_virtue", "text": "获得卡牌：麒麟德音"},
+			{"type": "card", "card": "shan.square_altar", "text": "获得卡牌：方坛守势"},
+			{"type": "card", "card": "hai.central_confluence", "text": "获得卡牌：中流会同"},
+			{"type": "card", "card": "huang.kui_thunder_drum", "text": "获得卡牌：夔鼓震台"},
+			{"type": "card", "card": "neutral.five_realm_harmony", "text": "获得卡牌：五境调和"},
 		])
 	return pool[rng.randi() % pool.size()].duplicate(true)
 
@@ -907,7 +1126,7 @@ func _setup_debug_chapter_controls() -> void:
 	wrap.anchor_right = 1.0
 	wrap.anchor_top = 0.0
 	wrap.anchor_bottom = 0.0
-	wrap.offset_left = -250.0
+	wrap.offset_left = -310.0
 	wrap.offset_right = -10.0
 	wrap.offset_top = 48.0
 	wrap.offset_bottom = 180.0
@@ -916,7 +1135,7 @@ func _setup_debug_chapter_controls() -> void:
 	_debug_chapter_toggle = Button.new()
 	_debug_chapter_toggle.text = "开发跳关：关"
 	_debug_chapter_toggle.toggle_mode = true
-	_debug_chapter_toggle.custom_minimum_size = Vector2(160, 34)
+	_debug_chapter_toggle.custom_minimum_size = Vector2(132, 32)
 	_debug_chapter_toggle.toggled.connect(_on_debug_chapter_toggle)
 	wrap.add_child(_debug_chapter_toggle)
 
@@ -925,14 +1144,29 @@ func _setup_debug_chapter_controls() -> void:
 	_debug_chapter_picker.alignment = BoxContainer.ALIGNMENT_CENTER
 	var south_btn := Button.new()
 	south_btn.text = "南山"
-	south_btn.custom_minimum_size = Vector2(74, 32)
+	south_btn.custom_minimum_size = Vector2(50, 30)
 	south_btn.pressed.connect(Callable(self, "_debug_jump_to_chapter").bind(RunState.CHAPTER_SOUTH))
 	var west_btn := Button.new()
 	west_btn.text = "西山"
-	west_btn.custom_minimum_size = Vector2(74, 32)
+	west_btn.custom_minimum_size = Vector2(50, 30)
 	west_btn.pressed.connect(Callable(self, "_debug_jump_to_chapter").bind(RunState.CHAPTER_WEST))
+	var north_btn := Button.new()
+	north_btn.text = "北山"
+	north_btn.custom_minimum_size = Vector2(50, 30)
+	north_btn.pressed.connect(Callable(self, "_debug_jump_to_chapter").bind(RunState.CHAPTER_NORTH))
+	var east_btn := Button.new()
+	east_btn.text = "东山"
+	east_btn.custom_minimum_size = Vector2(50, 30)
+	east_btn.pressed.connect(Callable(self, "_debug_jump_to_chapter").bind(RunState.CHAPTER_EAST))
+	var central_btn := Button.new()
+	central_btn.text = "中山"
+	central_btn.custom_minimum_size = Vector2(50, 30)
+	central_btn.pressed.connect(Callable(self, "_debug_jump_to_chapter").bind(RunState.CHAPTER_CENTRAL))
 	_debug_chapter_picker.add_child(south_btn)
 	_debug_chapter_picker.add_child(west_btn)
+	_debug_chapter_picker.add_child(north_btn)
+	_debug_chapter_picker.add_child(east_btn)
+	_debug_chapter_picker.add_child(central_btn)
 	wrap.add_child(_debug_chapter_picker)
 
 	_debug_tool_picker = HBoxContainer.new()
@@ -940,19 +1174,19 @@ func _setup_debug_chapter_controls() -> void:
 	_debug_tool_picker.alignment = BoxContainer.ALIGNMENT_CENTER
 	var fragments_btn := Button.new()
 	fragments_btn.text = "+碎片"
-	fragments_btn.custom_minimum_size = Vector2(58, 30)
+	fragments_btn.custom_minimum_size = Vector2(48, 28)
 	fragments_btn.pressed.connect(_debug_grant_fragments)
 	var heal_btn := Button.new()
 	heal_btn.text = "满血"
-	heal_btn.custom_minimum_size = Vector2(58, 30)
+	heal_btn.custom_minimum_size = Vector2(48, 28)
 	heal_btn.pressed.connect(_debug_full_heal)
 	var exp_btn := Button.new()
 	exp_btn.text = "+EXP"
-	exp_btn.custom_minimum_size = Vector2(58, 30)
+	exp_btn.custom_minimum_size = Vector2(48, 28)
 	exp_btn.pressed.connect(_debug_grant_exp)
 	var clear_btn := Button.new()
 	clear_btn.text = "章结算"
-	clear_btn.custom_minimum_size = Vector2(70, 30)
+	clear_btn.custom_minimum_size = Vector2(60, 28)
 	clear_btn.pressed.connect(_debug_finish_chapter)
 	_debug_tool_picker.add_child(fragments_btn)
 	_debug_tool_picker.add_child(heal_btn)
@@ -995,7 +1229,7 @@ func _debug_finish_chapter() -> void:
 
 
 func _debug_jump_to_chapter(chapter_index: int) -> void:
-	chapter_index = clampi(chapter_index, RunState.CHAPTER_SOUTH, RunState.CHAPTER_WEST)
+	chapter_index = clampi(chapter_index, RunState.CHAPTER_SOUTH, RunState.CHAPTER_CENTRAL)
 	RunState.current_chapter_index = chapter_index
 	RunState.current_floor = chapter_index
 	RunState.bosses_defeated = 0
@@ -1005,7 +1239,13 @@ func _debug_jump_to_chapter(chapter_index: int) -> void:
 	RunState.last_battle_won = false
 	RunState.hp = RunState.max_hp
 	RunState.energy = RunState.max_energy
-	if chapter_index == RunState.CHAPTER_WEST:
+	if chapter_index == RunState.CHAPTER_CENTRAL:
+		RunState.next_battle_enemy_ids = PackedStringArray(["kui", "tu_lou"])
+	elif chapter_index == RunState.CHAPTER_EAST:
+		RunState.next_battle_enemy_ids = PackedStringArray(["dang_kang", "qiu_yu"])
+	elif chapter_index == RunState.CHAPTER_NORTH:
+		RunState.next_battle_enemy_ids = PackedStringArray(["he_luo_fish", "fei_yi"])
+	elif chapter_index == RunState.CHAPTER_WEST:
 		RunState.next_battle_enemy_ids = PackedStringArray(["zheng_beast", "tian_gou"])
 	else:
 		RunState.next_battle_enemy_ids = PackedStringArray(["hu_diao", "lu_shu"])
@@ -1189,20 +1429,21 @@ func _show_confirm(e: Dictionary) -> void:
 	var story: String = e.get("story", "")
 	match kind:
 		"enemy":
-			_confirm_text.text = "前方传来低吼，是被忘川扰乱的异兽：\n[ %s ]\n%s\n是否进入战斗？" % [name, story]
+			var enemy_count: int = maxi(1, Array(e.get("enemies", [])).size())
+			_confirm_text.text = "前方传来低吼，是被忘川扰乱的异兽：\n[ %s ]\n%s\n胜利奖励：%s\n是否进入战斗？" % [name, story, _non_boss_battle_reward_text(kind, enemy_count)]
 			_confirm_yes.text = "迎战"
 		"elite":
-			_confirm_text.text = "前方是被深度侵蚀的精英：\n[ %s ]\n%s\n挑战胜利可获得唤醒卡。" % [name, story]
+			_confirm_text.text = "前方是被深度侵蚀的精英：\n[ %s ]\n%s\n胜利奖励：%s" % [name, story, _non_boss_battle_reward_text(kind, 1)]
 			_confirm_yes.text = "挑战"
 		"boss_weak", "boss_mid", "boss_hard":
 			var diff_word: String = {"boss_weak": "（弱）", "boss_mid": "（中等）", "boss_hard": "（强，谨慎）"}[kind]
 			var lv: int = RunState.level
-			var energy_b: int = (1 if lv >= 3 else 0) + (1 if lv >= 7 else 0)
-			var hand_b: int = 1 if lv >= 5 else 0
+			var energy_b: int = (1 if lv >= 4 else 0) + (1 if lv >= 8 else 0)
+			var hand_b: int = 1 if lv >= 6 else 0
 			var buff: String = ""
 			if energy_b > 0 or hand_b > 0:
 				buff = "\n[等级 Lv.%d 卡牌战斗加成：每回合 +%d 灵韵，起手 +%d 抽牌]" % [lv, energy_b, hand_b]
-			_confirm_text.text = "BOSS%s：\n[ %s ]\n%s%s\n是否决战？" % [diff_word, name, story, buff]
+			_confirm_text.text = "BOSS%s：\n[ %s ]\n%s%s\n胜利奖励：%s\n是否决战？" % [diff_word, name, story, buff, _boss_reward_line(kind)]
 			_confirm_yes.text = "决战"
 		"shop":
 			_confirm_text.text = "[ %s ]\n%s\n用灵韵碎片可在此购买卡牌、回血、永久增益。" % [name, story]
@@ -1253,7 +1494,8 @@ func _use_rest(e: Dictionary) -> void:
 	var story: String = str(e.get("story", ""))
 	if story.is_empty():
 		story = "白羽与铜铃在山风中轻响，守山人的旧闻暂时压住了疲惫。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "你在驿站休整片刻，翻读古卷，气息逐渐平稳。"
-	_show_event_panel(name, "%s\n\n你恢复了 %d 点气血。" % [story, amount], [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
+	var result_text := _result_body_with_change(story, "恢复 %d HP" % amount)
+	_show_event_panel(name, result_text, [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
 
 
 func _on_confirm_no() -> void:
@@ -1336,8 +1578,10 @@ func _open_treasure(e: Dictionary) -> void:
 	var story: String = str(e.get("story", ""))
 	if story.is_empty():
 		story = "石匣半埋在褐土与灰岩之间，匣面刻着白虎境的旧纹。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "你打开了一只布满苔藓的山海宝匣。"
-	var text: String = "%s\n\n%s" % [story, str(loot.get("text", "（空）"))]
-	_apply_reward(loot)
+	var reward_text: String = _apply_reward(loot)
+	if reward_text.is_empty():
+		reward_text = str(loot.get("text", "（空）"))
+	var text: String = _result_body_with_change(story, reward_text)
 	AudioEngine.play_sfx("pickup")
 	data["entities"].erase(e)
 	_minimap.queue_redraw()
@@ -1379,7 +1623,16 @@ func _on_event_choice(opt: Dictionary) -> void:
 	var result_text: String = str(opt.get("result", ""))
 	if result_text.is_empty():
 		result_text = msg if msg != "" else "回响渐渐散去，没有发生额外变化。"
+	result_text = _result_body_with_change(result_text, msg)
 	_show_event_panel("回响结果", result_text, [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
+
+
+func _result_body_with_change(result_text: String, reward_text: String) -> String:
+	if reward_text.is_empty():
+		return result_text
+	if result_text.is_empty() or result_text == reward_text:
+		return "本次变化：%s" % reward_text
+	return "%s\n\n本次变化：%s" % [result_text, reward_text]
 
 
 ## 把奖励 dict 应用到玩家。返回简短反馈文字
@@ -1463,18 +1716,86 @@ func _append_shop_card(cid: String, west_cards: Array, offered_cards: Dictionary
 	var price: int = 18 + card.rarity * 12
 	if RunState.current_chapter_index >= RunState.CHAPTER_WEST and west_cards.has(cid):
 		price += 6
-	_shop_items.append({"type": "card", "label": "购买《%s》  %d 碎片" % [card.title, price], "price": price, "card": cid})
+	_shop_items.append({"type": "card", "label": _shop_card_label(card, price), "price": price, "card": cid})
 	offered_cards[cid] = true
 	return true
 
 
+func _shop_card_label(card: Card, price: int) -> String:
+	var tag: String = "【同伴召唤】" if _is_summon_card(card) else ""
+	return "购买%s《%s》  %d 碎片" % [tag, card.title, price]
+
+
+func _refresh_saved_shop_card_labels() -> void:
+	for i in _shop_items.size():
+		var raw_item: Variant = _shop_items[i]
+		if not (raw_item is Dictionary):
+			continue
+		var item: Dictionary = raw_item
+		if str(item.get("type", "")) != "card":
+			continue
+		var card: Card = _get_shop_card(item)
+		if card == null:
+			continue
+		item["label"] = _shop_card_label(card, int(item.get("price", 0)))
+		_shop_items[i] = item
+
+
+func _is_summon_card(card: Card) -> bool:
+	if card == null:
+		return false
+	for eff in card.effects:
+		if eff.kind == CardEffect.Kind.SUMMON_ALLY:
+			return true
+	return false
+
+
+func _shop_entity_index() -> int:
+	if _shop_entity_id.is_empty():
+		return -1
+	for i in data["entities"].size():
+		if str(data["entities"][i].get("id", "")) == _shop_entity_id:
+			return i
+	return -1
+
+
+func _sync_shop_items_to_entity() -> void:
+	var saved_items := _shop_items.duplicate(true)
+	_shop_entity["shop_items"] = saved_items
+	if not _shop_entity_id.is_empty():
+		_shop_items_by_entity_id[_shop_entity_id] = saved_items
+	var entity_index := _shop_entity_index()
+	if entity_index < 0:
+		return
+	var entity: Dictionary = data["entities"][entity_index]
+	entity["shop_items"] = saved_items
+	data["entities"][entity_index] = entity
+
+
 func _enter_shop(e: Dictionary) -> void:
-	_shop_items.clear()
+	_shop_items = []
 	_shop_buttons.clear()
-	_shop_title = str(e.get("name", "白石古肆" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "古玩铺"))
+	_shop_last_result = ""
+	_shop_entity = e
+	_shop_entity_id = str(e.get("id", ""))
+	_shop_title = str(e.get("name", _default_shop_name()))
 	_shop_story = str(e.get("story", ""))
 	if _shop_story.is_empty():
-		_shop_story = "石灯后坐着一位戴虎纹面具的老者，柜上摆着西山旧符。" if RunState.current_chapter_index >= RunState.CHAPTER_WEST else "店主戴狐面具，玻璃柜中陈列着几样东西。"
+		_shop_story = _default_shop_story()
+	var saved_items: Variant = e.get("shop_items", null)
+	if not _shop_entity_id.is_empty() and _shop_items_by_entity_id.has(_shop_entity_id):
+		saved_items = _shop_items_by_entity_id[_shop_entity_id]
+	var entity_index := _shop_entity_index()
+	if entity_index >= 0:
+		var entity: Dictionary = data["entities"][entity_index]
+		if not (saved_items is Array and not Array(saved_items).is_empty()):
+			saved_items = entity.get("shop_items", saved_items)
+	if saved_items is Array and not Array(saved_items).is_empty():
+		_shop_items = Array(saved_items).duplicate(true)
+		_refresh_saved_shop_card_labels()
+		_sync_shop_items_to_entity()
+		_show_shop_panel()
+		return
 	var base_cards: Array = [
 		"shan.jianmu", "shan.fusang", "shan.ruomu", "shan.luwu",
 		"hai.yinglong_call", "hai.wenyao_evade", "hai.kun_swift", "hai.heluo_dive",
@@ -1485,6 +1806,44 @@ func _enter_shop(e: Dictionary) -> void:
 		"shan.luwu_gate", "shan.yingzhao_patrol", "hai.xuan_gui_shell",
 		"hai.tiangou_ward", "huang.zheng_pounce", "huang.gudiao_cry",
 	]
+	var north_shop_cards: Array = [
+		"hai.heluo_ally",
+		"hai.beishan_mist", "shan.xuanwu_barrier", "hai.cold_current",
+		"huang.memory_venom", "shan.black_ridge_guard", "hai.deep_pool_reflection",
+		"neutral.archive_index", "neutral.echo_rehearse",
+	]
+	var east_shop_cards: Array = [
+		"shan.dangkang_harvest",
+		"shan.green_sprout_guard",
+		"shan.spring_root",
+		"hai.yinglong_rainpath",
+		"hai.qiuyu_sleep",
+		"hai.qinglong_ally",
+		"huang.lingling_floodcall",
+		"huang.zhuru_fright",
+		"neutral.seed_catalog",
+		"neutral.field_rehearsal",
+	]
+	var central_shop_cards: Array = [
+		"shan.tulou_guard",
+		"shan.qilin_virtue",
+		"shan.central_earth_oath",
+		"shan.square_altar",
+		"hai.jimeng_rain_order",
+		"hai.wenlin_path",
+		"hai.central_confluence",
+		"hai.round_return",
+		"huang.kui_thunder_drum",
+		"huang.jiao_warning",
+		"neutral.five_realm_harmony",
+	]
+	var chapter_shop_cards: Array = west_cards.duplicate()
+	if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		chapter_shop_cards = central_shop_cards.duplicate()
+	elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		chapter_shop_cards = east_shop_cards.duplicate()
+	elif RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+		chapter_shop_cards = north_shop_cards.duplicate()
 	var pool: Array = base_cards.duplicate()
 	var guaranteed_cards: Array = []
 	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
@@ -1492,28 +1851,76 @@ func _enter_shop(e: Dictionary) -> void:
 		pool.append_array(west_cards)
 		pool.append_array(west_cards)
 		pool.append_array(west_cards)
+	if RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+		guaranteed_cards = ["hai.heluo_ally"]
+		pool.append_array(north_shop_cards)
+		pool.append_array(north_shop_cards)
+		pool.append_array(north_shop_cards)
+	elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		guaranteed_cards = ["shan.dangkang_harvest", "hai.yinglong_rainpath"]
+		pool.append_array(east_shop_cards)
+		pool.append_array(east_shop_cards)
+		pool.append_array(east_shop_cards)
+	elif RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		guaranteed_cards = ["shan.qilin_virtue", "neutral.five_realm_harmony"]
+		pool.append_array(central_shop_cards)
+		pool.append_array(central_shop_cards)
+		pool.append_array(central_shop_cards)
 	pool.shuffle()
 	var offered_cards: Dictionary = {}
 	var added: int = 0
 	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
 		guaranteed_cards.shuffle()
 		for cid in guaranteed_cards:
-			if _append_shop_card(str(cid), west_cards, offered_cards):
+			if _append_shop_card(str(cid), chapter_shop_cards, offered_cards):
 				added += 1
 				break
 	for cid in pool:
 		if added >= 3:
 			break
-		if _append_shop_card(str(cid), west_cards, offered_cards):
+		if _append_shop_card(str(cid), chapter_shop_cards, offered_cards):
 			added += 1
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+	if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		_shop_items.append({"type": "heal", "label": "中土玉露：恢复 44 HP  20 碎片", "price": 20, "amount": 44})
+		_shop_items.append({"type": "max_hp", "label": "麒麟台玉符：最大 HP +12  42 碎片", "price": 42, "amount": 12})
+	elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		_shop_items.append({"type": "heal", "label": "青芽露：恢复 36 HP  16 碎片", "price": 16, "amount": 36})
+		_shop_items.append({"type": "max_hp", "label": "春木护符：最大 HP +10  34 碎片", "price": 34, "amount": 10})
+	elif RunState.current_chapter_index >= RunState.CHAPTER_WEST:
 		_shop_items.append({"type": "heal", "label": "白石药草：恢复 25 HP  12 碎片", "price": 12, "amount": 25})
 		_shop_items.append({"type": "max_hp", "label": "山骨护符：最大 HP +8  28 碎片", "price": 28, "amount": 8})
 	else:
 		_shop_items.append({"type": "heal", "label": "灵芝散：恢复 %d HP  %d 碎片" % [SHOP_HEAL_AMOUNT, SHOP_HEAL_PRICE], "price": SHOP_HEAL_PRICE, "amount": SHOP_HEAL_AMOUNT})
 		_shop_items.append({"type": "max_hp", "label": "古玉护符：最大 HP +%d  %d 碎片" % [SHOP_MAXHP_AMOUNT, SHOP_MAXHP_PRICE], "price": SHOP_MAXHP_PRICE, "amount": SHOP_MAXHP_AMOUNT})
 	_shop_items.append({"type": "leave", "label": "[离开]", "price": 0})
+	_sync_shop_items_to_entity()
 	_show_shop_panel()
+
+
+func _default_shop_name() -> String:
+	match RunState.current_chapter_index:
+		RunState.CHAPTER_CENTRAL:
+			return "中土玉市"
+		RunState.CHAPTER_EAST:
+			return "青芽市集"
+		RunState.CHAPTER_NORTH:
+			return "寒市旧肆"
+		RunState.CHAPTER_WEST:
+			return "白石古肆"
+	return "古玩铺"
+
+
+func _default_shop_story() -> String:
+	match RunState.current_chapter_index:
+		RunState.CHAPTER_CENTRAL:
+			return "商旅在祭坛外铺开玉片、陶符和旧简，专收五境余响。"
+		RunState.CHAPTER_EAST:
+			return "竹帘后传来雨声，摊上摆着春木符、青玉种和东山旧简。"
+		RunState.CHAPTER_NORTH:
+			return "无人的摊位亮着青白灯火，骨哨、冻墨和北山残简静静排开。"
+		RunState.CHAPTER_WEST:
+			return "石灯后坐着一位戴虎纹面具的老者，柜上摆着西山旧符。"
+	return "店主戴狐面具，玻璃柜中陈列着几样东西。"
 
 
 func _show_shop_panel() -> void:
@@ -1533,7 +1940,10 @@ func _show_shop_panel() -> void:
 
 
 func _refresh_shop_body() -> void:
-	_event_body.text = "%s\n\n你的灵韵碎片：%d" % [_shop_story, GameState.fragments]
+	var body := "%s\n\n你的灵韵碎片：%d" % [_shop_story, GameState.fragments]
+	if not _shop_last_result.is_empty():
+		body += "\n\n本次变化：%s" % _shop_last_result
+	_event_body.text = body
 
 
 func _refresh_shop_buttons() -> void:
@@ -1612,6 +2022,8 @@ func _on_shop_buy(idx: int) -> void:
 		if card_to_buy == null:
 			item["sold"] = true
 			item["label"] = "—— 商品异常 ——"
+			_shop_items[idx] = item
+			_sync_shop_items_to_entity()
 			_refresh_shop_body()
 			_refresh_shop_buttons()
 			return
@@ -1627,13 +2039,19 @@ func _on_shop_buy(idx: int) -> void:
 			RunState.add_card_to_deck(card)
 			GameState.unlock_codex("card." + card.id)
 			_add_floating_text(_player_pixel + Vector2(0, -36), "+" + card.title, Color(1.0, 0.85, 0.4))
+			_shop_last_result = "购买《%s》  -%d 碎片" % [card.title, price]
 		"heal":
-			RunState.heal(int(item.get("amount", 0)))
+			var amount: int = int(item.get("amount", 0))
+			RunState.heal(amount)
+			_shop_last_result = "恢复 %d HP  -%d 碎片" % [amount, price]
 		"max_hp":
 			var amt: int = int(item.get("amount", 0))
 			RunState.max_hp += amt
 			RunState.hp = mini(RunState.max_hp, RunState.hp + amt)
 			RunState.hp_changed.emit(RunState.hp, RunState.max_hp)
+			_shop_last_result = "最大 HP +%d  -%d 碎片" % [amt, price]
+	_shop_items[idx] = item
+	_sync_shop_items_to_entity()
 	_refresh_shop_body()
 	_refresh_shop_buttons()
 	_update_status()
@@ -1677,7 +2095,37 @@ func _grant_boss_reward(kind: String) -> void:
 	var exp_gain: int = 15
 	var hp_bonus: int = 10
 	var card_id: String = ""
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+	if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		match kind:
+			"boss_weak":
+				fragments = 105; exp_gain = 80; hp_bonus = 45; card_id = "shan.qilin_virtue"
+			"boss_mid":
+				fragments = 165; exp_gain = 120; hp_bonus = 65; card_id = "neutral.five_realm_harmony"
+			"boss_hard":
+				fragments = 260; exp_gain = 180; hp_bonus = 95; card_id = "hai.central_confluence"
+			_:
+				fragments = 105; exp_gain = 80; hp_bonus = 45
+	elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		match kind:
+			"boss_weak":
+				fragments = 80; exp_gain = 60; hp_bonus = 35; card_id = "shan.spring_root"
+			"boss_mid":
+				fragments = 130; exp_gain = 95; hp_bonus = 55; card_id = "hai.qinglong_ally"
+			"boss_hard":
+				fragments = 220; exp_gain = 150; hp_bonus = 85; card_id = "hai.yinglong_rainpath"
+			_:
+				fragments = 80; exp_gain = 60; hp_bonus = 35
+	elif RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+		match kind:
+			"boss_weak":
+				fragments = 60; exp_gain = 45; hp_bonus = 30; card_id = "shan.black_ridge_guard"
+			"boss_mid":
+				fragments = 105; exp_gain = 75; hp_bonus = 45; card_id = "hai.zhulong_ally"
+			"boss_hard":
+				fragments = 180; exp_gain = 120; hp_bonus = 70; card_id = "hai.deep_pool_reflection"
+			_:
+				fragments = 60; exp_gain = 45; hp_bonus = 30
+	elif RunState.current_chapter_index >= RunState.CHAPTER_WEST:
 		match kind:
 			"boss_weak":
 				fragments = 45; exp_gain = 35; hp_bonus = 25; card_id = "shan.yingzhao_patrol"
@@ -1708,36 +2156,97 @@ func _grant_boss_reward(kind: String) -> void:
 			GameState.unlock_codex("card." + card_id)
 
 
+func _boss_reward_line(kind: String) -> String:
+	if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		match kind:
+			"boss_weak": return "+105 碎片  +80 EXP  +45 HP  +麒麟德音"
+			"boss_mid":  return "+165 碎片  +120 EXP  +65 HP  +五境调和"
+			"boss_hard": return "+260 碎片  +180 EXP  +95 HP  +中流会同"
+			_: return "+105 碎片  +80 EXP  +45 HP"
+	if RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		match kind:
+			"boss_weak": return "+80 灵韵碎片  +60 EXP  +35 HP  +《春根复萌》"
+			"boss_mid":  return "+130 灵韵碎片  +95 EXP  +55 HP  +《青龙行雨》"
+			"boss_hard": return "+220 灵韵碎片  +150 EXP  +85 HP  +《应龙开泽》"
+			_: return "+80 灵韵碎片  +60 EXP  +35 HP"
+	if RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+		match kind:
+			"boss_weak": return "+60 灵韵碎片  +45 EXP  +30 HP  +《玄岭守势》"
+			"boss_mid":  return "+105 灵韵碎片  +75 EXP  +45 HP  +《烛龙残照》"
+			"boss_hard": return "+180 灵韵碎片  +120 EXP  +70 HP  +《深潭返照》"
+			_: return "+60 灵韵碎片  +45 EXP  +30 HP"
+	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+		match kind:
+			"boss_weak": return "+45 碎片  +35 EXP  +25 HP  +《英招巡山》"
+			"boss_mid":  return "+85 碎片  +60 EXP  +40 HP  +《陆吾镇门》"
+			"boss_hard": return "+150 碎片  +100 EXP  +60 HP  +《蛊雕夜啼》"
+			_: return "+45 碎片  +35 EXP  +25 HP"
+	match kind:
+		"boss_weak": return "+30 碎片  +20 EXP  +20 HP"
+		"boss_mid":  return "+60 碎片  +40 EXP  +35 HP"
+		"boss_hard": return "+120 碎片  +80 EXP  +50 HP"
+		_: return "+20 碎片  +15 EXP  +10 HP"
+
+
+func _codex_total_entries() -> int:
+	return CardDatabase.all_cards().size() + EnemyDatabase.all_enemies().size()
+
+
+func _final_clear_summary() -> String:
+	var codex_total: int = max(1, _codex_total_entries())
+	var codex_unlocked: int = GameState.unlocked_codex.size()
+	var codex_percent: int = int(round(float(codex_unlocked) * 100.0 / float(codex_total)))
+	var chapters: String = "南山 / 西山 / 北山"
+	if RunState.current_chapter_index >= RunState.CHAPTER_EAST:
+		chapters += " / 东山"
+	if RunState.current_chapter_index >= RunState.CHAPTER_CENTRAL:
+		chapters += " / 中山"
+	return "本局结算：Lv.%d  EXP %d / %d\nHP %d / %d  灵韵 %d / %d\n碎片 %d  牌组 %d 张\n图鉴解锁 %d / %d（%d%%）\n完成章节：%s" % [
+		RunState.level,
+		RunState.exp_value,
+		RunState.exp_to_next,
+		RunState.hp,
+		RunState.max_hp,
+		RunState.energy,
+		RunState.max_energy,
+		GameState.fragments,
+		RunState.run_deck.size(),
+		codex_unlocked,
+		codex_total,
+		codex_percent,
+		chapters,
+	]
+
 func _show_boss_victory(kind: String, name: String) -> void:
 	_victory.visible = true
 	var defeated: int = RunState.bosses_defeated
 	var total: int = RunState.BOSSES_TO_CLEAR
 	var chapter_name: String = str(data.get("title", _chapter_config().get("title", "南山 · 朱雀庭")))
+	var reward_line: String = _boss_reward_line(kind)
 	if defeated >= total:
 		if RunState.has_next_chapter():
 			_pending_chapter_advance = true
-			_victory_text.text = "%s 已净化！\n你已唤醒本章所有 %d 位 BOSS。\n西方白石之门已经打开，下一章「西山 · 白虎境」正在等待。\n\n进入下一章会保留卡组、碎片、等级和最大生命，并回满生命。" % [chapter_name, total]
-			_victory_btn.text = "进入西山 · 白虎境"
+			var next_chapter_name: String = "西山 · 白虎境"
+			var next_gate_text: String = "南山余火收束，西山白虎境已经开门。"
+			if RunState.current_chapter_index == RunState.CHAPTER_WEST:
+				next_chapter_name = "北山 · 玄武渊"
+				next_gate_text = "西山金声沉入寒渊，北山玄武渊已经开门。"
+			elif RunState.current_chapter_index == RunState.CHAPTER_NORTH:
+				next_chapter_name = "东山 · 青龙原"
+				next_gate_text = "北山寒雾退去，东山青龙原已经开门。"
+			elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+				next_chapter_name = "中山 · 麒麟台"
+				next_gate_text = "东山青龙余雨归入中央土坛，麒麟台已显出方圆纹路。"
+			_victory_text.text = "%s 已完成\n你净化了本章全部 %d 个 BOSS。\n%s\n\n本次变化：%s\n\n下一章：%s" % [chapter_name, total, next_gate_text, reward_line, next_chapter_name]
+			_victory_btn.text = "进入%s" % next_chapter_name
 		else:
 			_pending_chapter_advance = false
-			_victory_text.text = "v0.6 全境净化！\n你已连续完成「南山 · 朱雀庭」与「西山 · 白虎境」。\n被遗忘的山海生灵重新被讲述，新的篇章将在后续版本开放。\n\n（按下方按钮回到主菜单。）"
-			_victory_btn.text = "回到主菜单"
+			_victory_text.text = "v0.8 五境净化！\n你已连续完成「南山 · 朱雀庭」「西山 · 白虎境」「北山 · 玄武渊」「东山 · 青龙原」与「中山 · 麒麟台」。\n五方灵韵在麒麟台归一，祖父书房已经打开，可用典籍碎片启用下一局藏签。\n\n本次变化：%s\n\n%s\n\n（按下方按钮进入祖父书房。）" % [reward_line, _final_clear_summary()]
+			_victory_btn.text = "进入祖父书房"
 		return
 	_pending_chapter_advance = false
-	var reward_line: String = ""
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
-		match kind:
-			"boss_weak": reward_line = "+45 碎片  +35 EXP  +25 HP  +《英招巡山》"
-			"boss_mid":  reward_line = "+85 碎片  +60 EXP  +40 HP  +《陆吾镇门》"
-			"boss_hard": reward_line = "+150 碎片  +100 EXP  +60 HP  +《蛊雕夜啼》"
-	else:
-		match kind:
-			"boss_weak": reward_line = "+30 碎片  +20 EXP  +20 HP"
-			"boss_mid":  reward_line = "+60 碎片  +40 EXP  +35 HP"
-			"boss_hard": reward_line = "+120 碎片  +80 EXP  +50 HP"
-	_victory_text.text = "你击败了 BOSS：[ %s ]\n%s\n\n章节进度：%d / %d\n地图上还有更强的 BOSS 等你。" % [name, reward_line, defeated, total]
+	_victory_text.text = "击败 BOSS：%s\n本次变化：%s\n\n本章进度：%d / %d\n继续探索并完成剩余 BOSS。" % [name, reward_line, defeated, total]
 	_victory_btn.text = "继续探索"
-
 func _show_victory() -> void:
 	# 兼容老调用：直接用进度感知版本（无 kind 时用占位）
 	_show_boss_victory("", "BOSS")
@@ -1773,7 +2282,7 @@ func _on_victory_close() -> void:
 		return
 	if RunState.bosses_defeated >= RunState.BOSSES_TO_CLEAR and not RunState.has_next_chapter():
 		RunState.reset_for_new_run()
-		get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+		get_tree().change_scene_to_file("res://scenes/meta/study_room.tscn")
 		return
 	_victory.visible = false
 	_update_status()
@@ -1891,26 +2400,38 @@ func _draw_isometric() -> void:
 		visible_rect.position + Vector2(0, visible_rect.size.y),
 		visible_rect.position + visible_rect.size,
 	]
-	var x_min: int = WORLD_W - 1
-	var x_max: int = 0
-	var y_min: int = WORLD_H - 1
-	var y_max: int = 0
+	var view_x_min: int = WORLD_W - 1
+	var view_x_max: int = 0
+	var view_y_min: int = WORLD_H - 1
+	var view_y_max: int = 0
 	for corner in corners:
 		var g: Vector2i = _iso_screen_to_grid(corner)
-		x_min = mini(x_min, g.x)
-		x_max = maxi(x_max, g.x)
-		y_min = mini(y_min, g.y)
-		y_max = maxi(y_max, g.y)
-	x_min = clampi(x_min - 6, 0, WORLD_W - 1)
-	x_max = clampi(x_max + 6, 0, WORLD_W - 1)
-	y_min = clampi(y_min - 6, 0, WORLD_H - 1)
-	y_max = clampi(y_max + 6, 0, WORLD_H - 1)
+		view_x_min = mini(view_x_min, g.x)
+		view_x_max = maxi(view_x_max, g.x)
+		view_y_min = mini(view_y_min, g.y)
+		view_y_max = maxi(view_y_max, g.y)
+	var floor_x_min: int = view_x_min - 6 - ISO_VISUAL_GROUND_PADDING
+	var floor_x_max: int = view_x_max + 6 + ISO_VISUAL_GROUND_PADDING
+	var floor_y_min: int = view_y_min - 6 - ISO_VISUAL_GROUND_PADDING
+	var floor_y_max: int = view_y_max + 6 + ISO_VISUAL_GROUND_PADDING
+	var x_min: int = clampi(view_x_min - 6, 0, WORLD_W - 1)
+	var x_max: int = clampi(view_x_max + 6, 0, WORLD_W - 1)
+	var y_min: int = clampi(view_y_min - 6, 0, WORLD_H - 1)
+	var y_max: int = clampi(view_y_max + 6, 0, WORLD_H - 1)
 
 	# 收集视野内所有内容，分 4 层绘制
+	var floor_list: Array = []
 	var tile_list: Array = []
 	var tree_list: Array = []
 	var entity_list: Array = []
 	var player_item: Dictionary = {}
+
+	for y in range(floor_y_min, floor_y_max + 1):
+		for x in range(floor_x_min, floor_x_max + 1):
+			var floor_center: Vector2 = _grid_to_pixel(Vector2i(x, y))
+			if not visible_rect.has_point(floor_center):
+				continue
+			floor_list.append({"x": x, "y": y, "center": floor_center})
 
 	for y in range(y_min, y_max + 1):
 		for x in range(x_min, x_max + 1):
@@ -1938,7 +2459,7 @@ func _draw_isometric() -> void:
 	# 同层内按 z 排序（后方先画）
 	# ---- 第1层：所有草方块（地板） ----
 	var floor_tileset_name: String = str(data.get("iso_floor_tileset", ISO_FLOOR_TILESET_NAME))
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+	if RunState.current_chapter_index == RunState.CHAPTER_WEST:
 		floor_tileset_name = "forest"
 	var td: Dictionary = PixelSprites.iso_tile_texture(floor_tileset_name)
 	var wall_td: Dictionary = PixelSprites.iso_tile_texture(str(data.get("iso_wall_tileset", ISO_WALL_TILESET_NAME)))
@@ -1949,23 +2470,33 @@ func _draw_isometric() -> void:
 	var floor_row: int = max(0, int(data.get("iso_floor_row", 0)))
 	var floor_col_offset: int = clampi(int(data.get("iso_floor_col_offset", 0)), 0, cols - 1)
 	var floor_col_count: int = clampi(int(data.get("iso_floor_col_count", 2)), 1, cols)
-	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
+	if RunState.current_chapter_index == RunState.CHAPTER_WEST:
 		floor_row = 1
 		floor_col_offset = clampi(1, 0, cols - 1)
 		floor_col_count = max(1, cols - floor_col_offset)
-	var is_west_floor: bool = RunState.current_chapter_index >= RunState.CHAPTER_WEST
-	for t in tile_list:
+	var is_west_floor: bool = RunState.current_chapter_index == RunState.CHAPTER_WEST
+	var is_north_floor: bool = RunState.current_chapter_index == RunState.CHAPTER_NORTH
+	var is_east_floor: bool = RunState.current_chapter_index == RunState.CHAPTER_EAST
+	var is_central_floor: bool = RunState.current_chapter_index == RunState.CHAPTER_CENTRAL
+	for t in floor_list:
 		var center: Vector2 = t.center
 		var r := Rect2(center.x - ISO_HALF_W, center.y - ISO_HALF_H, ISO_TILE_W, ISO_FLOOR_H)
-		if is_west_floor:
+		if is_central_floor:
+			_draw_iso_central_floor(center, int(t.x), int(t.y))
+		elif is_north_floor and not has_tex:
+			var ice_color: Color = Color("#294b63") if (int(t.x) + int(t.y)) % 2 == 0 else Color("#223f54")
+			_draw_iso_floor_diamond(center, ice_color)
+		elif is_west_floor:
 			var dirt_color: Color = Color("#7a4d24") if (int(t.x) + int(t.y)) % 2 == 0 else Color("#6a411f")
 			_draw_iso_floor_diamond(center, dirt_color)
+		elif is_east_floor and not has_tex:
+			_draw_iso_east_floor(center, int(t.x), int(t.y))
 		if has_tex:
-			var local_col: int = (int(t.x) * 7 + int(t.y) * 3) % floor_col_count
+			var local_col: int = posmod(int(t.x) * 7 + int(t.y) * 3, floor_col_count)
 			var gcol: int = clampi(floor_col_offset + local_col, 0, cols - 1)
 			draw_texture_rect_region(td.tex, r, Rect2(gcol * ts, floor_row * ts, ts, ISO_FLOOR_H))
 		else:
-			if not is_west_floor:
+			if not is_west_floor and not is_north_floor and not is_east_floor and not is_central_floor:
 				_draw_iso_floor_diamond(center, COLOR_GRASS_A if (int(t.x) + int(t.y)) % 2 == 0 else COLOR_GRASS_B)
 
 	_draw_iso_navigation_context(visible_rect)
@@ -1985,7 +2516,7 @@ func _draw_isometric() -> void:
 	for item in object_list:
 		match str(item.kind):
 			"wall":
-				_draw_iso_wall(item, has_wall_tex, wall_td, int(wall_td.get("ts", 128)))
+				_draw_iso_wall(item, has_wall_tex, wall_td, int(wall_td.get("ts", 128)), int(data.get("iso_wall_col", -1)))
 			"entity":
 				_draw_iso_entity(item)
 			"player":
@@ -2047,14 +2578,19 @@ func _player_indicator_grid() -> Vector2i:
 	return current
 
 
-func _draw_iso_wall(item: Dictionary, has_tex: bool, td: Dictionary, ts: int) -> void:
+func _draw_iso_wall(item: Dictionary, has_tex: bool, td: Dictionary, ts: int, fixed_col: int = -1) -> void:
 	var center: Vector2 = item.center
 	if has_tex:
-		var tcol: int = int((int(item.x) * 3 + int(item.y)) % 5)
+		var tcol: int = fixed_col if fixed_col >= 0 else int((int(item.x) * 3 + int(item.y)) % 5)
 		var tr := Rect2(center.x - ISO_HALF_W, center.y + ISO_HALF_H - ISO_TILE_H, ISO_TILE_W, ISO_TILE_H)
 		draw_texture_rect_region(td.tex, tr, Rect2(tcol * ts, 0, ts, ts))
 	else:
-		_draw_iso_tree_fallback(center)
+		if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+			_draw_iso_central_wall(center, int(item.x), int(item.y))
+		elif RunState.current_chapter_index == RunState.CHAPTER_EAST:
+			_draw_iso_bamboo_wall(center, int(item.x), int(item.y))
+		else:
+			_draw_iso_tree_fallback(center)
 
 
 func _draw_iso_entity(item: Dictionary) -> void:
@@ -2099,8 +2635,20 @@ func _iso_entity_scale_for_key(key: String) -> float:
 	if key.begins_with("boss"):
 		return 1.12
 	match key:
-		"elite", "elite_yingzhao":
+		"elite", "elite_yingzhao", "elite_xiangliu_shadow", "elite_yinglong_young", "elite_ji_meng":
 			return 1.00
+		"kui":
+			return 1.02
+		"tu_lou", "jiao_beast", "wen_lin":
+			return 0.94
+		"ling_ling":
+			return 0.98
+		"dang_kang", "qiu_yu", "zhu_ru":
+			return 0.92
+		"zhuhuai":
+			return 0.96
+		"he_luo_fish", "fei_yi", "xiao_beast":
+			return 0.92
 		"zheng_beast", "tian_gou", "xuan_gui", "gu_diao":
 			return 0.92
 		"hu_diao", "lu_shu", "cong_cong", "lei_beast":
@@ -2119,9 +2667,9 @@ func _iso_entity_anchor_ratio_for_key(key: String) -> float:
 	if key.begins_with("boss"):
 		return 0.92
 	match key:
-		"elite", "elite_yingzhao":
+		"elite", "elite_yingzhao", "elite_xiangliu_shadow", "elite_yinglong_young", "elite_ji_meng":
 			return 0.90
-		"zheng_beast", "tian_gou", "xuan_gui", "gu_diao", "hu_diao", "lu_shu", "cong_cong", "lei_beast":
+		"zheng_beast", "tian_gou", "xuan_gui", "gu_diao", "hu_diao", "lu_shu", "cong_cong", "lei_beast", "he_luo_fish", "fei_yi", "zhuhuai", "xiao_beast", "dang_kang", "qiu_yu", "ling_ling", "zhu_ru", "kui", "tu_lou", "jiao_beast", "wen_lin":
 			return 0.88
 		"treasure", "shop", "rest", "event", "fragment":
 			return 0.86
@@ -2162,6 +2710,110 @@ func _draw_iso_tree_fallback(center: Vector2) -> void:
 	var crown_cy := center.y - ISO_HALF_H - 32
 	draw_circle(Vector2(center.x, crown_cy), 12, Color("#2a5a2a"))
 	draw_circle(Vector2(center.x - 4, crown_cy + 4), 9, Color("#3a6a3a"))
+
+
+func _draw_iso_east_floor(center: Vector2, x: int, y: int) -> void:
+	var h: int = ((x * 73856093) ^ (y * 19349663)) & 0xFFFFFF
+	var base: Color = Color("#2f8065") if (x + y) % 2 == 0 else Color("#246d5a")
+	var pts: PackedVector2Array = _iso_walkable_pts(center)
+	draw_colored_polygon(pts, base)
+	var inner: PackedVector2Array = PackedVector2Array([
+		lerp(pts[0], center, 0.32),
+		lerp(pts[1], center, 0.32),
+		lerp(pts[2], center, 0.32),
+		lerp(pts[3], center, 0.32),
+	])
+	draw_colored_polygon(inner, Color("#3a9b72") if (h & 1) == 0 else Color("#2d8a75"))
+	if (h % 100) < 44:
+		var stream_y := center.y + float((h >> 5) % 9 - 4)
+		draw_line(Vector2(center.x - 36, stream_y), Vector2(center.x + 36, stream_y - 12), Color(0.43, 0.85, 0.88, 0.42), 2.0)
+		draw_line(Vector2(center.x - 18, stream_y + 8), Vector2(center.x + 24, stream_y + 1), Color(0.70, 0.95, 0.88, 0.25), 1.0)
+	if ((h >> 8) % 100) < 38:
+		var sprout: Vector2 = Vector2(center.x + float((h >> 13) % 42 - 21), center.y + float((h >> 18) % 22 - 6))
+		draw_line(sprout, sprout + Vector2(-4, -9), Color("#12392f"), 2.0)
+		draw_line(sprout + Vector2(-1, -5), sprout + Vector2(7, -13), Color("#95d771"), 2.0)
+		draw_line(sprout + Vector2(1, -3), sprout + Vector2(-8, -10), Color("#5db86e"), 1.5)
+	if ((h >> 3) % 100) < 18:
+		var scale_pos: Vector2 = Vector2(center.x + float((h >> 9) % 38 - 19), center.y + float((h >> 15) % 18 - 4))
+		draw_colored_polygon(PackedVector2Array([
+			scale_pos + Vector2(0, -6),
+			scale_pos + Vector2(8, 0),
+			scale_pos + Vector2(0, 5),
+			scale_pos + Vector2(-8, 0),
+		]), Color("#8bd0b0"))
+
+
+func _draw_iso_central_floor(center: Vector2, x: int, y: int) -> void:
+	var h: int = ((x * 83492791) ^ (y * 297121507)) & 0xFFFFFF
+	var base: Color = Color("#9a7441") if (x + y) % 2 == 0 else Color("#86643a")
+	var pts: PackedVector2Array = _iso_walkable_pts(center)
+	draw_colored_polygon(pts, base)
+	var inner: PackedVector2Array = PackedVector2Array([
+		lerp(pts[0], center, 0.28),
+		lerp(pts[1], center, 0.28),
+		lerp(pts[2], center, 0.28),
+		lerp(pts[3], center, 0.28),
+	])
+	draw_colored_polygon(inner, Color("#b58e55") if (h & 1) == 0 else Color("#7f9a75"))
+	if (h % 100) < 46:
+		var ring_alpha: float = 0.24 if (h & 2) == 0 else 0.16
+		draw_arc(center, 22.0, 0.0, TAU, 20, Color(0.86, 0.74, 0.46, ring_alpha), 2.0)
+	if ((h >> 7) % 100) < 36:
+		var a: Vector2 = center + Vector2(-34, -4 + float((h >> 12) % 7))
+		var b: Vector2 = center + Vector2(34, 6 - float((h >> 17) % 7))
+		draw_line(a, b, Color(0.52, 0.40, 0.23, 0.32), 2.0)
+		draw_line(Vector2(center.x - 20, center.y + 11), Vector2(center.x + 18, center.y - 10), Color(0.92, 0.78, 0.45, 0.18), 1.0)
+	if ((h >> 3) % 100) < 18:
+		var jade: Vector2 = center + Vector2(float((h >> 9) % 34 - 17), float((h >> 15) % 16 - 5))
+		draw_colored_polygon(PackedVector2Array([
+			jade + Vector2(0, -5),
+			jade + Vector2(7, 0),
+			jade + Vector2(0, 5),
+			jade + Vector2(-7, 0),
+		]), Color("#b6d3aa"))
+
+
+func _draw_iso_central_wall(center: Vector2, x: int, y: int) -> void:
+	var h: int = ((x * 92837111) ^ (y * 689287499)) & 0xFFFFFF
+	var base: Vector2 = center + Vector2(0, ISO_HALF_H * 0.42)
+	draw_colored_polygon(PackedVector2Array([
+		base + Vector2(-34, -1),
+		base + Vector2(0, -15),
+		base + Vector2(34, -1),
+		base + Vector2(0, 12),
+	]), Color(0.18, 0.11, 0.05, 0.42))
+	var top: Vector2 = base + Vector2(0, -30 - float(h & 7))
+	draw_line(base + Vector2(-24, -1), top + Vector2(-16, 0), Color("#5f4528"), 7.0)
+	draw_line(base + Vector2(24, -1), top + Vector2(16, 0), Color("#5f4528"), 7.0)
+	draw_line(top + Vector2(-16, 0), top + Vector2(16, 0), Color("#c6a267"), 8.0)
+	draw_line(top + Vector2(-10, -8), top + Vector2(10, -8), Color("#e0c37b"), 4.0)
+	draw_circle(top + Vector2(0, -14), 7.0, Color("#b9d0a4"))
+	if (h % 100) < 38:
+		draw_line(base + Vector2(-28, 5), base + Vector2(28, 5), Color("#d3ad62"), 2.0)
+
+
+func _draw_iso_bamboo_wall(center: Vector2, x: int, y: int) -> void:
+	var h: int = ((x * 92837111) ^ (y * 689287499)) & 0xFFFFFF
+	var base: Vector2 = center + Vector2(0, ISO_HALF_H * 0.42)
+	draw_colored_polygon(PackedVector2Array([
+		base + Vector2(-28, -2),
+		base + Vector2(0, -13),
+		base + Vector2(28, -2),
+		base + Vector2(0, 9),
+	]), Color(0.03, 0.13, 0.10, 0.48))
+	for i in 4:
+		var ox: float = float(-13 + i * 8 + int((h >> (i * 3)) & 3) - 1)
+		var height: float = float(50 + int((h >> (i * 4 + 2)) & 11))
+		var root: Vector2 = base + Vector2(ox, float(i % 2) * 2.5)
+		var top: Vector2 = root + Vector2(float((i % 3) - 1) * 1.4, -height)
+		draw_line(root, top, Color("#10372f"), 5.0)
+		draw_line(root + Vector2(1, 0), top + Vector2(1, 0), Color("#4e9c68"), 2.2)
+		for n in 3:
+			var node_y: float = lerp(root.y, top.y, float(n + 1) / 4.0)
+			draw_line(Vector2(root.x - 2, node_y), Vector2(root.x + 3, node_y - 1), Color("#8fc274"), 1.1)
+		var leaf_dir: float = -1.0 if i % 2 == 0 else 1.0
+		draw_line(top + Vector2(0, 5), top + Vector2(leaf_dir * 13, -4), Color("#5fa96b"), 2.2)
+		draw_line(top + Vector2(0, 8), top + Vector2(-leaf_dir * 10, -1), Color("#2c7658"), 1.6)
 
 
 func _draw_iso_diamond(center: Vector2, color: Color) -> void:
@@ -2246,22 +2898,46 @@ func _draw_ground_tile(rect: Rect2, x: int, y: int) -> void:
 	if tile_name == "dirt":
 		base = Color("#7b5732") if checker else Color("#6c4a2a")
 		dark = Color("#4a311d")
+	elif tile_name == "stone_floor":
+		base = Color("#33556a") if checker else Color("#29495d")
+		dark = Color("#1c3344")
+	elif tile_name == "east_meadow":
+		base = Color("#2e8066") if checker else Color("#236f5d")
+		dark = Color("#123d34")
+	elif tile_name == "central_altar":
+		base = Color("#9a7441") if checker else Color("#846139")
+		dark = Color("#55391e")
 
 	var sub: float = TILE_SIZE / 8.0
 	var tile_h: int = ((x * 73856093) ^ (y * 19349663)) & 0xFFFFFF
-	var has_flower: bool = tile_name != "dirt" and (tile_h % 100) < 6
+	var is_stone_floor: bool = tile_name == "stone_floor"
+	var is_east_meadow: bool = tile_name == "east_meadow"
+	var is_central_altar: bool = tile_name == "central_altar"
+	var has_flower: bool = tile_name != "dirt" and not is_stone_floor and not is_east_meadow and (tile_h % 100) < 6
 	var flower_pos: Vector2i = Vector2i((tile_h >> 8) % 6 + 1, (tile_h >> 16) % 6 + 1)
-	var has_moss: bool = tile_name != "dirt" and ((tile_h >> 4) % 100) < 12 and not checker
-	var has_pebble: bool = ((tile_h >> 2) % 100) < (10 if tile_name == "dirt" else 4)
+	var has_moss: bool = tile_name != "dirt" and not is_stone_floor and ((tile_h >> 4) % 100) < (28 if is_east_meadow else 12) and not checker
+	var has_pebble: bool = ((tile_h >> 2) % 100) < (14 if is_stone_floor else (10 if tile_name == "dirt" else 4))
 	var pebble_pos: Vector2i = Vector2i((tile_h >> 10) % 5 + 1, (tile_h >> 18) % 5 + 1)
-	var grass_density: int = 0 if tile_name == "dirt" else (tile_h >> 5) % 4
+	var grass_density: int = 0 if tile_name == "dirt" or is_stone_floor else ((tile_h >> 5) % 5 if is_east_meadow else (tile_h >> 5) % 4)
+	if is_east_meadow:
+		_draw_east_meadow_top_tile(rect, checker, tile_h)
+		return
+	if is_central_altar:
+		_draw_central_altar_top_tile(rect, checker, tile_h)
+		return
 	for sy in 8:
 		for sx in 8:
 			var h: int = ((x * 73856093) ^ (y * 19349663) ^ (sx * 83492791) ^ (sy * 12289)) & 0xFFFFFF
 			var c: Color = base
 			var v: int = h % 64
 			var sub_h: int = (h >> 8) % 100
-			if has_flower and sx == flower_pos.x and sy == flower_pos.y:
+			if is_east_meadow and (sx == ((tile_h >> 7) % 6 + 1) or sy == ((tile_h >> 12) % 6 + 1)) and sub_h < 10:
+				c = Color("#6fc9a5") if sub_h < 6 else Color("#9bd56f")
+			elif is_east_meadow and sx >= 1 and sx <= 6 and sy == ((tile_h >> 18) % 5 + 1) and sub_h < 18:
+				c = Color("#5fb7b4") if (sx + sy + tile_h) % 2 == 0 else Color("#b8e7ca")
+			elif is_east_meadow and sx == 6 and sy == 2 and sub_h < 45:
+				c = Color("#bddf8a")
+			elif has_flower and sx == flower_pos.x and sy == flower_pos.y:
 				c = COLOR_FLOWER
 			elif has_pebble and sx >= pebble_pos.x and sx <= pebble_pos.x + 1 and sy >= pebble_pos.y and sy <= pebble_pos.y + 1:
 				var pc: Color = Color("#5a4e42") if sub_h < 50 else Color("#706050")
@@ -2279,7 +2955,49 @@ func _draw_ground_tile(rect: Rect2, x: int, y: int) -> void:
 			draw_rect(Rect2(rect.position.x + sx * sub, rect.position.y + sy * sub, sub + 0.5, sub + 0.5), c, true)
 
 
+func _draw_east_meadow_top_tile(rect: Rect2, checker: bool, tile_h: int) -> void:
+	var base: Color = Color("#2d765f") if checker else Color("#286d59")
+	draw_rect(rect, base, true)
+	var sub: float = TILE_SIZE / 8.0
+	if (tile_h % 100) < 28:
+		var band_y: float = rect.position.y + sub * float(2 + ((tile_h >> 7) % 3))
+		draw_rect(Rect2(rect.position.x, band_y, rect.size.x, sub * 1.2), Color(0.34, 0.68, 0.66, 0.28), true)
+		draw_rect(Rect2(rect.position.x + sub * 2.0, band_y + sub * 0.35, rect.size.x - sub * 4.0, sub * 0.35), Color(0.55, 0.83, 0.76, 0.18), true)
+	if ((tile_h >> 4) % 100) < 22:
+		var patch_x: float = rect.position.x + sub * float(1 + ((tile_h >> 10) % 4))
+		var patch_y: float = rect.position.y + sub * float(1 + ((tile_h >> 15) % 5))
+		draw_rect(Rect2(patch_x, patch_y, sub * 2.0, sub * 1.4), Color(0.18, 0.45, 0.35, 0.34), true)
+	if ((tile_h >> 8) % 100) < 18:
+		var sx0: float = rect.position.x + sub * float(2 + ((tile_h >> 12) % 4))
+		var sy0: float = rect.position.y + sub * float(3 + ((tile_h >> 17) % 3))
+		draw_rect(Rect2(sx0, sy0, sub * 0.45, sub * 1.6), Color("#143d34"), true)
+		draw_rect(Rect2(sx0 + sub * 0.35, sy0 - sub * 0.35, sub * 1.1, sub * 0.45), Color("#76b875"), true)
+	if ((tile_h >> 2) % 100) < 7:
+		var scale_pos: Vector2 = rect.position + Vector2(sub * float(2 + ((tile_h >> 9) % 4)), sub * float(2 + ((tile_h >> 14) % 4)))
+		draw_rect(Rect2(scale_pos.x, scale_pos.y, sub * 0.8, sub * 0.8), Color(0.66, 0.86, 0.72, 0.42), true)
+
+
+func _draw_central_altar_top_tile(rect: Rect2, checker: bool, tile_h: int) -> void:
+	var base: Color = Color("#9a7441") if checker else Color("#846139")
+	draw_rect(rect, base, true)
+	var sub: float = TILE_SIZE / 8.0
+	draw_rect(Rect2(rect.position.x + sub, rect.position.y + sub, sub * 6.0, sub * 6.0), Color("#b08952") if checker else Color("#8e7047"), true)
+	draw_rect(Rect2(rect.position.x + sub * 2.0, rect.position.y + sub * 2.0, sub * 4.0, sub * 4.0), Color("#78946d") if (tile_h & 1) == 0 else Color("#a78955"), true)
+	if (tile_h % 100) < 42:
+		draw_rect(Rect2(rect.position.x + sub * 1.0, rect.position.y + sub * 3.4, sub * 6.0, sub * 0.35), Color(0.48, 0.31, 0.15, 0.35), true)
+		draw_rect(Rect2(rect.position.x + sub * 3.4, rect.position.y + sub * 1.0, sub * 0.35, sub * 6.0), Color(0.48, 0.31, 0.15, 0.28), true)
+	if ((tile_h >> 6) % 100) < 24:
+		var jade_pos: Vector2 = rect.position + Vector2(sub * float(2 + ((tile_h >> 10) % 4)), sub * float(2 + ((tile_h >> 15) % 4)))
+		draw_rect(Rect2(jade_pos.x, jade_pos.y, sub * 1.0, sub * 1.0), Color("#b6d3aa"), true)
+
+
 func _draw_rock_tile(rect: Rect2) -> void:
+	if RunState.current_chapter_index == RunState.CHAPTER_CENTRAL:
+		_draw_central_altar_wall_top_tile(rect)
+		return
+	if RunState.current_chapter_index == RunState.CHAPTER_EAST:
+		_draw_east_bamboo_top_tile(rect)
+		return
 	# 尝试纹理（用 stone_wall 贴图集）
 	var td: Dictionary = PixelSprites.tile_texture("stone_wall")
 	if td.has("tex") and td.tex != null:
@@ -2301,7 +3019,7 @@ func _draw_rock_tile(rect: Rect2) -> void:
 	])
 	var sub: float = TILE_SIZE / 8.0
 	# 先画阴影过渡（岩石周围的深色地面）
-	var edge := Color("#1a2214")
+	var edge: Color = Color("#1a2214")
 	for ry in 8:
 		for rx in 8:
 			var is_border: bool = ry == 0 or ry == 7 or rx == 0 or rx == 7
@@ -2332,6 +3050,42 @@ func _draw_rock_tile(rect: Rect2) -> void:
 	var grass_edge: Color = Color("#2a4a28")
 	draw_rect(Rect2(rect.position.x + sub, rect.position.y + sub * 7, sub, sub), grass_edge, true)
 	draw_rect(Rect2(rect.position.x + sub * 6, rect.position.y + sub * 7, sub, sub), grass_edge, true)
+
+
+func _draw_east_bamboo_top_tile(rect: Rect2) -> void:
+	draw_rect(rect, Color("#163f33"), true)
+	var sub: float = TILE_SIZE / 8.0
+	for ry in 8:
+		for rx in 8:
+			var edge: bool = rx == 0 or ry == 0 or rx == 7 or ry == 7
+			var c: Color = Color("#12362d") if edge else Color("#1c503f")
+			if (rx + ry) % 5 == 0:
+				c = c.lightened(0.04)
+			draw_rect(Rect2(rect.position.x + rx * sub, rect.position.y + ry * sub, sub + 0.5, sub + 0.5), c, true)
+	for i in 3:
+		var bx: float = rect.position.x + sub * float(2 + i * 1.6)
+		draw_rect(Rect2(bx, rect.position.y + sub * 0.75, sub * 0.65, sub * 6.15), Color("#0f332b"), true)
+		draw_rect(Rect2(bx + sub * 0.18, rect.position.y + sub * 0.75, sub * 0.22, sub * 6.15), Color("#5a9660"), true)
+		for n in 2:
+			draw_rect(Rect2(bx - sub * 0.10, rect.position.y + sub * float(2.0 + n * 2.2), sub * 0.8, sub * 0.14), Color("#94bd76"), true)
+	draw_rect(Rect2(rect.position.x + sub * 1.2, rect.position.y + sub * 5.7, sub * 2.6, sub * 0.45), Color("#5aa875"), true)
+	draw_rect(Rect2(rect.position.x + sub * 4.3, rect.position.y + sub * 2.9, sub * 1.9, sub * 0.45), Color("#78bd75"), true)
+
+
+func _draw_central_altar_wall_top_tile(rect: Rect2) -> void:
+	draw_rect(rect, Color("#5a3a21"), true)
+	var sub: float = TILE_SIZE / 8.0
+	for ry in 8:
+		for rx in 8:
+			var edge: bool = rx == 0 or ry == 0 or rx == 7 or ry == 7
+			var c: Color = Color("#3c2718") if edge else Color("#76512e")
+			if rx >= 2 and rx <= 5 and ry >= 2 and ry <= 5:
+				c = Color("#9c7441")
+			if (rx == 3 or rx == 4) and ry >= 1 and ry <= 6:
+				c = Color("#c09a5b")
+			draw_rect(Rect2(rect.position.x + rx * sub, rect.position.y + ry * sub, sub + 0.5, sub + 0.5), c, true)
+	draw_rect(Rect2(rect.position.x + sub * 2.0, rect.position.y + sub * 1.0, sub * 4.0, sub * 0.75), Color("#d6bb76"), true)
+	draw_rect(Rect2(rect.position.x + sub * 3.0, rect.position.y + sub * 3.0, sub * 2.0, sub * 2.0), Color("#b6d3aa"), true)
 
 
 func _draw_entity_shadow_at(pixel_pos: Vector2) -> void:
@@ -2432,9 +3186,12 @@ func _draw_minimap() -> void:
 	var h: float = _minimap.size.y
 	var sx: float = w / WORLD_W
 	var sy: float = h / WORLD_H
-	var is_west_map: bool = RunState.current_chapter_index >= RunState.CHAPTER_WEST
-	var walkable_color: Color = Color("#7a4d24") if is_west_map else COLOR_GRASS_A
-	var blocked_color: Color = Color("#7f8b86") if is_west_map else COLOR_ROCK
+	var is_north_map: bool = RunState.current_chapter_index == RunState.CHAPTER_NORTH
+	var is_west_map: bool = RunState.current_chapter_index == RunState.CHAPTER_WEST
+	var is_east_map: bool = RunState.current_chapter_index == RunState.CHAPTER_EAST
+	var is_central_map: bool = RunState.current_chapter_index == RunState.CHAPTER_CENTRAL
+	var walkable_color: Color = Color("#9a7441") if is_central_map else (Color("#2d765f") if is_east_map else (Color("#7c4035") if is_north_map else (Color("#7a4d24") if is_west_map else COLOR_GRASS_A)))
+	var blocked_color: Color = Color("#5a3a21") if is_central_map else (Color("#163f33") if is_east_map else (Color("#8aa0a3") if is_north_map else (Color("#7f8b86") if is_west_map else COLOR_ROCK)))
 	# 整张地图（小尺度）
 	for y in WORLD_H:
 		for x in WORLD_W:

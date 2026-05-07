@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c4lpy35l1vfbd"]
+[gd_scene load_steps=5 format=3 uid="uid://c4lpy35l1vfbd"]
 
 [ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_bm"]
 [ext_resource type="Script" path="res://scripts/battle/player.gd" id="2_pl"]
 [ext_resource type="Script" path="res://scripts/ui/battle_ui.gd" id="3_ui"]
+[ext_resource type="Script" path="res://scripts/ui/battle_stage.gd" id="4_stage"]
 
 [node name="BattleScene" type="Node2D"]
 
@@ -28,6 +29,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("3_ui")
+
+[node name="BattleStage" type="Control" parent="UI"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 16.0
+offset_top = 56.0
+offset_right = 1264.0
+offset_bottom = 360.0
+mouse_filter = 2
+script = ExtResource("4_stage")
 
 [node name="TopBar" type="HBoxContainer" parent="UI"]
 layout_mode = 1
@@ -78,7 +89,7 @@ offset_bottom = 320.0
 bbcode_enabled = true
 scroll_following = true
 
-[node name="HandArea" type="HFlowContainer" parent="UI"]
+[node name="HandArea" type="Control" parent="UI"]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -90,9 +101,6 @@ offset_right = -16.0
 offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 0
-theme_override_constants/h_separation = 8
-theme_override_constants/v_separation = 8
-alignment = 1
 
 [node name="EndTurnButton" type="Button" parent="UI"]
 layout_mode = 1

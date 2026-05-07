@@ -6,6 +6,7 @@ signal block_changed(amount: int)
 signal intent_changed(intent_kind: int, amount: int)
 signal status_changed()
 signal died()
+signal acted(intent_kind: int)
 
 var data: EnemyData = null
 var hp: int = 0
@@ -59,6 +60,7 @@ func apply_status(status_id: String, stack: int) -> void:
 func act_on(player: BattlePlayer) -> void:
 	if current_intent == null or hp <= 0:
 		return
+	acted.emit(current_intent.kind)
 	match current_intent.kind:
 		EnemyData.IntentKind.ATTACK:
 			var raw := StatusEffect.calc_damage_modifier(statuses, player.statuses, current_intent.amount)

@@ -32,6 +32,9 @@ var exp_to_next: int = 10
 const BOSSES_TO_CLEAR: int = 3
 const CHAPTER_SOUTH: int = 0
 const CHAPTER_WEST: int = 1
+const CHAPTER_NORTH: int = 2
+const CHAPTER_EAST: int = 3
+const CHAPTER_CENTRAL: int = 4
 
 var current_chapter_index: int = CHAPTER_SOUTH
 var bosses_defeated: int = 0
@@ -93,6 +96,7 @@ func reset_for_new_run(character: String = "fang_xun") -> void:
 	run_deck.clear()
 	# 从 CardDatabase 取该角色的起手卡组
 	var starter_ids: PackedStringArray = CardDatabase.get_starter_deck(character)
+	starter_ids = _apply_active_bookmark(starter_ids)
 	for cid in starter_ids:
 		var c: Card = CardDatabase.get_card(cid)
 		if c != null:
@@ -100,9 +104,30 @@ func reset_for_new_run(character: String = "fang_xun") -> void:
 	deck_changed.emit()
 
 
+func _apply_active_bookmark(starter_ids: PackedStringArray) -> PackedStringArray:
+	var def: Dictionary = GameState.active_bookmark_def()
+	if def.is_empty():
+		return starter_ids
+	var remove_id: String = str(def.get("remove_card", ""))
+	var add_id: String = str(def.get("add_card", ""))
+	if remove_id == "" or add_id == "" or not CardDatabase.has_card(add_id):
+		return starter_ids
+	var result := PackedStringArray()
+	var replaced := false
+	for cid in starter_ids:
+		if not replaced and cid == remove_id:
+			result.append(add_id)
+			replaced = true
+		else:
+			result.append(cid)
+	if not replaced:
+		result.append(add_id)
+	return result
+
+
 
 func has_next_chapter() -> bool:
-	return current_chapter_index < CHAPTER_WEST
+	return current_chapter_index < CHAPTER_CENTRAL
 
 
 func advance_to_next_chapter() -> void:
@@ -113,7 +138,17 @@ func advance_to_next_chapter() -> void:
 	bosses_defeated = 0
 	hp = max_hp
 	energy = max_energy
-	next_battle_enemy_ids = PackedStringArray(["zheng_beast", "tian_gou"])
+	match current_chapter_index:
+		CHAPTER_WEST:
+			next_battle_enemy_ids = PackedStringArray(["zheng_beast", "tian_gou"])
+		CHAPTER_NORTH:
+			next_battle_enemy_ids = PackedStringArray(["he_luo_fish", "fei_yi"])
+		CHAPTER_EAST:
+			next_battle_enemy_ids = PackedStringArray(["dang_kang", "qiu_yu"])
+		CHAPTER_CENTRAL:
+			next_battle_enemy_ids = PackedStringArray(["kui", "tu_lou"])
+		_:
+			next_battle_enemy_ids = PackedStringArray(["hu_diao", "lu_shu"])
 	map_data = {}
 	last_entity_id = ""
 	last_battle_was_boss = false

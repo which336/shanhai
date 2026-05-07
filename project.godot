@@ -12,7 +12,7 @@ config_version=5
 
 config/name="山海拾遗录"
 config/description="肉鸽 + 卡牌构筑 + 山海经文化的单机游戏"
-config/version="0.6.4"
+config/version="0.8.0"
 run/main_scene="res://scenes/main_menu.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -32,7 +32,7 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/size/window_width_override=1280
 window/size/window_height_override=720
-window/stretch/mode="viewport"
+window/stretch/mode="canvas_items"
 
 [rendering]
 

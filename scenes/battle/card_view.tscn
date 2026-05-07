@@ -4,7 +4,7 @@
 
 [node name="CardView" type="PanelContainer"]
 clip_contents = true
-custom_minimum_size = Vector2(176, 236)
+custom_minimum_size = Vector2(148, 198)
 script = ExtResource("1_cv")
 
 [node name="V" type="VBoxContainer" parent="."]
@@ -12,15 +12,15 @@ layout_mode = 2
 theme_override_constants/separation = 4
 
 [node name="Header" type="HBoxContainer" parent="V"]
-custom_minimum_size = Vector2(0, 24)
+custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 
 [node name="Cost" type="Label" parent="V/Header"]
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 theme_override_font_sizes/font_size = 14
 text = "费 1"
-horizontal_alignment = 1
 clip_text = true
 
 [node name="School" type="Label" parent="V/Header"]
@@ -28,13 +28,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 14
 text = "通用"
-horizontal_alignment = 1
+horizontal_alignment = 2
 clip_text = true
 
 [node name="Title" type="Label" parent="V"]
-custom_minimum_size = Vector2(0, 28)
+custom_minimum_size = Vector2(0, 26)
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 text = "卡名"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -42,10 +42,10 @@ clip_text = true
 text_overrun_behavior = 3
 
 [node name="Description" type="Label" parent="V"]
-custom_minimum_size = Vector2(0, 104)
+custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "描述"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -53,9 +53,9 @@ autowrap_mode = 2
 clip_text = true
 
 [node name="Quote" type="Label" parent="V"]
-custom_minimum_size = Vector2(0, 34)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 12
 text = "「原文」"
 horizontal_alignment = 1
 vertical_alignment = 1

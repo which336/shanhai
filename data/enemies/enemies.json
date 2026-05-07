@@ -1,330 +1,749 @@
 [
-  {
-    "id": "hu_diao",
-    "display_name": "迷雾狐裔",
-    "max_hp": 22,
-    "intent_pattern": [
-      "ATTACK:6",
-      "BLOCK:4",
-      "ATTACK:7"
-    ],
-    "classic_quote": "青丘之山有兽焉，其状如狐而九尾，其音如婴儿，能食人。",
-    "translation": "本是青丘九尾狐的远支，被忘川之雾扭曲后失去本性，成了游荡的孤魂。"
-  },
-  {
-    "id": "lu_shu",
-    "display_name": "鹿蜀",
-    "max_hp": 26,
-    "intent_pattern": [
-      "ATTACK:5",
-      "BUFF:1",
-      "ATTACK:8"
-    ],
-    "classic_quote": "杻阳之山有兽焉，其状如马而白首，其文如虎而赤尾，其音如谣，其名曰鹿蜀，佩之宜子孙。（《山海经·南山经》）",
-    "translation": "鹿蜀本是吉兽，传说佩戴它的皮毛可使子孙昌盛。被忘川扰乱后却躁动不安。",
-    "awaken_options": [
-      "鹿蜀形似白头之马，身上有虎纹和赤尾，叫声婉转，佩戴它能使子孙昌盛。",
-      "鹿蜀是西山的凶兽，红身白尾，专门吞食小儿，需以五谷祭祀。",
-      "鹿蜀是夸父的坐骑，曾载夸父逐日，最终力竭而亡。",
-      "鹿蜀生于沧海，鳞身鹿首，鸣声如雷，能呼风唤雨。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "shan.qilin_breath"
-  },
-  {
-    "id": "cong_cong",
-    "display_name": "从从",
-    "max_hp": 18,
-    "intent_pattern": [
-      "ATTACK:4",
-      "ATTACK:4",
-      "BLOCK:6"
-    ],
-    "classic_quote": "栒状之山有兽焉，其状如犬，六足，其名曰从从，其鸣自叫。（《山海经·东山经》）",
-    "translation": "从从是六足犬形之兽，叫声像在自呼其名。被忘川所扰，已分不清同类。"
-  },
-  {
-    "id": "lei_beast",
-    "display_name": "类",
-    "max_hp": 30,
-    "intent_pattern": [
-      "ATTACK:3",
-      "ATTACK:3",
-      "DEBUFF:1",
-      "ATTACK:9"
-    ],
-    "classic_quote": "亶爰之山有兽焉，其状如狸而有髦，其名曰类，自为牝牡，食者不妒。",
-    "translation": "类自含雌雄两性，本象征'和'与'容'。今被忘川扰乱，失去了那份从容。"
-  },
-  {
-    "id": "elite_qiongqi",
-    "display_name": "迷误·穷奇",
-    "max_hp": 56,
-    "is_elite": true,
-    "intent_pattern": [
-      "ATTACK:10",
-      "BUFF:2",
-      "ATTACK:12",
-      "BLOCK:8"
-    ],
-    "classic_quote": "邽山有兽焉，其状如牛，猬毛，名曰穷奇，音如獆狗，是食人。（《山海经·西山经》）",
-    "translation": "穷奇形如刺猬牛，本是守山之兽。今被忘川深度侵蚀，把每一个进入山的人都当成入侵者。",
-    "awaken_options": [
-      "穷奇形如牛，浑身刺猬般的硬毛，叫声似犬吠，本被记为吞噬之兽。",
-      "穷奇是天庭的看门神兽，长着九条尾巴，从不轻易示人。",
-      "穷奇是水中的巨蛇，鳞片金光闪烁，能预知风雨。",
-      "穷奇是龙的远亲，身长十丈，住在西海之底。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "huang.qiongqi_lash"
-  },
-  {
-    "id": "boss_bifang",
-    "display_name": "讹火·毕方",
-    "max_hp": 110,
-    "is_boss": true,
-    "intent_pattern": [
-      "ATTACK:8",
-      "ATTACK:6",
-      "BLOCK:10",
-      "ATTACK:14",
-      "BUFF:2",
-      "ATTACK:6",
-      "ATTACK:6",
-      "BLOCK:8"
-    ],
-    "classic_quote": "章莪之山有鸟焉，其状如鹤，一足，赤文青质而白喙，名曰毕方，其鸣自叫也，见则其邑有讹火。（《山海经·西山经》）",
-    "translation": "毕方是独足赤纹青身白喙的神鸟。原是司守火塘的灵物，被忘川驱使后只剩'讹火'之念，遗忘了它本是温暖人心的火光。",
-    "awaken_options": [
-      "章莪之山有一种鸟，长得像鹤，只有一只脚，身上有红色花纹、青色羽毛和白色的喙，名叫毕方，鸣叫时像在自呼其名，所到之处常有奇异的火光。",
-      "毕方是凤凰的远亲，红羽如焰，鸣声如雷，所到之地祥瑞遍生。",
-      "毕方是大泽之中的怪鸟，三足而长尾，每隔六十年现身一次，预示丰收。",
-      "毕方原是夔的化身，独足而善鸣，能引雷电。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "hai.bifang_dance"
-  },
-  {
-    "id": "boss_bifang_weak",
-    "display_name": "雏火·毕方",
-    "max_hp": 70,
-    "is_boss": true,
-    "intent_pattern": [
-      "ATTACK:6",
-      "BLOCK:8",
-      "ATTACK:8",
-      "ATTACK:5"
-    ],
-    "classic_quote": "毕方者，赤文青质，独足之鸟也。雏火者，初生之火，未盛而易引。",
-    "translation": "刚被忘川扰动、力量尚未稳定的小毕方。比一般 BOSS 容易，但仍是真正的 BOSS。",
-    "awaken_options": [
-      "刚被忘川气息侵染、独足赤纹的雏鸟，鸣声细弱，所到之处偶有微火。",
-      "雏火毕方是穷奇的远亲，凶悍异常，需以五牲祭之。",
-      "雏火其实是火神祝融幼时的别名。",
-      "雏火乃水中之鱼，逆流而上者皆死。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "hai.bifang_dance"
-  },
-  {
-    "id": "boss_bifang_strong",
-    "display_name": "焚岭古毕方",
-    "max_hp": 160,
-    "is_boss": true,
-    "intent_pattern": [
-      "ATTACK:10",
-      "ATTACK:8",
-      "BLOCK:14",
-      "ATTACK:18",
-      "BUFF:3",
-      "ATTACK:10",
-      "DEBUFF:2",
-      "ATTACK:8",
-      "BLOCK:12"
-    ],
-    "classic_quote": "古之毕方，栖焚岭之巅，火气环身千年，鸣则群山为之震。",
-    "translation": "在焚岭岭脊栖息千年的古毕方，气场强大，建议先击败小怪和精英、积累卡组优势后再来。",
-    "awaken_options": [
-      "栖焚岭之巅、火气环身千年的古毕方，是毕方家族中最强者，鸣声可震群山。",
-      "焚岭毕方是九尾狐变形而成的古妖。",
-      "焚岭毕方实际是凤凰之父，以火羽炼成。",
-      "焚岭毕方乃应龙后裔，长有四翼九首。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "hai.bifang_dance"
-  },
-  {
-    "id": "zheng_beast",
-    "display_name": "狰",
-    "max_hp": 28,
-    "intent_pattern": [
-      "ATTACK:7",
-      "ATTACK:5",
-      "DEBUFF:1"
-    ],
-    "classic_quote": "章莪之山有兽焉，其状如赤豹，五尾一角，其音如击石，其名曰狰。",
-    "translation": "狰是赤豹五尾、头生一角的西山异兽，声如击石。",
-    "awaken_options": [
-      "狰状如赤豹，五尾一角，声音像击石。",
-      "狰不是独足火鸟。",
-      "狰不是白首马身。",
-      "狰不是旋龟。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "huang.zheng_pounce"
-  },
-  {
-    "id": "tian_gou",
-    "display_name": "天狗",
-    "max_hp": 32,
-    "intent_pattern": [
-      "BLOCK:6",
-      "ATTACK:8",
-      "ATTACK:6"
-    ],
-    "classic_quote": "阴山有兽焉，其状如狸而白首，名曰天狗，其音如榴榴，可以御凶。",
-    "translation": "天狗本是可御凶的白首灵兽，守夜巡山。",
-    "awaken_options": [
-      "天狗状如狸而白首，声音如榴榴，可御凶。",
-      "天狗不是毕方。",
-      "天狗不是从从。",
-      "天狗不是陆吾。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "hai.tiangou_ward"
-  },
-  {
-    "id": "xuan_gui",
-    "display_name": "旋龟",
-    "max_hp": 36,
-    "intent_pattern": [
-      "BLOCK:10",
-      "ATTACK:6",
-      "BUFF:1",
-      "ATTACK:7"
-    ],
-    "classic_quote": "杻阳之山，怪水出焉，其中多旋龟，其状如龟而鸟首虺尾，其音如判木。",
-    "translation": "旋龟有龟身、鸟首、蛇尾，壳纹如水涡。",
-    "awaken_options": [
-      "旋龟状如龟，鸟首虺尾，声音像劈木。",
-      "旋龟不是赤豹。",
-      "旋龟不是英招。",
-      "旋龟不是天狗。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "hai.xuan_gui_shell"
-  },
-  {
-    "id": "gu_diao",
-    "display_name": "蛊雕",
-    "max_hp": 40,
-    "intent_pattern": [
-      "ATTACK:9",
-      "DEBUFF:1",
-      "ATTACK:11"
-    ],
-    "classic_quote": "鹿吴之山，多蛊雕，其状如雕而有角，其音如婴儿之音。",
-    "translation": "蛊雕似雕而有角，啼声如婴儿。",
-    "awaken_options": [
-      "蛊雕像雕而有角，声音像婴儿啼哭。",
-      "蛊雕不是毕方。",
-      "蛊雕不是从从。",
-      "蛊雕不是鹿蜀。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "huang.gudiao_cry"
-  },
-  {
-    "id": "elite_yingzhao",
-    "display_name": "山巡·英招",
-    "max_hp": 76,
-    "is_elite": true,
-    "intent_pattern": [
-      "ATTACK:12",
-      "BLOCK:10",
-      "BUFF:2",
-      "ATTACK:14"
-    ],
-    "classic_quote": "槐江之山，神英招司之，其状马身而人面，虎文而鸟翼。",
-    "translation": "英招马身人面，虎文鸟翼，巡守天帝平圃。",
-    "awaken_options": [
-      "英招马身人面，虎文鸟翼。",
-      "英招不是旋龟。",
-      "英招不是天狗。",
-      "英招不是毕方。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "shan.yingzhao_patrol"
-  },
-  {
-    "id": "boss_luwu_weak",
-    "display_name": "少司·陆吾",
-    "max_hp": 95,
-    "is_boss": true,
-    "intent_pattern": [
-      "ATTACK:8",
-      "BLOCK:10",
-      "ATTACK:10",
-      "BUFF:1"
-    ],
-    "classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
-    "translation": "初醒的陆吾尚未完全展开九尾，但已能以虎爪守门。",
-    "awaken_options": [
-      "陆吾虎身九尾，人面虎爪。",
-      "陆吾不是狰。",
-      "陆吾不是毕方。",
-      "陆吾不是从从。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "shan.luwu_gate"
-  },
-  {
-    "id": "boss_luwu",
-    "display_name": "昆仑司门·陆吾",
-    "max_hp": 140,
-    "is_boss": true,
-    "intent_pattern": [
-      "ATTACK:10",
-      "BLOCK:14",
-      "ATTACK:12",
-      "DEBUFF:2",
-      "BUFF:2",
-      "ATTACK:14"
-    ],
-    "classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
-    "translation": "守昆仑下都的司门山神，九尾在石门后如旌旗展开。",
-    "awaken_options": [
-      "陆吾为昆仑山神，虎身九尾，人面虎爪。",
-      "陆吾不是巨鱼。",
-      "陆吾不是羽民。",
-      "陆吾不是鹿蜀。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "shan.luwu_gate"
-  },
-  {
-    "id": "boss_luwu_strong",
-    "display_name": "九尾镇岳·陆吾",
-    "max_hp": 205,
-    "is_boss": true,
-    "intent_pattern": [
-      "ATTACK:12",
-      "BLOCK:16",
-      "ATTACK:18",
-      "BUFF:3",
-      "DEBUFF:2",
-      "ATTACK:16",
-      "BLOCK:12"
-    ],
-    "classic_quote": "陆吾司天之九部及帝之囿时，虎身九尾，人面虎爪，威镇昆仑。",
-    "translation": "九尾镇岳形态的陆吾，既是守门者也是审问者。",
-    "awaken_options": [
-      "陆吾司天之九部与帝之囿时，虎身九尾，人面虎爪。",
-      "陆吾不是狰。",
-      "陆吾不是蛊雕。",
-      "陆吾不是旋龟。"
-    ],
-    "awaken_correct_index": 0,
-    "awaken_card_id": "shan.luwu_gate"
-  }
+	{
+		"id": "hu_diao",
+		"display_name": "迷雾狐裔",
+		"max_hp": 22,
+		"intent_pattern": [
+			"ATTACK:6",
+			"BLOCK:4",
+			"ATTACK:7"
+		],
+		"classic_quote": "青丘之山有兽焉，其状如狐而九尾，其音如婴儿，能食人。",
+		"translation": "本是青丘九尾狐的远支，被忘川之雾扭曲后失去本性，成了游荡的孤魂。"
+	},
+	{
+		"id": "lu_shu",
+		"display_name": "鹿蜀",
+		"max_hp": 26,
+		"intent_pattern": [
+			"ATTACK:5",
+			"BUFF:1",
+			"ATTACK:8"
+		],
+		"classic_quote": "杻阳之山有兽焉，其状如马而白首，其文如虎而赤尾，其音如谣，其名曰鹿蜀，佩之宜子孙。（《山海经·南山经》）",
+		"translation": "鹿蜀本是吉兽，传说佩戴它的皮毛可使子孙昌盛。被忘川扰乱后却躁动不安。",
+		"awaken_options": [
+			"鹿蜀形似白头之马，身上有虎纹和赤尾，叫声婉转，佩戴它能使子孙昌盛。",
+			"鹿蜀是西山的凶兽，红身白尾，专门吞食小儿，需以五谷祭祀。",
+			"鹿蜀是夸父的坐骑，曾载夸父逐日，最终力竭而亡。",
+			"鹿蜀生于沧海，鳞身鹿首，鸣声如雷，能呼风唤雨。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.qilin_breath"
+	},
+	{
+		"id": "cong_cong",
+		"display_name": "从从",
+		"max_hp": 18,
+		"intent_pattern": [
+			"ATTACK:4",
+			"ATTACK:4",
+			"BLOCK:6"
+		],
+		"classic_quote": "栒状之山有兽焉，其状如犬，六足，其名曰从从，其鸣自叫。（《山海经·东山经》）",
+		"translation": "从从是六足犬形之兽，叫声像在自呼其名。被忘川所扰，已分不清同类。"
+	},
+	{
+		"id": "lei_beast",
+		"display_name": "类",
+		"max_hp": 30,
+		"intent_pattern": [
+			"ATTACK:3",
+			"ATTACK:3",
+			"DEBUFF:1",
+			"ATTACK:9"
+		],
+		"classic_quote": "亶爰之山有兽焉，其状如狸而有髦，其名曰类，自为牝牡，食者不妒。",
+		"translation": "类自含雌雄两性，本象征'和'与'容'。今被忘川扰乱，失去了那份从容。"
+	},
+	{
+		"id": "elite_qiongqi",
+		"display_name": "迷误·穷奇",
+		"max_hp": 56,
+		"is_elite": true,
+		"intent_pattern": [
+			"ATTACK:10",
+			"BUFF:2",
+			"ATTACK:12",
+			"BLOCK:8"
+		],
+		"classic_quote": "邽山有兽焉，其状如牛，猬毛，名曰穷奇，音如獆狗，是食人。（《山海经·西山经》）",
+		"translation": "穷奇形如刺猬牛，本是守山之兽。今被忘川深度侵蚀，把每一个进入山的人都当成入侵者。",
+		"awaken_options": [
+			"穷奇形如牛，浑身刺猬般的硬毛，叫声似犬吠，本被记为吞噬之兽。",
+			"穷奇是天庭的看门神兽，长着九条尾巴，从不轻易示人。",
+			"穷奇是水中的巨蛇，鳞片金光闪烁，能预知风雨。",
+			"穷奇是龙的远亲，身长十丈，住在西海之底。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.qiongqi_lash"
+	},
+	{
+		"id": "boss_bifang",
+		"display_name": "讹火·毕方",
+		"max_hp": 110,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:8",
+			"ATTACK:6",
+			"BLOCK:10",
+			"ATTACK:14",
+			"BUFF:2",
+			"ATTACK:6",
+			"ATTACK:6",
+			"BLOCK:8"
+		],
+		"classic_quote": "章莪之山有鸟焉，其状如鹤，一足，赤文青质而白喙，名曰毕方，其鸣自叫也，见则其邑有讹火。（《山海经·西山经》）",
+		"translation": "毕方是独足赤纹青身白喙的神鸟。原是司守火塘的灵物，被忘川驱使后只剩'讹火'之念，遗忘了它本是温暖人心的火光。",
+		"awaken_options": [
+			"章莪之山有一种鸟，长得像鹤，只有一只脚，身上有红色花纹、青色羽毛和白色的喙，名叫毕方，鸣叫时像在自呼其名，所到之处常有奇异的火光。",
+			"毕方是凤凰的远亲，红羽如焰，鸣声如雷，所到之地祥瑞遍生。",
+			"毕方是大泽之中的怪鸟，三足而长尾，每隔六十年现身一次，预示丰收。",
+			"毕方原是夔的化身，独足而善鸣，能引雷电。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.bifang_dance"
+	},
+	{
+		"id": "boss_bifang_weak",
+		"display_name": "雏火·毕方",
+		"max_hp": 70,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:6",
+			"BLOCK:8",
+			"ATTACK:8",
+			"ATTACK:5"
+		],
+		"classic_quote": "毕方者，赤文青质，独足之鸟也。雏火者，初生之火，未盛而易引。",
+		"translation": "刚被忘川扰动、力量尚未稳定的小毕方。比一般 BOSS 容易，但仍是真正的 BOSS。",
+		"awaken_options": [
+			"刚被忘川气息侵染、独足赤纹的雏鸟，鸣声细弱，所到之处偶有微火。",
+			"雏火毕方是穷奇的远亲，凶悍异常，需以五牲祭之。",
+			"雏火其实是火神祝融幼时的别名。",
+			"雏火乃水中之鱼，逆流而上者皆死。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.bifang_dance"
+	},
+	{
+		"id": "boss_bifang_strong",
+		"display_name": "焚岭古毕方",
+		"max_hp": 160,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:10",
+			"ATTACK:8",
+			"BLOCK:14",
+			"ATTACK:18",
+			"BUFF:3",
+			"ATTACK:10",
+			"DEBUFF:2",
+			"ATTACK:8",
+			"BLOCK:12"
+		],
+		"classic_quote": "古之毕方，栖焚岭之巅，火气环身千年，鸣则群山为之震。",
+		"translation": "在焚岭岭脊栖息千年的古毕方，气场强大，建议先击败小怪和精英、积累卡组优势后再来。",
+		"awaken_options": [
+			"栖焚岭之巅、火气环身千年的古毕方，是毕方家族中最强者，鸣声可震群山。",
+			"焚岭毕方是九尾狐变形而成的古妖。",
+			"焚岭毕方实际是凤凰之父，以火羽炼成。",
+			"焚岭毕方乃应龙后裔，长有四翼九首。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.bifang_dance"
+	},
+	{
+		"id": "zheng_beast",
+		"display_name": "狰",
+		"max_hp": 28,
+		"intent_pattern": [
+			"ATTACK:7",
+			"ATTACK:5",
+			"DEBUFF:1"
+		],
+		"classic_quote": "章莪之山有兽焉，其状如赤豹，五尾一角，其音如击石，其名曰狰。",
+		"translation": "狰是赤豹五尾、头生一角的西山异兽，声如击石。",
+		"awaken_options": [
+			"狰状如赤豹，五尾一角，声音像击石。",
+			"狰不是独足火鸟。",
+			"狰不是白首马身。",
+			"狰不是旋龟。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.zheng_pounce"
+	},
+	{
+		"id": "tian_gou",
+		"display_name": "天狗",
+		"max_hp": 32,
+		"intent_pattern": [
+			"BLOCK:6",
+			"ATTACK:8",
+			"ATTACK:6"
+		],
+		"classic_quote": "阴山有兽焉，其状如狸而白首，名曰天狗，其音如榴榴，可以御凶。",
+		"translation": "天狗本是可御凶的白首灵兽，守夜巡山。",
+		"awaken_options": [
+			"天狗状如狸而白首，声音如榴榴，可御凶。",
+			"天狗不是毕方。",
+			"天狗不是从从。",
+			"天狗不是陆吾。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.tiangou_ward"
+	},
+	{
+		"id": "xuan_gui",
+		"display_name": "旋龟",
+		"max_hp": 36,
+		"intent_pattern": [
+			"BLOCK:10",
+			"ATTACK:6",
+			"BUFF:1",
+			"ATTACK:7"
+		],
+		"classic_quote": "杻阳之山，怪水出焉，其中多旋龟，其状如龟而鸟首虺尾，其音如判木。",
+		"translation": "旋龟有龟身、鸟首、蛇尾，壳纹如水涡。",
+		"awaken_options": [
+			"旋龟状如龟，鸟首虺尾，声音像劈木。",
+			"旋龟不是赤豹。",
+			"旋龟不是英招。",
+			"旋龟不是天狗。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.xuan_gui_shell"
+	},
+	{
+		"id": "gu_diao",
+		"display_name": "蛊雕",
+		"max_hp": 40,
+		"intent_pattern": [
+			"ATTACK:9",
+			"DEBUFF:1",
+			"ATTACK:11"
+		],
+		"classic_quote": "鹿吴之山，多蛊雕，其状如雕而有角，其音如婴儿之音。",
+		"translation": "蛊雕似雕而有角，啼声如婴儿。",
+		"awaken_options": [
+			"蛊雕像雕而有角，声音像婴儿啼哭。",
+			"蛊雕不是毕方。",
+			"蛊雕不是从从。",
+			"蛊雕不是鹿蜀。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.gudiao_cry"
+	},
+	{
+		"id": "elite_yingzhao",
+		"display_name": "山巡·英招",
+		"max_hp": 76,
+		"is_elite": true,
+		"intent_pattern": [
+			"ATTACK:12",
+			"BLOCK:10",
+			"BUFF:2",
+			"ATTACK:14"
+		],
+		"classic_quote": "槐江之山，神英招司之，其状马身而人面，虎文而鸟翼。",
+		"translation": "英招马身人面，虎文鸟翼，巡守天帝平圃。",
+		"awaken_options": [
+			"英招马身人面，虎文鸟翼。",
+			"英招不是旋龟。",
+			"英招不是天狗。",
+			"英招不是毕方。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.yingzhao_patrol"
+	},
+	{
+		"id": "boss_luwu_weak",
+		"display_name": "少司·陆吾",
+		"max_hp": 95,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:8",
+			"BLOCK:10",
+			"ATTACK:10",
+			"BUFF:1"
+		],
+		"classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
+		"translation": "初醒的陆吾尚未完全展开九尾，但已能以虎爪守门。",
+		"awaken_options": [
+			"陆吾虎身九尾，人面虎爪。",
+			"陆吾不是狰。",
+			"陆吾不是毕方。",
+			"陆吾不是从从。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.luwu_gate"
+	},
+	{
+		"id": "boss_luwu",
+		"display_name": "昆仑司门·陆吾",
+		"max_hp": 140,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:10",
+			"BLOCK:14",
+			"ATTACK:12",
+			"DEBUFF:2",
+			"BUFF:2",
+			"ATTACK:14"
+		],
+		"classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
+		"translation": "守昆仑下都的司门山神，九尾在石门后如旌旗展开。",
+		"awaken_options": [
+			"陆吾为昆仑山神，虎身九尾，人面虎爪。",
+			"陆吾不是巨鱼。",
+			"陆吾不是羽民。",
+			"陆吾不是鹿蜀。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.luwu_gate"
+	},
+	{
+		"id": "boss_luwu_strong",
+		"display_name": "九尾镇岳·陆吾",
+		"max_hp": 205,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:12",
+			"BLOCK:16",
+			"ATTACK:18",
+			"BUFF:3",
+			"DEBUFF:2",
+			"ATTACK:16",
+			"BLOCK:12"
+		],
+		"classic_quote": "陆吾司天之九部及帝之囿时，虎身九尾，人面虎爪，威镇昆仑。",
+		"translation": "九尾镇岳形态的陆吾，既是守门者也是审问者。",
+		"awaken_options": [
+			"陆吾司天之九部与帝之囿时，虎身九尾，人面虎爪。",
+			"陆吾不是狰。",
+			"陆吾不是蛊雕。",
+			"陆吾不是旋龟。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.luwu_gate"
+	},
+	{
+		"id": "he_luo_fish",
+		"display_name": "河罗鱼",
+		"max_hp": 42,
+		"intent_pattern": [
+			"DEBUFF:1",
+			"ATTACK:7",
+			"BLOCK:6"
+		],
+		"classic_quote": "有鱼焉，其状如一首而十身，其音如吠犬。",
+		"translation": "河罗鱼一首十身，声如犬吠，栖于北山寒水。",
+		"awaken_options": [
+			"数它有几具身体",
+			"跟随犬吠辨水路",
+			"投石惊散鱼群"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "hai.heluo_ally"
+	},
+	{
+		"id": "fei_yi",
+		"display_name": "肥遗",
+		"max_hp": 46,
+		"intent_pattern": [
+			"ATTACK:8",
+			"BUFF:2",
+			"ATTACK:10"
+		],
+		"classic_quote": "有蛇焉，一首两身，名曰肥遗。",
+		"translation": "肥遗一首两身，常被写作灾异先兆。",
+		"awaken_options": [
+			"从两身之间退开",
+			"用火逼它入水",
+			"追逐其中一尾"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.feiyi_ally"
+	},
+	{
+		"id": "zhuhuai",
+		"display_name": "诸怀",
+		"max_hp": 54,
+		"intent_pattern": [
+			"BLOCK:8",
+			"ATTACK:9",
+			"DEBUFF:1"
+		],
+		"classic_quote": "其状如牛而四角，人目彘耳，其名曰诸怀。",
+		"translation": "诸怀如牛四角、人目猪耳，凶猛而善守。",
+		"awaken_options": [
+			"正面角力",
+			"对视其人目并报出名字",
+			"敲击四角"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "shan.zhuhuai_ally"
+	},
+	{
+		"id": "xiao_beast",
+		"display_name": "嚣",
+		"max_hp": 40,
+		"intent_pattern": [
+			"ATTACK:6",
+			"DEBUFF:1",
+			"ATTACK:9"
+		],
+		"classic_quote": "有鸟焉，四翼、一目、犬尾，名曰嚣。",
+		"translation": "嚣四翼一目，犬尾，声音扰乱旅人的方向。",
+		"awaken_options": [
+			"遮住它唯一的眼",
+			"记下叫声的回音",
+			"折断四翼"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "hai.xiao_ally"
+	},
+	{
+		"id": "elite_xiangliu_shadow",
+		"display_name": "相柳毒影",
+		"max_hp": 96,
+		"is_elite": true,
+		"intent_pattern": [
+			"DEBUFF:2",
+			"ATTACK:13",
+			"ATTACK:10",
+			"BUFF:2"
+		],
+		"classic_quote": "相柳氏九首，食于九山，所触皆泽。",
+		"translation": "相柳九首，毒泽蔓延，是北方水患记忆的阴影。",
+		"awaken_options": [
+			"逐一斩首",
+			"先封住毒泽源头",
+			"饮其毒水"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "huang.xiangliu_ally"
+	},
+	{
+		"id": "boss_zhulong_weak",
+		"display_name": "微明·烛龙",
+		"max_hp": 120,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:12",
+			"DEBUFF:1",
+			"BLOCK:12"
+		],
+		"classic_quote": "钟山之神，名曰烛阴，视为昼，瞑为夜。",
+		"translation": "烛龙睁眼为昼、闭眼为夜，微明阶段仍牵动寒暑。",
+		"awaken_options": [
+			"等待它闭眼",
+			"以昼夜次序呼其名",
+			"强攻龙首"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "hai.zhulong_ally"
+	},
+	{
+		"id": "boss_zhulong",
+		"display_name": "玄渊·烛龙",
+		"max_hp": 168,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:15",
+			"DEBUFF:2",
+			"ATTACK:18",
+			"BLOCK:16"
+		],
+		"classic_quote": "不食不寝不息，风雨是谒。",
+		"translation": "烛龙不食不寝，呼吸之间带来风雨寒暑。",
+		"awaken_options": [
+			"顺着呼吸退让",
+			"记录风雨节律再接近",
+			"用火照亮深渊"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "hai.zhulong_ally"
+	},
+	{
+		"id": "boss_zhulong_strong",
+		"display_name": "昼夜镇渊·烛龙",
+		"max_hp": 218,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:18",
+			"DEBUFF:2",
+			"BUFF:3",
+			"ATTACK:24"
+		],
+		"classic_quote": "视为昼，瞑为夜，吹为冬，呼为夏。",
+		"translation": "烛龙开合眼目便分昼夜，吹呼之间转动冬夏。",
+		"awaken_options": [
+			"争夺昼夜主导",
+			"在昼夜交界处唤醒记忆",
+			"躲入永夜"
+		],
+		"awaken_correct_index": 1,
+		"awaken_card_id": "hai.zhulong_ally"
+	},
+	{
+		"id": "dang_kang",
+		"display_name": "当康",
+		"max_hp": 48,
+		"intent_pattern": [
+			"BLOCK:8",
+			"ATTACK:8",
+			"BUFF:2"
+		],
+		"classic_quote": "钦山有兽焉，其状如豚而有牙，其名曰当康，其鸣自叫，见则天下大穰。（《山海经·东山经》）",
+		"translation": "当康是豚形有牙的丰穰瑞兽，鸣叫像在自呼其名，象征收成与希望。",
+		"awaken_options": [
+			"当康形如豚而有牙，鸣声自呼其名，出现预示丰穰。",
+			"当康是一首十身的水鱼，声如犬吠。",
+			"当康是四翼一目的异鸟，犬尾扰路。",
+			"当康是九首毒影，所触皆泽。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.dangkang_harvest"
+	},
+	{
+		"id": "qiu_yu",
+		"display_name": "犰狳",
+		"max_hp": 44,
+		"intent_pattern": [
+			"DEBUFF:1",
+			"ATTACK:7",
+			"BLOCK:7"
+		],
+		"classic_quote": "有兽焉，其状如菟而鸟喙，鸱目蛇尾，见人则眠，名曰犰狳，其鸣自叫，见则螽蝗为败。（《山海经·东山经》）",
+		"translation": "犰狳形如兔而鸟喙、鸱目蛇尾，见人则眠，常与虫害败谷的预兆相连。",
+		"awaken_options": [
+			"犰狳形如兔而鸟喙、鸱目蛇尾，见人则眠。",
+			"犰狳虎身九尾，人面虎爪，司守昆仑。",
+			"犰狳是独足赤纹青身白喙之鸟。",
+			"犰狳一首两身，常为灾异先兆。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.qiuyu_sleep"
+	},
+	{
+		"id": "ling_ling",
+		"display_name": "軨軨",
+		"max_hp": 58,
+		"intent_pattern": [
+			"ATTACK:9",
+			"DEBUFF:1",
+			"ATTACK:11"
+		],
+		"classic_quote": "空桑之山有兽焉，其状如牛而虎文，其音如钦，其名曰軨軨，其鸣自叫，见则天下大水。（《山海经·东山经》）",
+		"translation": "軨軨形如牛而有虎纹，声音低沉，出现常被记为大水之兆。",
+		"awaken_options": [
+			"軨軨形如牛而虎文，鸣声自呼其名，出现预示大水。",
+			"軨軨形如豚而有牙，出现预示丰穰。",
+			"軨軨形如狐而鱼翼，出现使人恐惧。",
+			"軨軨是青丘九尾狐的远支。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.lingling_floodcall"
+	},
+	{
+		"id": "zhu_ru",
+		"display_name": "朱獳",
+		"max_hp": 50,
+		"intent_pattern": [
+			"ATTACK:8",
+			"BUFF:2",
+			"ATTACK:10"
+		],
+		"classic_quote": "耿山有兽焉，其状如狐而鱼翼，其名曰朱獳，其鸣自叫，见则其国有恐。（《山海经·东山经》）",
+		"translation": "朱獳形如狐而有鱼翼，鸣声自呼其名，常与恐惧的预兆相连。",
+		"awaken_options": [
+			"朱獳形如狐而有鱼翼，出现则其国有恐。",
+			"朱獳一首十身，声如犬吠。",
+			"朱獳虎身九尾，掌九部与帝之囿时。",
+			"朱獳四角人目，猪耳善守。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.zhuru_fright"
+	},
+	{
+		"id": "elite_yinglong_young",
+		"display_name": "应龙幼影",
+		"max_hp": 118,
+		"is_elite": true,
+		"intent_pattern": [
+			"BLOCK:12",
+			"ATTACK:14",
+			"BUFF:2",
+			"ATTACK:16"
+		],
+		"classic_quote": "应龙已杀蚩尤，又杀夸父，乃去南方处之，故南方多雨。（《山海经·大荒东经》）",
+		"translation": "应龙是有翼之龙，与雨泽和开路记忆相连；本章按东方青龙主题借用其雨泽意象。",
+		"awaken_options": [
+			"应龙为有翼之龙，常与雨泽和开路记忆相连。",
+			"应龙形如豚而有牙，鸣声自呼。",
+			"应龙形如兔而鸟喙、鸱目蛇尾。",
+			"应龙是四翼一目的异鸟。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.yinglong_rainpath"
+	},
+	{
+		"id": "boss_qinglong_weak",
+		"display_name": "初鳞·青龙",
+		"max_hp": 150,
+		"is_boss": true,
+		"intent_pattern": [
+			"BLOCK:14",
+			"ATTACK:14",
+			"BUFF:2"
+		],
+		"classic_quote": "东方青龙，主春与木，行雨而发生万物。",
+		"translation": "初醒的青龙只露出少量青鳞，仍能牵动春雷与新芽。",
+		"awaken_options": [
+			"青龙属东方木象，和春、雨、生发相连。",
+			"青龙是一首十身的北山寒鱼。",
+			"青龙是昆仑山的虎身九尾守门神。",
+			"青龙是独足火鸟，见则讹火。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.qinglong_ally"
+	},
+	{
+		"id": "boss_qinglong",
+		"display_name": "雨令·青龙",
+		"max_hp": 198,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:17",
+			"BLOCK:18",
+			"DEBUFF:2",
+			"ATTACK:20"
+		],
+		"classic_quote": "东方青龙，主春与木，行雨而发生万物。",
+		"translation": "雨令形态的青龙已经能让草木随呼吸伏起，玩家需要用东山卡池稳住节奏。",
+		"awaken_options": [
+			"青龙象征东方、木气与春雨，能唤起生发之力。",
+			"青龙是白首犬形、可御凶的天狗。",
+			"青龙是九首毒影，所触皆泽。",
+			"青龙是形如牛而四角、人目猪耳的诸怀。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.qinglong_ally"
+	},
+	{
+		"id": "boss_qinglong_strong",
+		"display_name": "春雷镇原·青龙",
+		"max_hp": 252,
+		"is_boss": true,
+		"intent_pattern": [
+			"ATTACK:22",
+			"BUFF:3",
+			"BLOCK:24",
+			"DEBUFF:2",
+			"ATTACK:28"
+		],
+		"classic_quote": "东方青龙，主春与木，行雨而发生万物。",
+		"translation": "完整醒来的东方青龙，雷雨、木气与希望同时汇聚，是 v0.7 东山最终压力来源。",
+		"awaken_options": [
+			"完整青龙统合春雷、雨泽和木气，象征东方生发。",
+			"完整青龙视为昼、瞑为夜，吹为冬、呼为夏。",
+			"完整青龙似雕而有角，声如婴啼。",
+			"完整青龙形如兔而鸟喙，见人则眠。"
+		],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.qinglong_ally"
+	},
+	{
+		"id": "kui",
+		"display_name": "夔",
+		"max_hp": 62,
+		"intent_pattern": ["ATTACK:12", "BUFF:1", "ATTACK:16"],
+		"classic_quote": "状如牛，苍身而无角，一足，出入水则必风雨，其光如日月，其声如雷，名曰夔。",
+		"translation": "夔见于大荒经系统，本章按雷鼓震动中央土坛的主题借用。",
+		"awaken_options": ["夔以一足与雷声为主要特征。", "夔是三足鸟。", "夔没有声音。", "夔只出现在海底。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.kui_thunder_drum"
+	},
+	{
+		"id": "tu_lou",
+		"display_name": "土蝼",
+		"max_hp": 58,
+		"intent_pattern": ["BLOCK:10", "ATTACK:11", "DEBUFF:1"],
+		"classic_quote": "有兽焉，其状如羊而四角，名曰土蝼，是食人。",
+		"translation": "土蝼原出西山，v0.8 按中山土德和守阶意象主题借用。",
+		"awaken_options": ["土蝼如羊而四角。", "土蝼是无角鱼。", "土蝼只治水。", "土蝼是树木精怪。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.tulou_guard"
+	},
+	{
+		"id": "jiao_beast",
+		"display_name": "狡",
+		"max_hp": 54,
+		"intent_pattern": ["ATTACK:10", "DEBUFF:1", "ATTACK:13"],
+		"classic_quote": "有兽焉，其状如犬而豹文，其角如牛，其名曰狡。",
+		"translation": "狡原有丰年兆象，本章作为中央归一前的预兆主题借用。",
+		"awaken_options": ["狡犬形、豹文、牛角。", "狡无角无纹。", "狡是水鸟。", "狡只在北海。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "huang.jiao_warning"
+	},
+	{
+		"id": "wen_lin",
+		"display_name": "闻獜",
+		"max_hp": 50,
+		"intent_pattern": ["BLOCK:8", "ATTACK:9", "BUFF:1"],
+		"classic_quote": "有兽焉，其名曰闻獜，行则循山泽之路。",
+		"translation": "闻獜作为识路主题条目接入中山，后续校勘继续保留真实出处字段。",
+		"awaken_options": ["闻獜在本章承担识路与归一的主题。", "闻獜是中山最终 Boss。", "闻獜不参与图鉴。", "闻獜替代麒麟。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.wenlin_path"
+	},
+	{
+		"id": "elite_ji_meng",
+		"display_name": "计蒙",
+		"max_hp": 138,
+		"is_elite": true,
+		"intent_pattern": ["ATTACK:16", "DEBUFF:2", "BLOCK:18", "ATTACK:20"],
+		"classic_quote": "有神，人身而龙首，名曰计蒙。",
+		"translation": "计蒙为龙首人身之神，本章以雨令调和中土。",
+		"awaken_options": ["计蒙常以人身龙首描述。", "计蒙是无首之兽。", "计蒙专司兵器。", "计蒙是麒麟别名。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "hai.jimeng_rain_order"
+	},
+	{
+		"id": "boss_qilin_weak",
+		"display_name": "玉角·麒麟",
+		"max_hp": 175,
+		"is_boss": true,
+		"intent_pattern": ["BLOCK:16", "ATTACK:16", "BUFF:2"],
+		"classic_quote": "毛虫三百六十，而麒麟为之长。",
+		"translation": "麒麟作为仁兽与统合意象，承担中山 Boss 三档的弱档。",
+		"awaken_options": ["麒麟在本章代表中央归一。", "麒麟是东山普通敌。", "麒麟不属于图鉴。", "麒麟只用于商店。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "shan.qilin_virtue"
+	},
+	{
+		"id": "boss_qilin",
+		"display_name": "土德·麒麟",
+		"max_hp": 235,
+		"is_boss": true,
+		"intent_pattern": ["ATTACK:20", "BLOCK:22", "DEBUFF:2", "ATTACK:24"],
+		"classic_quote": "麟，仁兽也。",
+		"translation": "中档麒麟以土德调停五方，维持方圆秩序。",
+		"awaken_options": ["土德麒麟调停五方。", "土德麒麟开放祖父书房。", "土德麒麟是北山 Boss。", "土德麒麟不掉落卡牌。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "neutral.five_realm_harmony"
+	},
+	{
+		"id": "boss_qilin_strong",
+		"display_name": "五境归一·麒麟",
+		"max_hp": 300,
+		"is_boss": true,
+		"intent_pattern": ["ATTACK:26", "BUFF:3", "BLOCK:28", "DEBUFF:2", "ATTACK:32"],
+		"classic_quote": "麒麟出而天下安宁。",
+		"translation": "强档麒麟用于触发 v0.8 五境净化结算，不开放后续 Meta。",
+		"awaken_options": ["击败强档麒麟后触发五境净化。", "击败强档麒麟后进入第六章。", "强档麒麟属于第一章。", "强档麒麟没有出处字段。"],
+		"awaken_correct_index": 0,
+		"awaken_card_id": "neutral.five_realm_harmony"
+	}
 ]
