@@ -1,3 +1,72 @@
+## v0.14 - 2026-05-10
+
+- Bumped the project/export/menu metadata to `0.14.0` for the portfolio and GDD baseline.
+- Added a portfolio pitch document with demo-video script, resume bullets, GDD excerpt guidance, and delivery checklist.
+- Updated README's first screen to present the project as a playable portfolio prototype.
+- Deleted the obsolete MVP plan document and made the GDD the long-term design source.
+- Integrated the May 9-10 art pass: refreshed top-down/isometric sprites for playable characters, enemies, elites, bosses, and map props such as shop, rest stop, treasure, event, and fragments.
+- Fixed returning from the map to the main menu so long-term progress is saved first.
+- Updated the CJK font fallback stack to avoid heavy SimHei-style title rendering.
+
+## v0.13 - 2026-05-09
+
+- Added small playtest delivery flow without expanding card, enemy, or event content.
+- Added a main-menu tutorial entry and a lightweight tutorial scene covering exploration, dual views, map nodes, card combat, codex learning, event markers, and finale conditions.
+- Added a settings scene for BGM volume, SFX volume, fullscreen/windowed mode, and dev-tool visibility.
+- Normalized `GameState.settings` defaults for old-save compatibility: `bgm_volume`, `sfx_volume`, `fullscreen`, `show_dev_tools`, and `tutorial_seen`.
+- Applied BGM/SFX settings through `AudioEngine`, and made fullscreen/dev-tool settings take effect at runtime.
+- Hid obvious dev tools by default: codex unlock-all and map jump/debug controls now follow `show_dev_tools`.
+- Updated main-menu info with codex completion, learned codex progress, and best ending.
+- Updated version/export metadata to `0.13.0` and playtest export path `山海拾遗录_v0.13.0_playtest.exe`.
+- Added `PLAYTEST.md` and `tools/v13_playtest_smoke.gd` for playtest instructions and regression coverage.
+
+## v0.12 - 2026-05-09
+
+- Added the standalone `忘川之心` finale scene after Chapter 5 final clear, with a five-part terminal dialogue flow and return to the Grandfather Study.
+- Added event `ending_marker` data for every event option, using the fixed marker set `guard / companion / practical`.
+- Added run-scoped ending marker tracking in `RunState`; markers reset on new runs and do not enter long-term save data.
+- Added three ending outcomes: `残响未明`, `五境净化`, and `山海重明`, judged by valid codex completion plus guard/companion marker count.
+- Added lightweight long-term ending collection fields to `GameState`: seen endings and best ending rank, shown in the Grandfather Study.
+- Added `tools/v12_finale_smoke.gd` for marker coverage, marker lifecycle, ending thresholds, save compatibility, and Chapter 5 -> finale -> study-room flow.
+- Fixed SceneTree smoke runner startup by using `_initialize()` / `process_frame`, and removed compile-time `GameState`/`RunState` autoload cycles from core state scripts.
+- Updated project/export/menu metadata to v0.12 / 0.12.0.
+- Removed the intrusive gold guide lines from the finale scene.
+- Added codex learning progress: opening unlocked entries marks them as learned, the codex now has learning overview / unlearned review / ending-condition explanation panels, and learned state persists in `GameState`.
+- Expanded v0.12 smoke coverage for codex learning persistence and finale judgement explanation.
+
+## v0.11 - 2026-05-08
+
+- Added three playable characters: 阿离（九尾狐裔）, 洛泠（海经行者）, and 桑岐（扶桑守望）, with unlock/activation state in GameState and old-save fallback to 方寻.
+- Added 18 character route cards, expanding the card database to 92 cards and the card+enemy codex total to 132.
+- Added character-specific starter decks, shop/treasure character card pools, and top-down/isometric placeholder PNG sprite sheets for all three added characters.
+- Extended the study room UI to manage playable characters alongside bookmarks.
+- Added `tools/v11_character_smoke.gd` and updated v0.6/v0.8/v0.10 checks for v0.11 counts and final-clear copy.
+- Updated project/export/menu/final-clear version metadata to v0.11 / 0.11.0.
+
+## v0.10 - 2026-05-08
+
+- Added the first structured deckbuilding keyword pass for all 74 cards through `keywords: Array[String]`.
+- Locked six school keywords: Shan `根脉 / 生息`, Hai `潮涌 / 湿润`, and Huang `凶势 / 血祭`.
+- Updated card data so school cards expose short keyword tags while keeping neutral cards outside the school keyword system.
+- Updated card UI to show keyword tags without covering cost, school mark, card type, or rarity.
+- Updated codex UI with keyword colors and detailed keyword rule explanations.
+- Changed blood-sacrifice self damage to route through the player damage path, so shield absorbs it before HP loss.
+- Fixed codex progress counting so stale or smoke-test keys such as `smoke.codex.*` cannot make progress exceed the real `74 cards + 40 beasts = 114` total.
+- Lowered exploration walk speed and added hold-`Shift` sprint; sprint is close to the previous top speed while normal movement is slower.
+- Updated project/export/menu/final-clear version metadata to v0.10 / 0.10.0.
+- Added `tools/v10_keyword_smoke.gd` for keyword legality, payload consistency, card UI labels, codex rules, codex count pruning, and blood-sacrifice shield behavior.
+- Extended existing smoke coverage for valid bookmark/codex unlock data and map movement speed.
+
+## v0.9 - 2026-05-08
+
+- Added the Grandfather Study meta screen and main-menu/stage-clear entry points.
+- Added bookmark meta progression with unlock, activation, save/load compatibility, and starter-deck replacement.
+- Reworked battle presentation with larger themed backgrounds, full-screen battle staging, enemy detail panel, animated player/enemy sprites, floating damage/block text, and fan-style hand layout.
+- Changed battle hand rules to no hand limit, retain hand between turns, draw 4 on the first turn and 2 each later turn, with 10 cards per hand page.
+- Added generated background assets for the five chapter battle scenes, main menu, study room, and shared card frame.
+- Added codex developer unlock-all support.
+- Added `tools/v09_smoke_check.gd` for study room, bookmark flow, starter replacement, save compatibility, final-clear routing, battle presentation, hand rules, and responsive layout.
+
 ## v0.8.0 - 2026-05-06
 
 - Added Chapter 5 `中山 · 麒麟台` as an internal development chapter, extending progression through South, West, North, East, and Central.

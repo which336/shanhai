@@ -5,11 +5,20 @@ extends Node
 signal hp_changed(hp: int, max_hp: int)
 signal energy_changed(energy: int, max_energy: int)
 signal deck_changed()
+signal ending_markers_changed(markers: Dictionary)
 
 const MAX_HP_INIT: int = 70
 const MAX_ENERGY_INIT: int = 3
 const INITIAL_HAND_COUNT: int = 4      # 战斗开始时的起手牌数
 const PER_TURN_DRAW_COUNT: int = 2     # 第 2 回合起每回合追加摸牌数
+const ENDING_MARKER_GUARD: String = "guard"
+const ENDING_MARKER_COMPANION: String = "companion"
+const ENDING_MARKER_PRACTICAL: String = "practical"
+const ENDING_MARKERS: Array[String] = [
+	"guard",
+	"companion",
+	"practical",
+]
 
 var character_id: String = "fang_xun"
 var hp: int = MAX_HP_INIT
@@ -50,6 +59,11 @@ var return_after_codex: String = ""
 var map_view_mode: int = 0             # 0 = top-down, 1 = isometric
 
 var seed_value: int = 0                 # 本局随机种子
+var ending_markers: Dictionary = {
+	ENDING_MARKER_GUARD: 0,
+	ENDING_MARKER_COMPANION: 0,
+	ENDING_MARKER_PRACTICAL: 0,
+}
 
 
 signal level_up(new_level: int)
@@ -73,13 +87,20 @@ func add_exp(amount: int) -> bool:
 
 
 func reset_for_new_run(character: String = "fang_xun") -> void:
+	var game_state := get_node_or_null("/root/GameState")
+	if game_state != null and not bool(game_state.call("is_character_unlocked", character)):
+		character = "fang_xun"
+	var char_def: Dictionary = game_state.call("character_def", character) if game_state != null else {}
+	if char_def.is_empty():
+		character = "fang_xun"
+		char_def = game_state.call("character_def", character) if game_state != null else {}
 	character_id = character
-	hp = MAX_HP_INIT
-	max_hp = MAX_HP_INIT
-	energy = MAX_ENERGY_INIT
-	max_energy = MAX_ENERGY_INIT
-	hand_size = INITIAL_HAND_COUNT
-	per_turn_draw = PER_TURN_DRAW_COUNT
+	max_hp = int(char_def.get("max_hp", MAX_HP_INIT))
+	hp = max_hp
+	max_energy = int(char_def.get("max_energy", MAX_ENERGY_INIT))
+	energy = max_energy
+	hand_size = int(char_def.get("initial_hand", INITIAL_HAND_COUNT))
+	per_turn_draw = int(char_def.get("per_turn_draw", PER_TURN_DRAW_COUNT))
 	current_floor = 0
 	current_chapter_index = CHAPTER_SOUTH
 	next_battle_enemy_ids = PackedStringArray(["hu_diao", "lu_shu"])
@@ -92,25 +113,29 @@ func reset_for_new_run(character: String = "fang_xun") -> void:
 	last_battle_was_boss = false
 	last_battle_won = false
 	map_view_mode = 0
+	reset_ending_markers()
 	seed_value = randi()
 	run_deck.clear()
 	# 从 CardDatabase 取该角色的起手卡组
-	var starter_ids: PackedStringArray = CardDatabase.get_starter_deck(character)
+	var card_db := get_node_or_null("/root/CardDatabase")
+	var starter_ids: PackedStringArray = card_db.call("get_starter_deck", character) if card_db != null else PackedStringArray()
 	starter_ids = _apply_active_bookmark(starter_ids)
 	for cid in starter_ids:
-		var c: Card = CardDatabase.get_card(cid)
+		var c: Card = card_db.call("get_card", cid) if card_db != null else null
 		if c != null:
 			run_deck.append(c)
 	deck_changed.emit()
 
 
 func _apply_active_bookmark(starter_ids: PackedStringArray) -> PackedStringArray:
-	var def: Dictionary = GameState.active_bookmark_def()
+	var game_state := get_node_or_null("/root/GameState")
+	var def: Dictionary = game_state.call("active_bookmark_def") if game_state != null else {}
 	if def.is_empty():
 		return starter_ids
+	var card_db := get_node_or_null("/root/CardDatabase")
 	var remove_id: String = str(def.get("remove_card", ""))
 	var add_id: String = str(def.get("add_card", ""))
-	if remove_id == "" or add_id == "" or not CardDatabase.has_card(add_id):
+	if remove_id == "" or add_id == "" or card_db == null or not bool(card_db.call("has_card", add_id)):
 		return starter_ids
 	var result := PackedStringArray()
 	var replaced := false
@@ -160,14 +185,18 @@ func advance_to_next_chapter() -> void:
 
 
 func reset_map_progress_to_first_chapter() -> void:
+	var game_state := get_node_or_null("/root/GameState")
+	var char_def: Dictionary = game_state.call("character_def", character_id) if game_state != null else {}
+	if char_def.is_empty():
+		char_def = game_state.call("character_def", "fang_xun") if game_state != null else {}
 	current_chapter_index = CHAPTER_SOUTH
 	current_floor = 0
-	hp = MAX_HP_INIT
-	max_hp = MAX_HP_INIT
-	energy = MAX_ENERGY_INIT
-	max_energy = MAX_ENERGY_INIT
-	hand_size = INITIAL_HAND_COUNT
-	per_turn_draw = PER_TURN_DRAW_COUNT
+	max_hp = int(char_def.get("max_hp", MAX_HP_INIT))
+	hp = max_hp
+	max_energy = int(char_def.get("max_energy", MAX_ENERGY_INIT))
+	energy = max_energy
+	hand_size = int(char_def.get("initial_hand", INITIAL_HAND_COUNT))
+	per_turn_draw = int(char_def.get("per_turn_draw", PER_TURN_DRAW_COUNT))
 	level = 1
 	exp_value = 0
 	exp_to_next = 10
@@ -177,6 +206,7 @@ func reset_map_progress_to_first_chapter() -> void:
 	last_entity_id = ""
 	last_battle_was_boss = false
 	last_battle_won = false
+	reset_ending_markers()
 	seed_value = randi()
 	hp_changed.emit(hp, max_hp)
 	energy_changed.emit(energy, max_energy)
@@ -211,3 +241,45 @@ func heal(amount: int) -> void:
 
 func is_dead() -> bool:
 	return hp <= 0
+
+
+func reset_ending_markers() -> void:
+	ending_markers = {
+		ENDING_MARKER_GUARD: 0,
+		ENDING_MARKER_COMPANION: 0,
+		ENDING_MARKER_PRACTICAL: 0,
+	}
+	ending_markers_changed.emit(ending_markers.duplicate(true))
+
+
+func is_valid_ending_marker(marker: String) -> bool:
+	return ENDING_MARKERS.has(marker)
+
+
+func record_ending_marker(marker: String) -> bool:
+	if not is_valid_ending_marker(marker):
+		return false
+	ending_markers[marker] = int(ending_markers.get(marker, 0)) + 1
+	ending_markers_changed.emit(ending_markers.duplicate(true))
+	return true
+
+
+func ending_marker_count(marker: String) -> int:
+	if not is_valid_ending_marker(marker):
+		return 0
+	return int(ending_markers.get(marker, 0))
+
+
+func meaningful_ending_marker_count() -> int:
+	return ending_marker_count(ENDING_MARKER_GUARD) + ending_marker_count(ENDING_MARKER_COMPANION)
+
+
+func ending_marker_label(marker: String) -> String:
+	match marker:
+		ENDING_MARKER_GUARD:
+			return "守护"
+		ENDING_MARKER_COMPANION:
+			return "陪伴"
+		ENDING_MARKER_PRACTICAL:
+			return "实用"
+	return ""

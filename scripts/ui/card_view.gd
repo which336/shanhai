@@ -5,7 +5,8 @@ signal play_requested(card_view)
 
 const CARD_FRAME_TEXTURE: Texture2D = preload("res://assets/textures/backgrounds/card_frame.png")
 const FAN_COLLAPSED_SIZE: Vector2 = Vector2(126, 168)
-const FAN_EXPANDED_SIZE: Vector2 = Vector2(148, 198)
+const FAN_EXPANDED_SIZE: Vector2 = Vector2(156, 214)
+const EXPANDED_DESCRIPTION_MAX_CHARS: int = 30
 
 var card: Card = null
 var hand_index: int = -1
@@ -18,6 +19,7 @@ var _rarity_glow: Color = Color(0.18, 0.12, 0.06, 0.1)
 @onready var _title: Label = $V/Title
 @onready var _cost: Label = $V/Header/Cost
 @onready var _school: Label = $V/Header/School
+@onready var _keywords: Label = $V/Keywords
 @onready var _description: Label = $V/Description
 @onready var _quote: Label = $V/Quote
 
@@ -26,6 +28,9 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	clip_contents = true
+	_quote.text = ""
+	_quote.visible = false
+	_quote.custom_minimum_size = Vector2.ZERO
 	_set_descendant_mouse_filter_ignore(self)
 	mouse_entered.connect(func() -> void:
 		_hovered = true
@@ -56,9 +61,12 @@ func setup(c: Card, idx: int = -1, display_cost: int = -1) -> void:
 	if shown_cost < c.cost:
 		_cost.text = "费 %d→%d" % [c.cost, shown_cost]
 	_school.text = "%s · %s · %s" % [_school_mark(c), _card_type_short(c), _rarity_name(c)]
-	_description.text = _make_card_summary(c.get_resolved_description(), 34)
-	var snippet: String = _make_card_summary(c.classic_quote, 10)
-	_quote.text = "「%s」" % snippet if snippet != "" else ""
+	_keywords.text = c.get_keywords_text(" · ")
+	_keywords.visible = _keywords.text != ""
+	_description.text = _make_card_summary(c.get_resolved_description(), EXPANDED_DESCRIPTION_MAX_CHARS)
+	_quote.text = ""
+	_quote.visible = false
+	_quote.custom_minimum_size = Vector2.ZERO
 	_accent = _school_accent(c)
 	_base_bg = _school_background(c)
 	_rarity_accent = _rarity_border(c)
@@ -84,11 +92,11 @@ func _draw() -> void:
 func _draw_school_wash(rect: Rect2) -> void:
 	var inset := maxf(8.0, rect.size.x * 0.07)
 	var body := rect.grow(-inset)
-	body.position.y += rect.size.y * 0.08
-	body.size.y -= rect.size.y * 0.14
+	body.position.y += rect.size.y * 0.09
+	body.size.y -= rect.size.y * 0.16
 	draw_rect(body, _base_bg.lightened(0.18), true)
 	draw_rect(body, Color(0.02, 0.018, 0.012, 0.22), false, 1.0)
-	var band_h := maxf(22.0, rect.size.y * 0.16)
+	var band_h := maxf(24.0, rect.size.y * 0.17)
 	draw_rect(Rect2(Vector2(inset, inset), Vector2(rect.size.x - inset * 2.0, band_h)), _base_bg.darkened(0.08), true)
 
 
@@ -201,7 +209,7 @@ func _card_type_short(c: Card) -> String:
 		Card.CardType.SKILL:
 			return "技"
 		Card.CardType.POWER:
-			return "势"
+			return "力"
 	return "牌"
 
 
@@ -221,6 +229,7 @@ func _apply_style() -> void:
 	_title.add_theme_color_override("font_color", _accent.lightened(0.32))
 	_cost.add_theme_color_override("font_color", Color(1.0, 0.92, 0.62))
 	_school.add_theme_color_override("font_color", _accent.lightened(0.1))
+	_keywords.add_theme_color_override("font_color", _accent.lightened(0.24))
 	_description.add_theme_color_override("font_color", Color(0.95, 0.9, 0.76))
 	_quote.add_theme_color_override("font_color", Color(0.78, 0.72, 0.52))
 	queue_redraw()
@@ -230,10 +239,15 @@ func set_fan_expanded(expanded: bool) -> void:
 	custom_minimum_size = FAN_EXPANDED_SIZE if expanded else FAN_COLLAPSED_SIZE
 	size = custom_minimum_size
 	_description.visible = expanded
-	_quote.visible = expanded
+	_quote.text = ""
+	_quote.visible = false
+	_quote.custom_minimum_size = Vector2.ZERO
 	_title.add_theme_font_size_override("font_size", 15 if expanded else 13)
 	_cost.add_theme_font_size_override("font_size", 12 if expanded else 11)
 	_school.add_theme_font_size_override("font_size", 12 if expanded else 10)
+	_keywords.add_theme_font_size_override("font_size", 12 if expanded else 10)
+	_description.add_theme_font_size_override("font_size", 12 if expanded else 11)
+	_quote.add_theme_font_size_override("font_size", 10 if expanded else 9)
 	queue_redraw()
 
 
@@ -253,3 +267,7 @@ func _make_card_summary(text: String, max_chars: int) -> String:
 	if summary.length() <= max_chars:
 		return summary
 	return summary.substr(0, max_chars - 1) + "…"
+
+
+func _is_dense_description() -> bool:
+	return str(_description.text).length() >= EXPANDED_DESCRIPTION_MAX_CHARS - 2

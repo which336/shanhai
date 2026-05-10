@@ -1,5 +1,6 @@
 [gd_resource type="SystemFont" format=3]
 
 [resource]
-font_names = PackedStringArray("Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "WenQuanYi Micro Hei", "SimHei", "SimSun", "Sans-Serif")
+font_names = PackedStringArray("Microsoft YaHei", "Microsoft YaHei UI", "DengXian", "Source Han Sans SC", "Noto Sans CJK SC", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "WenQuanYi Micro Hei", "SimSun", "Sans-Serif")
+font_weight = 400
 allow_system_fallback = true

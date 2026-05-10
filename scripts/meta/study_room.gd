@@ -27,6 +27,8 @@ func _ready() -> void:
 	_clear_btn.pressed.connect(_on_clear_active)
 	GameState.fragments_changed.connect(_on_fragments_changed)
 	GameState.bookmarks_changed.connect(_refresh)
+	GameState.characters_changed.connect(_refresh)
+	GameState.endings_changed.connect(_refresh)
 	_refresh()
 	AudioEngine.play_bgm("menu")
 
@@ -107,13 +109,109 @@ func _layout_scene() -> void:
 func _refresh() -> void:
 	var active: Dictionary = GameState.active_bookmark_def()
 	var active_text := "未启用藏签" if active.is_empty() else _bookmark_title(str(active.get("id", "")))
+	var character: Dictionary = GameState.active_character_def()
+	var character_text := "%s · %s" % [str(character.get("title", "方寻")), str(character.get("subtitle", "古卷行者"))]
 	_fragments_label.text = "典籍碎片：%d" % GameState.fragments
-	_active_label.text = "当前藏签：%s" % active_text
+	_active_label.text = "当前角色：%s  ·  当前藏签：%s" % [character_text, active_text]
 	_clear_btn.disabled = active.is_empty()
 	for child in _list.get_children():
 		child.queue_free()
+	_list.add_child(_build_section_label("终局收藏"))
+	_list.add_child(_build_endings_row())
+	_list.add_child(_build_section_label("可玩角色"))
+	for def in GameState.character_defs():
+		_list.add_child(_build_character_row(def))
+	_list.add_child(_build_section_label("藏签"))
 	for def in GameState.bookmark_defs():
 		_list.add_child(_build_bookmark_row(def))
+
+
+func _build_section_label(text: String) -> Label:
+	var label := Label.new()
+	label.text = "—— %s ——" % text
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 20)
+	label.add_theme_color_override("font_color", Color(0.98, 0.84, 0.52))
+	return label
+
+
+func _build_endings_row() -> Control:
+	var row := PanelContainer.new()
+	row.custom_minimum_size = Vector2(620, 104)
+	row.add_theme_stylebox_override("panel", _panel_style(Color(0.04, 0.09, 0.1, 0.78), Color(0.76, 0.58, 0.3, 0.74), 1))
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 8)
+	row.add_child(box)
+	var title := Label.new()
+	title.text = GameState.endings_summary()
+	title.add_theme_font_size_override("font_size", 21)
+	title.add_theme_color_override("font_color", Color(1.0, 0.84, 0.48))
+	box.add_child(title)
+	var desc := Label.new()
+	var seen := GameState.seen_ending_titles()
+	desc.text = "已见：%s" % (" / ".join(seen) if not seen.is_empty() else "尚未抵达忘川之心")
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 16)
+	desc.add_theme_color_override("font_color", Color(0.86, 0.82, 0.66))
+	box.add_child(desc)
+	return row
+
+
+func _build_character_row(def: Dictionary) -> Control:
+	var character_id := str(def.get("id", ""))
+	var unlocked := GameState.is_character_unlocked(character_id)
+	var active := GameState.active_character_id == character_id
+	var row := PanelContainer.new()
+	row.custom_minimum_size = Vector2(620, 142)
+	row.add_theme_stylebox_override("panel", _panel_style(_character_bg(character_id), _character_color(character_id), 1))
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 18)
+	row.add_child(body)
+
+	var text_box := VBoxContainer.new()
+	text_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	text_box.add_theme_constant_override("separation", 6)
+	body.add_child(text_box)
+
+	var title := Label.new()
+	title.text = "%s  ·  %s  ·  %s" % [str(def.get("title", "")), str(def.get("subtitle", "")), str(def.get("school", ""))]
+	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_color_override("font_color", _character_color(character_id).lightened(0.18))
+	text_box.add_child(title)
+
+	var desc := Label.new()
+	desc.text = str(def.get("description", ""))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc.add_theme_font_size_override("font_size", 16)
+	desc.add_theme_color_override("font_color", Color(0.9, 0.84, 0.68))
+	text_box.add_child(desc)
+
+	var req := Label.new()
+	req.text = "价格 %d 碎片  ·  图鉴 %d / %d  ·  HP %d  ·  起手 %d  ·  %s" % [
+		int(def.get("cost", 0)),
+		GameState.valid_codex_unlocked_count(),
+		int(def.get("codex_required", 0)),
+		int(def.get("max_hp", 70)),
+		int(def.get("initial_hand", 4)),
+		"已启用" if active else ("已解锁" if unlocked else "未解锁"),
+	]
+	req.add_theme_font_size_override("font_size", 15)
+	req.add_theme_color_override("font_color", Color(0.78, 0.72, 0.56))
+	text_box.add_child(req)
+
+	var action := Button.new()
+	action.custom_minimum_size = Vector2(144, 52)
+	_style_button(action)
+	if unlocked:
+		action.text = "已启用" if active else "启用"
+		action.disabled = active
+		action.pressed.connect(_activate_character.bind(character_id))
+	else:
+		action.text = "购买"
+		action.disabled = not GameState.can_unlock_character(character_id)
+		action.pressed.connect(_buy_character.bind(character_id))
+	body.add_child(action)
+	return row
 
 
 func _build_bookmark_row(def: Dictionary) -> Control:
@@ -148,7 +246,7 @@ func _build_bookmark_row(def: Dictionary) -> Control:
 	var req := Label.new()
 	req.text = "价格 %d 碎片  ·  图鉴 %d / %d  ·  %s" % [
 		int(def.get("cost", 0)),
-		GameState.unlocked_codex.size(),
+		GameState.valid_codex_unlocked_count(),
 		int(def.get("codex_required", 0)),
 		"已启用" if active else ("已解锁" if unlocked else "未解锁"),
 	]
@@ -177,6 +275,24 @@ func _buy_bookmark(bookmark_id: String) -> void:
 		_message.text = "藏签已收入书房。"
 	else:
 		_message.text = "碎片或图鉴进度不足。"
+	_refresh()
+
+
+func _buy_character(character_id: String) -> void:
+	if GameState.unlock_character(character_id):
+		SaveSystem.save()
+		_message.text = "角色已加入旅程，并设为当前角色。"
+	else:
+		_message.text = "碎片或图鉴进度不足。"
+	_refresh()
+
+
+func _activate_character(character_id: String) -> void:
+	if GameState.set_active_character(character_id):
+		SaveSystem.save()
+		_message.text = "当前角色已切换，下一局生效。"
+	else:
+		_message.text = "尚未解锁该角色。"
 	_refresh()
 
 
@@ -260,6 +376,23 @@ func _school_color(bookmark_id: String) -> Color:
 func _school_bg(bookmark_id: String) -> Color:
 	var c := _school_color(bookmark_id)
 	return Color(c.r * 0.12, c.g * 0.1, c.b * 0.08, 0.76)
+
+
+func _character_color(character_id: String) -> Color:
+	match character_id:
+		GameState.CHARACTER_ALI:
+			return Color(1.0, 0.46, 0.76)
+		GameState.CHARACTER_LUO_LING:
+			return Color(0.42, 0.82, 1.0)
+		GameState.CHARACTER_SANG_QI:
+			return Color(0.56, 0.9, 0.46)
+		_:
+			return Color(0.94, 0.76, 0.42)
+
+
+func _character_bg(character_id: String) -> Color:
+	var c := _character_color(character_id)
+	return Color(c.r * 0.11, c.g * 0.08, c.b * 0.1, 0.76)
 
 
 func _panel_style(bg: Color, border: Color, border_width: int) -> StyleBoxFlat:

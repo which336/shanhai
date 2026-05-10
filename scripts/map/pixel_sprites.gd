@@ -1039,18 +1039,40 @@ static func _load_textures() -> void:
 	_tex_cache["__atlas"] = {}  # 贴图集缓存（sheet_name -> texture）
 	
 	# ---- 玩家：Julia 步行动画贴图 ----
-	var player_walk_sheets := {
-		DIR_DOWN:  "res://assets/textures/player/walk_down.png",
-		DIR_UP:    "res://assets/textures/player/walk_up.png",
-		DIR_LEFT:  "res://assets/textures/player/walk_left.png",
-		DIR_RIGHT: "res://assets/textures/player/walk_right.png",
+	var player_walk_sets := {
+		"player": {
+			DIR_DOWN:  "res://assets/textures/player/walk_down.png",
+			DIR_UP:    "res://assets/textures/player/walk_up.png",
+			DIR_LEFT:  "res://assets/textures/player/walk_left.png",
+			DIR_RIGHT: "res://assets/textures/player/walk_right.png",
+		},
+		"player_ali": {
+			DIR_DOWN:  "res://assets/textures/player/ali_walk_down.png",
+			DIR_UP:    "res://assets/textures/player/ali_walk_up.png",
+			DIR_LEFT:  "res://assets/textures/player/ali_walk_left.png",
+			DIR_RIGHT: "res://assets/textures/player/ali_walk_right.png",
+		},
+		"player_luoling": {
+			DIR_DOWN:  "res://assets/textures/player/luoling_walk_down.png",
+			DIR_UP:    "res://assets/textures/player/luoling_walk_up.png",
+			DIR_LEFT:  "res://assets/textures/player/luoling_walk_left.png",
+			DIR_RIGHT: "res://assets/textures/player/luoling_walk_right.png",
+		},
+		"player_sangqi": {
+			DIR_DOWN:  "res://assets/textures/player/sangqi_walk_down.png",
+			DIR_UP:    "res://assets/textures/player/sangqi_walk_up.png",
+			DIR_LEFT:  "res://assets/textures/player/sangqi_walk_left.png",
+			DIR_RIGHT: "res://assets/textures/player/sangqi_walk_right.png",
+		},
 	}
-	for facing in player_walk_sheets:
-		var sheet: Texture2D = _try_load(player_walk_sheets[facing])
-		if sheet != null:
-			for f in 4:
-				var region := Rect2(f * 64, 0, 64, 64)
-				_tex_cache[_tex_key("player", facing, f)] = _atlas_tex(sheet, region)
+	for player_key in player_walk_sets:
+		var player_walk_sheets: Dictionary = player_walk_sets[player_key]
+		for facing in player_walk_sheets:
+			var sheet: Texture2D = _try_load(player_walk_sheets[facing])
+			if sheet != null:
+				for f in 4:
+					var region := Rect2(f * 64, 0, 64, 64)
+					_tex_cache[_tex_key(player_key, facing, f)] = _atlas_tex(sheet, region)
 
 	# ---- 地图方块贴图 ----
 	var tile_sheets := {
@@ -1069,20 +1091,66 @@ static func _load_textures() -> void:
 
 	# ---- 等距素材（2DPIXX） ----
 	# Warrior: 步行/空闲/攻击, 512x640, 4dir x 4frames, 每帧 128x160
-	var iso_player_sheets := {
-		"walk":  "res://assets/textures/iso/warrior_walk.png",
-		"idle":  "res://assets/textures/iso/warrior_idle.png",
-		"attack":"res://assets/textures/iso/warrior_attack.png",
+	var iso_dirs_standard := [DIR_DOWN, DIR_RIGHT, DIR_LEFT, DIR_UP]
+	var iso_dirs_left_right_swapped := [DIR_DOWN, DIR_LEFT, DIR_RIGHT, DIR_UP]
+	var iso_player_row_dirs := {
+		"player": iso_dirs_left_right_swapped,
+		"player_ali": iso_dirs_left_right_swapped,
+		"player_luoling": iso_dirs_standard,
+		"player_sangqi": iso_dirs_left_right_swapped,
 	}
-	var iso_dirs := [DIR_DOWN, DIR_RIGHT, DIR_LEFT, DIR_UP]
-	for anim in iso_player_sheets:
-		var sheet: Texture2D = _try_load(iso_player_sheets[anim])
-		if sheet != null:
-			for dir_idx in 4:
-				for f_idx in 4:
-					var region := Rect2(f_idx * 128, dir_idx * 160, 128, 160)
-					var frame_key := "iso_player|%s|%s|%d" % [anim, iso_dirs[dir_idx], f_idx]
-					_tex_cache[frame_key] = _atlas_tex(sheet, region)
+	var iso_enemy_row_dirs := {
+		"lu_shu": iso_dirs_left_right_swapped,
+		"cong_cong": iso_dirs_left_right_swapped,
+		"zheng_beast": iso_dirs_left_right_swapped,
+		"xuan_gui": iso_dirs_left_right_swapped,
+		"he_luo_fish": iso_dirs_left_right_swapped,
+		"xiao_beast": iso_dirs_left_right_swapped,
+		"qiu_yu": iso_dirs_left_right_swapped,
+		"zhu_ru": iso_dirs_left_right_swapped,
+		"tu_lou": iso_dirs_left_right_swapped,
+		"elite_ji_meng": iso_dirs_left_right_swapped,
+	}
+	var iso_player_sets := {
+		"player": {
+			"walk":  "res://assets/textures/iso/warrior_walk.png",
+			"idle":  "res://assets/textures/iso/warrior_idle.png",
+			"attack":"res://assets/textures/iso/warrior_attack.png",
+		},
+		"player_ali": {
+			"walk":  "res://assets/textures/iso/ali_walk.png",
+			"idle":  "res://assets/textures/iso/ali_idle.png",
+			"attack":"res://assets/textures/iso/ali_attack.png",
+		},
+		"player_luoling": {
+			"walk":  "res://assets/textures/iso/luoling_walk.png",
+			"idle":  "res://assets/textures/iso/luoling_idle.png",
+			"attack":"res://assets/textures/iso/luoling_attack.png",
+		},
+		"player_sangqi": {
+			"walk":  "res://assets/textures/iso/sangqi_walk.png",
+			"idle":  "res://assets/textures/iso/sangqi_idle.png",
+			"attack":"res://assets/textures/iso/sangqi_attack.png",
+		},
+	}
+	for player_key in iso_player_sets:
+		var iso_player_sheets: Dictionary = iso_player_sets[player_key]
+		var dirs_for_player: Array = iso_player_row_dirs.get(player_key, iso_dirs_left_right_swapped)
+		for anim in iso_player_sheets:
+			var sheet: Texture2D = _try_load(iso_player_sheets[anim])
+			if sheet != null:
+				for dir_idx in 4:
+					for f_idx in 4:
+						var source_dir_idx := dir_idx
+						var source_frame_idx := f_idx
+						if player_key == "player_sangqi" and anim == "attack":
+							source_dir_idx = 0
+							source_frame_idx = 0
+						var region := Rect2(source_frame_idx * 128, source_dir_idx * 160, 128, 160)
+						var atlas := _atlas_tex(sheet, region)
+						_tex_cache["iso_player|%s|%s|%s|%d" % [player_key, anim, dirs_for_player[dir_idx], f_idx]] = atlas
+						if player_key == "player":
+							_tex_cache["iso_player|%s|%s|%d" % [anim, dirs_for_player[dir_idx], f_idx]] = atlas
 
 	var iso_enemy_sheets := {
 		"hu_diao": "res://assets/textures/iso/enemies/hu_diao_walk.png",
@@ -1106,6 +1174,7 @@ static func _load_textures() -> void:
 		"jiao_beast": "res://assets/textures/iso/enemies/jiao_beast_walk.png",
 		"wen_lin": "res://assets/textures/iso/enemies/wen_lin_walk.png",
 		"elite": "res://assets/textures/iso/entities/elite_walk.png",
+		"elite_qiongqi": "res://assets/textures/iso/entities/elite_walk.png",
 		"elite_yingzhao": "res://assets/textures/iso/entities/elite_yingzhao_walk.png",
 		"elite_xiangliu_shadow": "res://assets/textures/iso/entities/elite_xiangliu_shadow_walk.png",
 		"elite_yinglong_young": "res://assets/textures/iso/entities/elite_yinglong_young_walk.png",
@@ -1134,10 +1203,11 @@ static func _load_textures() -> void:
 	for e_name in iso_enemy_sheets:
 		var sheet_enemy: Texture2D = _try_load(iso_enemy_sheets[e_name])
 		if sheet_enemy != null:
+			var dirs_for_enemy: Array = iso_enemy_row_dirs.get(e_name, iso_dirs_standard)
 			for dir_idx in 4:
 				for f_idx in 4:
 					var region_enemy := Rect2(f_idx * 128, dir_idx * 128, 128, 128)
-					var frame_key_enemy := "iso_enemy|%s|%s|%d" % [e_name, iso_dirs[dir_idx], f_idx]
+					var frame_key_enemy := "iso_enemy|%s|%s|%d" % [e_name, dirs_for_enemy[dir_idx], f_idx]
 					_tex_cache[frame_key_enemy] = _atlas_tex(sheet_enemy, region_enemy)
 
 	# 等距瓦片集 (128x128 网格)
@@ -1229,6 +1299,7 @@ static func _load_textures() -> void:
 		"enemy.jiao_beast": "res://assets/textures/top/entities/jiao_beast.png",
 		"enemy.wen_lin": "res://assets/textures/top/entities/wen_lin.png",
 		"elite": "res://assets/textures/top/entities/elite.png",
+		"elite_qiongqi": "res://assets/textures/top/entities/elite.png",
 		"elite_yingzhao": "res://assets/textures/top/entities/elite_yingzhao.png",
 		"elite_xiangliu_shadow": "res://assets/textures/top/entities/elite_xiangliu_shadow.png",
 		"elite_yinglong_young": "res://assets/textures/top/entities/elite_yinglong_young.png",
@@ -1254,19 +1325,33 @@ static func _load_textures() -> void:
 		"event": "res://assets/textures/top/entities/event.png",
 		"fragment": "res://assets/textures/top/entities/fragment.png",
 	}
+	var top_entity_row_dirs := {
+		"enemy.lu_shu": iso_dirs_left_right_swapped,
+		"enemy.xuan_gui": iso_dirs_left_right_swapped,
+		"enemy.zheng_beast": iso_dirs_left_right_swapped,
+		"enemy.zhuhuai": iso_dirs_left_right_swapped,
+		"enemy.he_luo_fish": iso_dirs_left_right_swapped,
+		"enemy.xiao_beast": iso_dirs_left_right_swapped,
+		"enemy.zhu_ru": iso_dirs_left_right_swapped,
+		"enemy.qiu_yu": iso_dirs_left_right_swapped,
+		"enemy.tu_lou": iso_dirs_left_right_swapped,
+		"elite_yingzhao": iso_dirs_left_right_swapped,
+	}
 	for top_kind in top_entity_sheets:
 		var top_sheet: Texture2D = _try_load(top_entity_sheets[top_kind])
 		if top_sheet != null:
+			var dirs_for_top_entity: Array = top_entity_row_dirs.get(top_kind, iso_dirs_standard)
 			for dir_idx in 4:
 				for f_idx in 4:
 					var top_region := Rect2(f_idx * TILE_SIZE, dir_idx * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-					_tex_cache[_tex_key(top_kind, iso_dirs[dir_idx], f_idx)] = _atlas_tex(top_sheet, top_region)
+					_tex_cache[_tex_key(top_kind, dirs_for_top_entity[dir_idx], f_idx)] = _atlas_tex(top_sheet, top_region)
 
 
 static func _atlas_tex(sheet: Texture2D, region: Rect2) -> AtlasTexture:
 	var at := AtlasTexture.new()
 	at.atlas = sheet
 	at.region = region
+	at.filter_clip = true
 	return at
 
 
@@ -1279,6 +1364,10 @@ static func _try_load(path: String) -> Texture2D:
 		var texture := ResourceLoader.load(path, "Texture2D")
 		if texture is Texture2D:
 			return texture
+	if FileAccess.file_exists(path):
+		var image := Image.new()
+		if image.load(path) == OK:
+			return ImageTexture.create_from_image(image)
 	return null
 
 
@@ -1309,6 +1398,27 @@ static func tile_sheet(name: String) -> Texture2D:
 static func iso_player_texture(anim: String, facing: String, frame: int = 0) -> Texture2D:
 	_load_textures()
 	return _tex_cache.get("iso_player|%s|%s|%d" % [anim, facing, frame], null)
+
+
+static func player_sprite_key(character_id: String) -> String:
+	match character_id:
+		"ali":
+			return "player_ali"
+		"luo_ling":
+			return "player_luoling"
+		"sang_qi":
+			return "player_sangqi"
+		_:
+			return "player"
+
+
+static func iso_character_texture(character_id: String, anim: String, facing: String, frame: int = 0) -> Texture2D:
+	_load_textures()
+	var key := player_sprite_key(character_id)
+	var tex: Texture2D = _tex_cache.get("iso_player|%s|%s|%s|%d" % [key, anim, facing, frame], null)
+	if tex != null:
+		return tex
+	return iso_player_texture(anim, facing, frame)
 
 
 static func iso_enemy_texture(enemy_id: String, facing: String, frame: int = 0) -> Texture2D:

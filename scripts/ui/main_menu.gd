@@ -2,6 +2,8 @@
 extends Control
 
 const MENU_BACKGROUND: Texture2D = preload("res://assets/textures/backgrounds/main_menu.png")
+const TUTORIAL_SCENE: String = "res://scenes/tutorial/tutorial.tscn"
+const SETTINGS_SCENE: String = "res://scenes/settings/settings.tscn"
 
 @onready var _start_btn: Button = $V/StartButton
 @onready var _codex_btn: Button = $V/CodexButton
@@ -11,18 +13,34 @@ const MENU_BACKGROUND: Texture2D = preload("res://assets/textures/backgrounds/ma
 @onready var _menu: VBoxContainer = $V
 
 var _background_image: TextureRect = null
+var _tutorial_btn: Button = null
+var _settings_btn: Button = null
 
 
 func _ready() -> void:
 	_ensure_background_image()
+	_ensure_extra_buttons()
 	_apply_menu_style()
 	_layout_menu()
 	_start_btn.pressed.connect(_on_start)
+	_tutorial_btn.pressed.connect(_on_tutorial)
+	_settings_btn.pressed.connect(_on_settings)
 	_codex_btn.pressed.connect(_on_codex)
 	_study_btn.pressed.connect(_on_study)
 	_quit_btn.pressed.connect(_on_quit)
 
 	SaveSystem.load_save()
+	GameState.ensure_settings_defaults()
+	if not GameState.characters_changed.is_connected(_refresh_info):
+		GameState.characters_changed.connect(_refresh_info)
+	if not GameState.bookmarks_changed.is_connected(_refresh_info):
+		GameState.bookmarks_changed.connect(_refresh_info)
+	if not GameState.codex_learning_changed.is_connected(_refresh_info):
+		GameState.codex_learning_changed.connect(_refresh_info)
+	if not GameState.endings_changed.is_connected(_refresh_info):
+		GameState.endings_changed.connect(_refresh_info)
+	if not GameState.settings_changed.is_connected(_refresh_info):
+		GameState.settings_changed.connect(_refresh_info)
 	_refresh_info()
 	AudioEngine.play_bgm("menu")
 
@@ -48,6 +66,19 @@ func _ensure_background_image() -> void:
 	move_child(_background_image, 0)
 
 
+func _ensure_extra_buttons() -> void:
+	if _tutorial_btn == null:
+		_tutorial_btn = Button.new()
+		_tutorial_btn.name = "TutorialButton"
+		_tutorial_btn.text = "新手教程"
+		_menu.add_child(_tutorial_btn)
+	if _settings_btn == null:
+		_settings_btn = Button.new()
+		_settings_btn.name = "SettingsButton"
+		_settings_btn.text = "设置"
+		_menu.add_child(_settings_btn)
+
+
 func _apply_menu_style() -> void:
 	var title := get_node_or_null("Title")
 	if title is CanvasItem:
@@ -60,15 +91,19 @@ func _apply_menu_style() -> void:
 		(footer as CanvasItem).visible = false
 	_menu.add_theme_constant_override("separation", 10)
 	_start_btn.text = "点击开始旅程"
+	_tutorial_btn.text = "新手教程"
+	_settings_btn.text = "设置"
 	_codex_btn.text = "山海图鉴"
 	_study_btn.text = "祖父书房"
 	_quit_btn.text = "离开"
 	_menu.move_child(_start_btn, 0)
-	_menu.move_child(_codex_btn, 1)
-	_menu.move_child(_study_btn, 2)
-	_menu.move_child(_quit_btn, 3)
-	_menu.move_child(_info_label, 4)
-	for button in [_start_btn, _codex_btn, _study_btn, _quit_btn]:
+	_menu.move_child(_tutorial_btn, 1)
+	_menu.move_child(_settings_btn, 2)
+	_menu.move_child(_codex_btn, 3)
+	_menu.move_child(_study_btn, 4)
+	_menu.move_child(_quit_btn, 5)
+	_menu.move_child(_info_label, 6)
+	for button in _menu_buttons():
 		_style_menu_button(button)
 	_info_label.add_theme_font_size_override("font_size", 14)
 	_info_label.add_theme_color_override("font_color", Color(0.88, 0.82, 0.7, 0.86))
@@ -115,29 +150,65 @@ func _layout_menu() -> void:
 		_background_image.offset_right = 0.0
 		_background_image.offset_bottom = 0.0
 	var menu_width := clampf(viewport_size.x * 0.32, 360.0, 520.0)
-	var menu_height := 246.0
+	var menu_height := 338.0
 	_menu.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	_menu.position = Vector2((viewport_size.x - menu_width) * 0.5, viewport_size.y - menu_height - 34.0)
 	_menu.size = Vector2(menu_width, menu_height)
-	for button in [_start_btn, _codex_btn, _study_btn, _quit_btn]:
+	for button in _menu_buttons():
 		button.custom_minimum_size = Vector2(menu_width, 42.0)
 
 
 func _refresh_info() -> void:
-	var unlocked: int = GameState.unlocked_codex.size()
-	var total: int = max(1, CardDatabase.all_cards().size() + EnemyDatabase.all_enemies().size())
+	var unlocked: int = GameState.valid_codex_unlocked_count()
+	var learned: int = GameState.valid_codex_learned_count()
+	var total: int = max(1, GameState.codex_total_entries())
 	var bookmark: Dictionary = GameState.active_bookmark_def()
 	var bookmark_text: String = str(bookmark.get("title", "未启用藏签")) if not bookmark.is_empty() else "未启用藏签"
-	_info_label.text = "山海图鉴：%d / %d  ·  典籍碎片：%d\n当前藏签：%s" % [unlocked, total, GameState.fragments, bookmark_text]
+	var character: Dictionary = GameState.active_character_def()
+	var character_text: String = "%s · %s" % [str(character.get("title", "方寻")), str(character.get("subtitle", "古卷行者"))]
+	var best_ending := "未见终局" if GameState.best_ending_id == "" else GameState.ending_title(GameState.best_ending_id)
+	_info_label.text = "山海图鉴：%d / %d  ·  已研读：%d / %d  ·  最高结局：%s\n典籍碎片：%d  ·  当前角色：%s  ·  当前藏签：%s" % [
+		unlocked,
+		total,
+		learned,
+		unlocked,
+		best_ending,
+		GameState.fragments,
+		character_text,
+		bookmark_text,
+	]
+
+
+func _menu_buttons() -> Array[Button]:
+	return [_start_btn, _tutorial_btn, _settings_btn, _codex_btn, _study_btn, _quit_btn]
 
 
 func _on_start() -> void:
 	AudioEngine.play_sfx("click")
-	RunState.reset_for_new_run("fang_xun")
+	if not bool(GameState.setting_value("tutorial_seen", false)):
+		GameState.mark_tutorial_seen()
+		get_tree().change_scene_to_file(TUTORIAL_SCENE)
+		return
+	_start_run()
+
+
+func _start_run() -> void:
+	RunState.reset_for_new_run(GameState.active_character_id)
 	randomize()
 	RunState.seed_value = randi()
 	RunState.map_data = {}
 	get_tree().change_scene_to_file("res://scenes/map/map.tscn")
+
+
+func _on_tutorial() -> void:
+	AudioEngine.play_sfx("click")
+	GameState.mark_tutorial_seen()
+	get_tree().change_scene_to_file(TUTORIAL_SCENE)
+
+
+func _on_settings() -> void:
+	AudioEngine.play_sfx("click")
+	get_tree().change_scene_to_file(SETTINGS_SCENE)
 
 
 func _on_codex() -> void:

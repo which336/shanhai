@@ -1,7 +1,25 @@
 ## CodexView: 山海图鉴查看界面。
 extends Control
 
-const CODEX_BACKGROUND: Texture2D = preload("res://assets/textures/backgrounds/main_menu.png")
+const CODEX_BACKGROUND: Texture2D = preload("res://assets/textures/backgrounds/qinglong.png")
+
+const KEYWORD_RULES: Dictionary = {
+	"根脉": "回合开始获得护盾的守势路线，适合把防御滚成长期收益。",
+	"生息": "在护盾、根脉或山经条件下提供回复或额外护盾。",
+	"潮涌": "代表抽牌、补牌、灵韵流动和手牌节奏收益。",
+	"湿润": "使敌人受伤 +1，也是海经部分追加效果的触发条件。",
+	"凶势": "通过强化、增伤或额外攻击推进爆发。",
+	"血祭": "用自伤或弃牌作为代价，换取额外伤害、强化或爆发收益。",
+}
+
+const KEYWORD_COLORS: Dictionary = {
+	"根脉": "#9fe58f",
+	"生息": "#c9ee8c",
+	"潮涌": "#78d8ff",
+	"湿润": "#8cc8ff",
+	"凶势": "#ff9a6d",
+	"血祭": "#ff6f75",
+}
 
 @onready var _list: VBoxContainer = $H/Scroll/List
 @onready var _detail: RichTextLabel = $H/Detail
@@ -50,7 +68,7 @@ func _ensure_background() -> void:
 	if _shade == null:
 		_shade = ColorRect.new()
 		_shade.name = "CodexReadabilityShade"
-		_shade.color = Color(0.02, 0.025, 0.04, 0.62)
+		_shade.color = Color(0.015, 0.018, 0.025, 0.66)
 		_shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_shade.set_anchors_preset(Control.PRESET_FULL_RECT)
 		add_child(_shade)
@@ -69,6 +87,7 @@ func _ensure_dev_unlock_button() -> void:
 	_unlock_all_btn.offset_top = 16
 	_unlock_all_btn.offset_right = -24
 	_unlock_all_btn.offset_bottom = 52
+	_unlock_all_btn.visible = bool(GameState.setting_value("show_dev_tools", false))
 	_unlock_all_btn.pressed.connect(_on_unlock_all_pressed)
 	add_child(_unlock_all_btn)
 
@@ -76,18 +95,19 @@ func _ensure_dev_unlock_button() -> void:
 func _apply_scene_style() -> void:
 	_title.text = "山海图鉴"
 	_title.add_theme_font_size_override("font_size", 36)
-	_title.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
-	_title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
+	_title.add_theme_color_override("font_color", Color(0.97, 0.92, 0.78))
+	_title.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 	_title.add_theme_constant_override("shadow_offset_x", 2)
 	_title.add_theme_constant_override("shadow_offset_y", 2)
 	_layout_root.add_theme_constant_override("separation", 18)
-	_scroll.add_theme_stylebox_override("panel", _panel_style(Color(0.035, 0.04, 0.06, 0.72), Color(0.74, 0.62, 0.42, 0.58)))
-	_detail.add_theme_stylebox_override("normal", _panel_style(Color(0.035, 0.04, 0.06, 0.76), Color(0.74, 0.62, 0.42, 0.58)))
+	_scroll.add_theme_stylebox_override("panel", _panel_style(Color(0.025, 0.035, 0.04, 0.74), Color(0.78, 0.64, 0.38, 0.64)))
+	_detail.add_theme_stylebox_override("normal", _panel_style(Color(0.025, 0.035, 0.04, 0.78), Color(0.78, 0.64, 0.38, 0.64)))
 	_detail.add_theme_font_size_override("normal_font_size", 20)
 	_detail.add_theme_font_size_override("bold_font_size", 22)
-	_detail.add_theme_color_override("default_color", Color(0.92, 0.9, 0.82))
+	_detail.add_theme_color_override("default_color", Color(0.93, 0.91, 0.82))
 	_style_command_button(_back_btn)
 	if _unlock_all_btn != null:
+		_unlock_all_btn.visible = bool(GameState.setting_value("show_dev_tools", false))
 		_style_command_button(_unlock_all_btn)
 
 
@@ -120,26 +140,34 @@ func _button_style(bg: Color, border: Color) -> StyleBoxFlat:
 func _style_command_button(button: Button) -> void:
 	button.focus_mode = Control.FOCUS_NONE
 	button.add_theme_font_size_override("font_size", 18)
-	button.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
+	button.add_theme_color_override("font_color", Color(0.96, 0.9, 0.74))
 	button.add_theme_color_override("font_hover_color", Color(1.0, 0.86, 0.46))
-	button.add_theme_stylebox_override("normal", _button_style(Color(0.04, 0.045, 0.06, 0.78), Color(0.72, 0.62, 0.42, 0.72)))
-	button.add_theme_stylebox_override("hover", _button_style(Color(0.08, 0.065, 0.045, 0.86), Color(1.0, 0.78, 0.34, 0.95)))
-	button.add_theme_stylebox_override("pressed", _button_style(Color(0.08, 0.11, 0.1, 0.86), Color(0.5, 0.95, 0.86, 0.95)))
+	button.add_theme_stylebox_override("normal", _button_style(Color(0.04, 0.045, 0.055, 0.78), Color(0.74, 0.62, 0.42, 0.76)))
+	button.add_theme_stylebox_override("hover", _button_style(Color(0.08, 0.065, 0.045, 0.88), Color(1.0, 0.78, 0.34, 0.95)))
+	button.add_theme_stylebox_override("pressed", _button_style(Color(0.08, 0.11, 0.1, 0.88), Color(0.5, 0.95, 0.86, 0.95)))
 	button.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 
 
 func _build_list() -> void:
 	for c in _list.get_children():
 		c.queue_free()
+	_add_section("学习复盘")
+	_add_utility_button("学习总览", Callable(self, "_show_learning_overview"), Color(0.86, 0.78, 0.54))
+	_add_utility_button("终局条件", Callable(self, "_show_ending_conditions"), Color(0.94, 0.76, 0.36))
+	_add_utility_button("未研读条目", Callable(self, "_show_unlearned_review"), Color(0.6, 0.92, 0.86))
 	_add_section("卡牌")
 	var cards: Array = CardDatabase.all_cards()
-	cards.sort_custom(func(a, b): return a.school < b.school or (a.school == b.school and a.rarity < b.rarity) or (a.school == b.school and a.rarity == b.rarity and a.id < b.id))
+	cards.sort_custom(_sort_cards)
 	for c in cards:
 		if not (c is Card):
 			continue
 		var unlocked: bool = GameState.is_codex_unlocked("card." + c.id)
 		var btn := Button.new()
-		btn.text = "%s · %s · %s%s" % [_school_mark(c), _rarity_name(c), c.title, "" if unlocked else "（未解锁）"]
+		var keyword_suffix := ""
+		if not c.keywords.is_empty():
+			keyword_suffix = "  [%s]" % c.get_keywords_text("/")
+		btn.text = "%s · %s · %s%s%s" % [_school_mark(c), _rarity_name(c), c.title, keyword_suffix, _entry_state_suffix("card." + c.id, unlocked)]
+		btn.set_meta("entry_id", "card." + c.id)
 		btn.custom_minimum_size = Vector2(0, 42)
 		_style_entry_button(btn, _rarity_color(c.rarity), unlocked)
 		btn.pressed.connect(_show_detail.bind(c, unlocked))
@@ -152,7 +180,8 @@ func _build_list() -> void:
 			continue
 		var unlocked: bool = GameState.is_codex_unlocked("beast." + e.id)
 		var btn := Button.new()
-		btn.text = "%s · %s%s" % [_enemy_type_name(e), e.display_name, "" if unlocked else "（未解锁）"]
+		btn.text = "%s · %s%s" % [_enemy_type_name(e), e.display_name, _entry_state_suffix("beast." + e.id, unlocked)]
+		btn.set_meta("entry_id", "beast." + e.id)
 		btn.custom_minimum_size = Vector2(0, 42)
 		_style_entry_button(btn, Color(0.65, 0.86, 1.0), unlocked)
 		btn.pressed.connect(_show_enemy_detail.bind(e, unlocked))
@@ -160,7 +189,32 @@ func _build_list() -> void:
 	if cards.is_empty():
 		_detail.text = "尚未加载到任何卡牌资源。"
 	else:
-		_show_detail(cards[0], GameState.is_codex_unlocked("card." + cards[0].id))
+		_show_learning_overview()
+
+
+func _add_utility_button(text: String, callback: Callable, color: Color) -> void:
+	var btn := Button.new()
+	btn.text = text
+	btn.custom_minimum_size = Vector2(0, 42)
+	_style_entry_button(btn, color, true)
+	btn.pressed.connect(callback)
+	_list.add_child(btn)
+
+
+func _entry_state_suffix(entry_id: String, unlocked: bool) -> String:
+	if not unlocked:
+		return "（未解锁）"
+	if GameState.is_codex_learned(entry_id):
+		return "  ✓"
+	return "  新"
+
+
+func _sort_cards(a: Card, b: Card) -> bool:
+	if a.school != b.school:
+		return a.school < b.school
+	if a.rarity != b.rarity:
+		return a.rarity < b.rarity
+	return a.id < b.id
 
 
 func _add_section(text: String) -> void:
@@ -176,10 +230,10 @@ func _add_section(text: String) -> void:
 
 func _style_entry_button(button: Button, color: Color, unlocked: bool) -> void:
 	button.focus_mode = Control.FOCUS_NONE
-	button.add_theme_font_size_override("font_size", 18)
-	button.add_theme_color_override("font_color", color if unlocked else Color(0.48, 0.49, 0.52))
+	button.add_theme_font_size_override("font_size", 17)
+	button.add_theme_color_override("font_color", color if unlocked else Color(0.5, 0.51, 0.54))
 	button.add_theme_color_override("font_hover_color", color.lightened(0.22) if unlocked else Color(0.68, 0.68, 0.7))
-	button.add_theme_stylebox_override("normal", _button_style(Color(0.035, 0.04, 0.055, 0.62), Color(color.r, color.g, color.b, 0.24 if unlocked else 0.12)))
+	button.add_theme_stylebox_override("normal", _button_style(Color(0.025, 0.035, 0.045, 0.66), Color(color.r, color.g, color.b, 0.26 if unlocked else 0.12)))
 	button.add_theme_stylebox_override("hover", _button_style(Color(color.r * 0.12, color.g * 0.12, color.b * 0.12, 0.82), Color(color.r, color.g, color.b, 0.86)))
 	button.add_theme_stylebox_override("pressed", _button_style(Color(0.06, 0.08, 0.08, 0.9), Color(0.5, 0.95, 0.86, 0.9)))
 	button.add_theme_stylebox_override("focus", _button_style(Color(0.06, 0.06, 0.07, 0.88), Color(0.92, 0.9, 0.82, 0.9)))
@@ -198,19 +252,84 @@ func _on_unlock_all_pressed() -> void:
 	_build_list()
 	_detail.clear()
 	_detail.append_text("[b][color=#e6c97a]开发测试：图鉴已全部解锁[/color][/b]\n\n")
-	_detail.append_text("已解锁所有卡牌与异兽条目，可直接检查卡牌 UI、原文、译注与唤醒内容。")
+	_detail.append_text("已解锁所有卡牌与异兽条目，可直接检查卡牌 UI、关键词、原文、译注与唤醒内容。")
+
+
+func _show_learning_overview() -> void:
+	_detail.clear()
+	var total: int = maxi(1, GameState.codex_total_entries())
+	var unlocked: int = GameState.valid_codex_unlocked_count()
+	var learned: int = GameState.valid_codex_learned_count()
+	var unlock_percent: int = int(round(float(unlocked) * 100.0 / float(total)))
+	var learn_percent: int = 0 if unlocked <= 0 else int(round(float(learned) * 100.0 / float(unlocked)))
+	var card_total: int = CardDatabase.all_cards().size()
+	var enemy_total: int = EnemyDatabase.all_enemies().size()
+	var card_unlocked := _count_unlocked_prefix("card.")
+	var beast_unlocked := _count_unlocked_prefix("beast.")
+	_detail.append_text("[b][color=#e6c97a]学习总览[/color][/b]\n\n")
+	_detail.append_text("%s\n" % GameState.codex_learning_summary())
+	_detail.append_text("研读进度：%d%%  ·  未研读：%d\n\n" % [learn_percent, maxi(0, unlocked - learned)])
+	_detail.append_text("[b]条目结构[/b]\n")
+	_detail.append_text("卡牌：%d / %d  ·  异兽：%d / %d\n\n" % [card_unlocked, card_total, beast_unlocked, enemy_total])
+	_detail.append_text("[b]怎么推进[/b]\n")
+	_detail.append_text("打开已解锁条目的详情，会自动标记为「已研读」。\n")
+	_detail.append_text("复盘优先看带「新」的条目，再回到「终局条件」确认当前结局差距。\n\n")
+	_detail.append_text("[color=#9fd8c8]图鉴完成度用于终局判定；研读状态用于学习复盘，不额外提高结局等级。[/color]")
+
+
+func _show_ending_conditions() -> void:
+	_detail.clear()
+	var current: Dictionary = GameState.evaluate_current_ending()
+	var total: int = maxi(1, int(current.get("codex_total", GameState.codex_total_entries())))
+	var unlocked: int = int(current.get("codex_unlocked", GameState.valid_codex_unlocked_count()))
+	var percent: int = int(round(float(unlocked) * 100.0 / float(total)))
+	var meaningful: int = int(current.get("meaningful_markers", 0))
+	var need_mid_codex: int = maxi(0, int(ceil(float(total) * 0.3)) - unlocked)
+	var need_true_codex: int = maxi(0, int(ceil(float(total) * 0.6)) - unlocked)
+	var need_true_markers: int = maxi(0, 3 - meaningful)
+	_detail.append_text("[b][color=#e6c97a]终局条件[/color][/b]\n\n")
+	_detail.append_text("当前预估：%s\n" % str(current.get("title", "")))
+	_detail.append_text("图鉴：%d / %d（%d%%）\n" % [unlocked, total, percent])
+	_detail.append_text("守护 + 陪伴：%d  ·  实用：%d\n\n" % [meaningful, int(current.get("practical_markers", 0))])
+	_detail.append_text("[b]三档判定[/b]\n")
+	_detail.append_text("残响未明：未达以下条件。\n")
+	_detail.append_text("五境净化：图鉴 >= 30%%，或守护 + 陪伴 >= 1。还需图鉴 %d 条，或一次守护/陪伴。\n" % need_mid_codex)
+	_detail.append_text("山海重明：图鉴 >= 60%%，且守护 + 陪伴 >= 3。还需图鉴 %d 条、守护/陪伴 %d 次。\n\n" % [need_true_codex, need_true_markers])
+	_detail.append_text("[b]口径说明[/b]\n")
+	_detail.append_text("图鉴只统计有效 `card.* / beast.*` 条目；无效存档 key 不参与完成度。\n")
+	_detail.append_text("守护与陪伴来自本局事件选择，新局会重置；实用只记录倾向，不推动真结局。")
+
+
+func _show_unlearned_review() -> void:
+	_detail.clear()
+	var ids: PackedStringArray = GameState.codex_unlearned_ids()
+	_detail.append_text("[b][color=#e6c97a]未研读条目[/color][/b]\n\n")
+	if ids.is_empty():
+		_detail.append_text("当前已解锁条目都已研读。\n\n继续冒险解锁新卡或异兽后，这里会列出需要复盘的新内容。")
+		return
+	_detail.append_text("以下条目已解锁但还没有打开详情。优先研读它们，可以把图鉴从收集推进到理解。\n\n")
+	var shown := 0
+	for entry_id in ids:
+		if shown >= 24:
+			_detail.append_text("\n还有 %d 条未显示，继续在左侧列表查看。\n" % (ids.size() - shown))
+			return
+		_detail.append_text("· %s\n" % _entry_display_name(entry_id))
+		shown += 1
 
 
 func _show_detail(card: Card, unlocked: bool) -> void:
 	_detail.clear()
+	var entry_id := "card." + card.id
 	var rarity_color := _rarity_hex(card.rarity)
 	if not unlocked:
 		_detail.append_text("[b][color=%s]%s · %s[/color][/b]\n\n" % [rarity_color, _school_mark(card), card.title])
 		_detail.append_text("[i]尚未在冒险中遇见，原文仍被忘川之雾遮蔽。[/i]\n")
 		return
+	_mark_entry_learned(entry_id)
 	_detail.append_text("[b][color=%s]%s[/color][/b]  [color=#b0a993](%s · %s)[/color]\n" % [rarity_color, card.title, _school_name(card), _rarity_name(card)])
-	_detail.append_text("[color=#c8c0aa]费用 %d  ·  类型 %s[/color]\n\n" % [card.cost, _type_name(card.card_type)])
-	_detail.append_text("[b][color=#ffffff]玩法：[/color][/b]%s\n\n" % card.get_resolved_description())
+	_detail.append_text("[color=#c8c0aa]费用 %d  ·  类型 %s[/color]\n" % [card.cost, _type_name(card.card_type)])
+	_append_keyword_block(card)
+	_detail.append_text("\n[b][color=#ffffff]玩法：[/color][/b]%s\n\n" % card.get_resolved_description())
 	if card.classic_quote != "":
 		_detail.append_text("[b][color=#9bd8ff]山海经原文：[/color][/b]\n[i]%s[/i]\n\n" % card.classic_quote)
 	if card.translation != "":
@@ -219,12 +338,30 @@ func _show_detail(card: Card, unlocked: bool) -> void:
 		_detail.append_text("[b][color=#d4e28a]今天活在哪里：[/color][/b]\n%s\n" % card.alive_today)
 
 
+func _append_keyword_block(card: Card) -> void:
+	if card.keywords.is_empty():
+		_detail.append_text("[color=#8f928d]关键词：无[/color]\n")
+		return
+	_detail.append_text("[color=#c8c0aa]关键词：[/color]")
+	for keyword in card.keywords:
+		var color: String = KEYWORD_COLORS.get(keyword, "#ffffff")
+		_detail.append_text("[color=%s]%s[/color] " % [color, keyword])
+	_detail.append_text("\n")
+	for keyword in card.keywords:
+		var color: String = KEYWORD_COLORS.get(keyword, "#ffffff")
+		var rule: String = KEYWORD_RULES.get(keyword, "")
+		if rule != "":
+			_detail.append_text("  [color=%s]%s[/color]：%s\n" % [color, keyword, rule])
+
+
 func _show_enemy_detail(enemy: EnemyData, unlocked: bool) -> void:
 	_detail.clear()
+	var entry_id := "beast." + enemy.id
 	if not unlocked:
 		_detail.append_text("[b]%s · %s[/b]\n\n" % [_enemy_type_name(enemy), enemy.display_name])
 		_detail.append_text("[i]尚未在冒险中击败或唤醒，形貌仍被忘川之雾遮蔽。[/i]\n")
 		return
+	_mark_entry_learned(entry_id)
 	_detail.append_text("[b][color=#e6c97a]%s[/color][/b]  [color=#b0a993](%s)[/color]\n" % [enemy.display_name, _enemy_type_name(enemy)])
 	_detail.append_text("[color=#c8c0aa]气血 %d  ·  行动循环 %d 段[/color]\n\n" % [enemy.max_hp, enemy.intent_pattern.size()])
 	if enemy.classic_quote != "":
@@ -240,6 +377,41 @@ func _show_enemy_detail(enemy: EnemyData, unlocked: bool) -> void:
 		var card: Card = CardDatabase.get_card(enemy.awaken_card_id)
 		var title: String = card.title if card != null else enemy.awaken_card_id
 		_detail.append_text("\n[b]唤醒奖励：[/b]「%s」\n" % title)
+
+
+func _mark_entry_learned(entry_id: String) -> void:
+	if GameState.mark_codex_learned(entry_id):
+		SaveSystem.save()
+		_update_entry_button_label(entry_id)
+
+
+func _update_entry_button_label(entry_id: String) -> void:
+	for child in _list.get_children():
+		if not (child is Button):
+			continue
+		var button := child as Button
+		if str(button.get_meta("entry_id", "")) == entry_id and button.text.ends_with("  新"):
+			button.text = button.text.substr(0, button.text.length() - 3) + "  ✓"
+			return
+
+
+func _count_unlocked_prefix(prefix: String) -> int:
+	var count := 0
+	for entry_id in GameState.unlocked_codex.keys():
+		var id := str(entry_id)
+		if id.begins_with(prefix) and GameState.is_valid_codex_entry(id):
+			count += 1
+	return count
+
+
+func _entry_display_name(entry_id: String) -> String:
+	if entry_id.begins_with("card."):
+		var card: Card = CardDatabase.get_card(entry_id.substr(5))
+		return "卡牌 · %s" % (card.title if card != null else entry_id)
+	if entry_id.begins_with("beast."):
+		var enemy: EnemyData = EnemyDatabase.get_enemy(entry_id.substr(6))
+		return "异兽 · %s" % (enemy.display_name if enemy != null else entry_id)
+	return entry_id
 
 
 func _school_mark(card: Card) -> String:

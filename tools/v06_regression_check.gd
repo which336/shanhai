@@ -116,8 +116,8 @@ var _game_state: Node = null
 var _save_system: Node = null
 
 
-func _init() -> void:
-	call_deferred("_run")
+func _initialize() -> void:
+	process_frame.connect(_run, CONNECT_ONE_SHOT)
 
 
 func _run() -> void:
@@ -270,7 +270,7 @@ func _check_content_counts() -> void:
 		return
 	var event_db = load("res://scripts/map/event_database.gd")
 	var events: Array = event_db.load_all()
-	_expect(int(_card_db.call("all_cards").size()) == 74, "v0.8 should load exactly 74 cards")
+	_expect(int(_card_db.call("all_cards").size()) == 92, "v0.11 should load exactly 92 cards")
 	_expect(int(_enemy_db.call("all_enemies").size()) == 40, "v0.8 should load exactly 40 enemies")
 	_expect(events.size() == 40, "v0.8 should load exactly 40 events")
 
@@ -893,7 +893,7 @@ func _check_central_map_scene() -> void:
 		await process_frame
 		_check_shop_items(Array(map.get("_shop_items")), CENTRAL_CARDS, "central")
 	_check_battle_confirm_reward_preview(map, "", "+19")
-	_check_boss_reward(map, "neutral.five_realm_harmony", "v0.8 五境净化")
+	_check_boss_reward(map, "neutral.five_realm_harmony", "忘川之心")
 	map.queue_free()
 
 
@@ -947,12 +947,12 @@ func _check_chapter_clear_flow() -> void:
 	var final_btn = map.get("_victory_btn")
 	_expect(not bool(map.get("_pending_chapter_advance")), "central clear should not request another chapter")
 	if final_text != null:
-		_expect(str(final_text.text).find("v0.8 五境净化") >= 0, "central clear should show v0.8 five-realm clear text")
+		_expect(str(final_text.text).find("忘川之心") >= 0, "central clear should point to Wangchuan finale")
 		_expect(str(final_text.text).find("本局结算") >= 0, "central clear should show run settlement summary")
 		_expect(str(final_text.text).find("图鉴解锁") >= 0, "central clear summary should include codex completion")
 		_expect(str(final_text.text).find("牌组") >= 0, "central clear summary should include deck count")
 	if final_btn != null:
-		_expect(str(final_btn.text).find("祖父书房") >= 0, "central clear button should enter study room")
+		_expect(str(final_btn.text).find("忘川之心") >= 0, "central clear button should enter Wangchuan finale")
 	map.queue_free()
 
 func _check_non_boss_reward_scaling() -> void:
@@ -1454,6 +1454,7 @@ func _check_kuafu_self_damage_rule(battle, enemy) -> void:
 		return
 	_reset_enemy_for_rule(enemy, 30)
 	battle.player.statuses.clear()
+	battle.player.block = 0
 	_run_state.hp = _run_state.max_hp
 	var before_hp: int = int(_run_state.hp)
 	var played: bool = bool(battle.call("play_card_at_index", 0, enemy))

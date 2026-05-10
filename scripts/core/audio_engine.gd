@@ -11,6 +11,8 @@ var _sfx_players: Array[AudioStreamPlayer] = []
 var _bgm_player: AudioStreamPlayer = null
 var _current_theme: String = ""
 var _bgm_t: float = 0.0
+var _sfx_volume_db: float = -14.0
+var _bgm_volume_db: float = -22.0
 ## 同名 SFX 节流（避免一秒内重复多次，听起来刺耳）
 var _sfx_last_play_time: Dictionary = {}
 const SFX_THROTTLE: Dictionary = {
@@ -29,7 +31,7 @@ func _ready() -> void:
 	# SFX 池
 	for i in SFX_POLYPHONY:
 		var p := AudioStreamPlayer.new()
-		p.volume_db = -14.0   # SFX 整体降到 -14dB（柔和不刺耳）
+		p.volume_db = _sfx_volume_db
 		add_child(p)
 		_sfx_players.append(p)
 	# BGM 实时合成
@@ -38,8 +40,11 @@ func _ready() -> void:
 	gen.mix_rate = SAMPLE_RATE
 	gen.buffer_length = 0.2
 	_bgm_player.stream = gen
-	_bgm_player.volume_db = -22.0   # BGM 降到 -22dB（背景音应当低于动作音）
+	_bgm_player.volume_db = _bgm_volume_db
 	add_child(_bgm_player)
+	var game_state := get_node_or_null("/root/GameState")
+	if game_state != null:
+		apply_settings(game_state.get("settings"))
 
 
 func _exit_tree() -> void:
@@ -75,6 +80,7 @@ func play_sfx(name: String) -> void:
 	if stream == null:
 		return
 	var p: AudioStreamPlayer = _free_sfx_player()
+	p.volume_db = _sfx_volume_db
 	p.stream = stream
 	p.play()
 
@@ -84,6 +90,22 @@ func _free_sfx_player() -> AudioStreamPlayer:
 		if not p.playing:
 			return p
 	return _sfx_players[0]
+
+
+func apply_settings(settings: Dictionary) -> void:
+	_bgm_volume_db = _volume_to_db(float(settings.get("bgm_volume", 0.6)), -38.0, -16.0)
+	_sfx_volume_db = _volume_to_db(float(settings.get("sfx_volume", 0.8)), -34.0, -10.0)
+	if _bgm_player != null:
+		_bgm_player.volume_db = _bgm_volume_db
+	for p in _sfx_players:
+		p.volume_db = _sfx_volume_db
+
+
+func _volume_to_db(value: float, min_db: float, max_db: float) -> float:
+	value = clampf(value, 0.0, 1.0)
+	if value <= 0.001:
+		return -80.0
+	return lerpf(min_db, max_db, value)
 
 
 func _generate_sfx(name: String) -> AudioStreamWAV:

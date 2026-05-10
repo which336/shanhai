@@ -15,6 +15,8 @@ const WORLD_PIXEL_H: int = TILE_SIZE * WORLD_H   # 2880
 
 const VIEWPORT_W: int = 1280
 const VIEWPORT_H: int = 720
+const MINIMAP_TOP_LEFT: Vector2 = Vector2(8, 8)
+const MAP_STATUS_HINT_TEXT: String = "[Tab] 小地图  [K] 图鉴  [R] 重生  [ESC] 返回确认"
 
 # ===== 颜色板 =====
 const COLOR_BG: Color = Color(0.06, 0.075, 0.12)
@@ -48,7 +50,8 @@ var _palette: Dictionary = {}
 var _time_acc: float = 0.0
 
 # === 连续移动 ===
-const PLAYER_SPEED: float = 220.0   # 像素 / 秒
+const PLAYER_WALK_SPEED: float = 145.0
+const PLAYER_SPRINT_MULTIPLIER: float = 1.55
 const ENEMY_SPEED: float = 90.0     # 像素 / 秒（小怪比玩家慢）
 const PLAYER_ATTACK_RANGE: float = 38.0
 const PLAYER_ATTACK_RATE: float = 0.45  # 秒
@@ -107,10 +110,12 @@ var _shop_entity: Dictionary = {}
 var _shop_entity_id: String = ""
 var _shop_items_by_entity_id: Dictionary = {}
 var _pending_reset_map: bool = false
+var _pending_exit_to_menu: bool = false
 var _pending_chapter_advance: bool = false
 var _debug_chapter_toggle: Button = null
 var _debug_chapter_picker: HBoxContainer = null
 var _debug_tool_picker: HBoxContainer = null
+var _debug_chapter_wrap: VBoxContainer = null
 
 @onready var _title: Label = $UI/Title
 @onready var _hint: Label = $UI/Hint
@@ -134,6 +139,7 @@ var _debug_tool_picker: HBoxContainer = null
 
 func _ready() -> void:
 	position = Vector2.ZERO
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_palette = PixelSprites.palette()
 	_setup_font()
 	_setup_camera()
@@ -182,9 +188,11 @@ func _ready() -> void:
 		RunState.last_battle_won = false
 
 	_title.text = _chapter_title()
+	_hint.visible = false
+	_hint.text = ""
 	_minimap.draw.connect(_draw_minimap)
 	_minimap_panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_minimap_panel.position = Vector2(8, 8)
+	_minimap_panel.position = MINIMAP_TOP_LEFT
 	RunState.hp_changed.connect(func(_a, _b): _update_status())
 	RunState.exp_changed.connect(func(_a, _b): _update_status())
 	RunState.level_up.connect(func(_lv): _update_status())
@@ -431,9 +439,9 @@ func _tick_enemy_ai(e: Dictionary, delta: float) -> void:
 	var target_grid: Vector2i = Vector2i(e["target_grid"])
 	var goal: Vector2 = _grid_center_pixel(target_grid)
 	var cur_pixel: Vector2 = e["pixel_pos"]
+	var prev_pixel: Vector2 = cur_pixel
 	var diff_v: Vector2 = goal - cur_pixel
 	var dist: float = diff_v.length()
-	var prev_pos: Vector2i = Vector2i(e["pos"])
 	if dist < 1.0:
 		e["pixel_pos"] = goal
 		e["pos"] = target_grid
@@ -445,10 +453,10 @@ func _tick_enemy_ai(e: Dictionary, delta: float) -> void:
 		else:
 			e["pixel_pos"] = cur_pixel + diff_v / dist * step
 	# 更新小怪朝向（基于实际移动方向）
-	var new_pos: Vector2i = Vector2i(e["pos"])
-	var move_dir: Vector2i = new_pos - prev_pos
-	if move_dir != Vector2i.ZERO:
-		_enemy_facing[str(e["id"])] = move_dir
+	var current_pixel: Vector2 = e["pixel_pos"]
+	var moved_delta: Vector2 = current_pixel - prev_pixel
+	if moved_delta.length_squared() > 0.01:
+		_enemy_facing[str(e["id"])] = _cardinal_facing_from_delta(moved_delta)
 	# 闪红衰减
 	e["hit_flash"] = maxf(0.0, float(e["hit_flash"]) - delta * 1.5)
 
@@ -535,11 +543,13 @@ func _show_game_over() -> void:
 func _setup_font() -> void:
 	var sf := SystemFont.new()
 	sf.font_names = PackedStringArray([
-		"Microsoft YaHei UI", "Microsoft YaHei",
+		"Microsoft YaHei", "Microsoft YaHei UI",
+		"DengXian", "Source Han Sans SC",
+		"Noto Sans CJK SC", "Noto Sans SC",
 		"PingFang SC", "Hiragino Sans GB",
-		"Noto Sans CJK SC", "WenQuanYi Micro Hei",
-		"SimHei", "SimSun", "Sans-Serif",
+		"WenQuanYi Micro Hei", "SimSun", "Sans-Serif",
 	])
+	sf.font_weight = 400
 	sf.allow_system_fallback = true
 	_font = sf
 
@@ -937,6 +947,8 @@ func _roll_treasure_loot(rng: RandomNumberGenerator) -> Dictionary:
 		{"type": "card", "card": "neutral.qi_gather", "text": "卡牌：《凝灵韵》"},
 		{"type": "card", "card": "neutral.warrior_oath", "text": "卡牌：《侠者誓》"},
 	]
+	for cid in _active_character_card_ids():
+		pool.append({"type": "card", "card": cid, "text": "角色卡牌：%s" % cid})
 	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
 		pool.append_array([
 			{"type": "fragments", "amount": 65, "text": "灵韵碎片 +65"},
@@ -987,6 +999,39 @@ func _roll_treasure_loot(rng: RandomNumberGenerator) -> Dictionary:
 			{"type": "card", "card": "neutral.five_realm_harmony", "text": "获得卡牌：五境调和"},
 		])
 	return pool[rng.randi() % pool.size()].duplicate(true)
+
+
+func _active_character_card_ids() -> Array[String]:
+	match RunState.character_id:
+		GameState.CHARACTER_ALI:
+			return [
+				"ali.foxtail_feint",
+				"ali.moonlit_wound",
+				"ali.masked_step",
+				"ali.nine_tail_bargain",
+				"ali.charm_snare",
+				"ali.foxfire_oath",
+			]
+		GameState.CHARACTER_LUO_LING:
+			return [
+				"luoling.rainthread_draw",
+				"luoling.tide_mark",
+				"luoling.mistwalk",
+				"luoling.wavecut",
+				"luoling.dragonwell_breath",
+				"luoling.deepsea_confluence",
+			]
+		GameState.CHARACTER_SANG_QI:
+			return [
+				"sangqi.root_guard",
+				"sangqi.fusang_sprout",
+				"sangqi.wooden_sigil",
+				"sangqi.green_breath",
+				"sangqi.ridge_bastion",
+				"sangqi.ten_thousand_leaves",
+			]
+		_:
+			return []
 
 
 func _pick_free_pos(rng: RandomNumberGenerator, x_min: int, x_max: int, y_min: int, y_max: int, tiles: Array, occupied: Dictionary) -> Vector2i:
@@ -1058,6 +1103,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	# 其它快捷键在对话框打开时不响应
 	if _confirm.visible or _victory.visible:
+		if event.keycode == KEY_ESCAPE and _confirm.visible:
+			_mark_input_handled()
+			_on_confirm_no()
+		return
+	if event.keycode == KEY_ESCAPE:
+		_mark_input_handled()
+		_show_exit_to_menu_confirm()
 		return
 	if event.keycode == KEY_R:
 		_mark_input_handled()
@@ -1088,12 +1140,24 @@ func _reload_current_scene_deferred() -> void:
 
 func _show_reset_confirm() -> void:
 	_pending_reset_map = true
+	_pending_exit_to_menu = false
 	pending_entity = {}
 	_confirm.visible = true
 	_confirm_text.text = "确认重置本层地图？\n\n会重新生成地图，并清空本局等级、经验和当前战斗进度。"
 	_confirm_yes.text = "确认重置"
 	_confirm_no.text = "取消"
 	_confirm_yes.grab_focus()
+
+
+func _show_exit_to_menu_confirm() -> void:
+	_pending_exit_to_menu = true
+	_pending_reset_map = false
+	pending_entity = {}
+	_confirm.visible = true
+	_confirm_text.text = "确认返回主菜单？\n\n本次冒险的地图进度会中断；已获得的图鉴、碎片和结局收藏会保留。"
+	_confirm_yes.text = "返回主菜单"
+	_confirm_no.text = "继续探索"
+	_confirm_no.grab_focus()
 
 
 
@@ -1121,6 +1185,7 @@ func _reset_current_run_map() -> void:
 func _setup_debug_chapter_controls() -> void:
 	var ui_parent: Node = _back_btn.get_parent()
 	var wrap := VBoxContainer.new()
+	_debug_chapter_wrap = wrap
 	wrap.name = "DebugChapterControls"
 	wrap.anchor_left = 1.0
 	wrap.anchor_right = 1.0
@@ -1131,6 +1196,7 @@ func _setup_debug_chapter_controls() -> void:
 	wrap.offset_top = 48.0
 	wrap.offset_bottom = 180.0
 	wrap.mouse_filter = Control.MOUSE_FILTER_STOP
+	wrap.visible = bool(GameState.setting_value("show_dev_tools", false))
 
 	_debug_chapter_toggle = Button.new()
 	_debug_chapter_toggle.text = "开发跳关：关"
@@ -1271,6 +1337,36 @@ func _debug_jump_to_chapter(chapter_index: int) -> void:
 	queue_redraw()
 	_minimap.queue_redraw()
 
+
+func _current_player_speed() -> float:
+	return _player_move_speed(_is_sprint_pressed())
+
+
+func _player_move_speed(sprinting: bool) -> float:
+	return PLAYER_WALK_SPEED * (PLAYER_SPRINT_MULTIPLIER if sprinting else 1.0)
+
+
+func _is_sprint_pressed() -> bool:
+	return Input.is_key_pressed(KEY_SHIFT)
+
+
+func _cardinal_facing_from_delta(delta: Vector2) -> Vector2i:
+	if absf(delta.x) >= absf(delta.y):
+		return Vector2i(int(sign(delta.x)), 0)
+	return Vector2i(0, int(sign(delta.y)))
+
+
+func _visual_facing_from_world_facing(facing: Vector2i) -> String:
+	if _view_mode != ViewMode.ISOMETRIC:
+		return PixelSprites.facing_to_dir(facing)
+	var screen_delta := Vector2(float(facing.x - facing.y) * ISO_HALF_W, float(facing.x + facing.y) * ISO_HALF_H)
+	if screen_delta.length_squared() <= 0.01:
+		return PixelSprites.DIR_DOWN
+	if absf(screen_delta.x) >= absf(screen_delta.y):
+		return PixelSprites.DIR_RIGHT if screen_delta.x > 0.0 else PixelSprites.DIR_LEFT
+	return PixelSprites.DIR_DOWN if screen_delta.y > 0.0 else PixelSprites.DIR_UP
+
+
 func _process_movement(delta: float) -> void:
 	if _confirm.visible or _victory.visible or _event_panel.visible:
 		_was_moving = false
@@ -1284,21 +1380,25 @@ func _process_movement(delta: float) -> void:
 		dir.x -= 1
 	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
 		dir.x += 1
-	_was_moving = dir != Vector2.ZERO
 	if dir == Vector2.ZERO:
+		_was_moving = false
 		return
+	var intended_facing: Vector2i = _cardinal_facing_from_delta(dir)
 	dir = dir.normalized()
-	var step: Vector2 = dir * PLAYER_SPEED * delta
+	var step: Vector2 = dir * _current_player_speed() * delta
 	var radius: float = PLAYER_COLLISION_RADIUS_ISO if _view_mode == ViewMode.ISOMETRIC else PLAYER_COLLISION_RADIUS_TOP
+	var prev_player_pixel: Vector2 = _player_pixel
 	_try_move_player_with_slide(step, radius)
 	# 边界 clamp
 	_player_pixel.x = clampf(_player_pixel.x, TILE_SIZE * 0.5, WORLD_PIXEL_W - TILE_SIZE * 0.5)
 	_player_pixel.y = clampf(_player_pixel.y, TILE_SIZE * 0.5, WORLD_PIXEL_H - TILE_SIZE * 0.5)
-	# 朝向用于 idle 动画相位
-	if abs(dir.x) > abs(dir.y):
-		_facing = Vector2i(int(sign(dir.x)), 0)
+	var moved_delta: Vector2 = _player_pixel - prev_player_pixel
+	_was_moving = moved_delta.length_squared() > 0.01
+	# 世界朝向仍用于交互；等距渲染时再转换成屏幕朝向。
+	if _was_moving:
+		_facing = _cardinal_facing_from_delta(moved_delta)
 	else:
-		_facing = Vector2i(0, int(sign(dir.y)))
+		_facing = intended_facing
 	# 检查格子变化
 	var cur_grid := Vector2i(int(_player_pixel.x / TILE_SIZE), int(_player_pixel.y / TILE_SIZE))
 	if cur_grid != _last_grid:
@@ -1422,6 +1522,8 @@ func _update_camera() -> void:
 # ============== 询问对话 ==============
 
 func _show_confirm(e: Dictionary) -> void:
+	_pending_exit_to_menu = false
+	_pending_reset_map = false
 	_confirm.visible = true
 	_confirm_yes.grab_focus()
 	var kind: String = e["kind"]
@@ -1455,6 +1557,11 @@ func _show_confirm(e: Dictionary) -> void:
 
 func _on_confirm_yes() -> void:
 	_confirm.visible = false
+	if _pending_exit_to_menu:
+		_pending_exit_to_menu = false
+		SaveSystem.save()
+		get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+		return
 	if _pending_reset_map:
 		_pending_reset_map = false
 		_reset_current_run_map()
@@ -1500,6 +1607,9 @@ func _use_rest(e: Dictionary) -> void:
 
 func _on_confirm_no() -> void:
 	_confirm.visible = false
+	if _pending_exit_to_menu:
+		_pending_exit_to_menu = false
+		return
 	if _pending_reset_map:
 		_pending_reset_map = false
 		return
@@ -1547,12 +1657,13 @@ func _update_status() -> void:
 			bosses_left += 1
 		elif k == "enemy":
 			enemies_left += 1
-	_status.text = "Lv.%d  EXP %d/%d   ·   气血 %d/%d   ·   小怪 %d   ·   BOSS %d/%d   ·   碎片 %d   ·   [Tab] 小地图  [R] 重生" % [
+	_status.text = "Lv.%d  EXP %d/%d   ·   气血 %d/%d   ·   小怪 %d   ·   BOSS %d/%d   ·   碎片 %d   ·   %s" % [
 		RunState.level, RunState.exp_value, RunState.exp_to_next,
 		RunState.hp, RunState.max_hp,
 		enemies_left,
 		RunState.bosses_defeated, RunState.BOSSES_TO_CLEAR,
 		GameState.fragments,
+		MAP_STATUS_HINT_TEXT,
 	]
 
 
@@ -1595,7 +1706,11 @@ func _trigger_event(e: Dictionary) -> void:
 	var ui_options: Array = []
 	for opt in opts:
 		var o: Dictionary = opt
-		var label: String = "%s\n→ %s" % [str(o.get("label", "?")), str(o.get("preview", ""))]
+		var marker: String = str(o.get("ending_marker", ""))
+		var marker_text: String = ""
+		if RunState.is_valid_ending_marker(marker):
+			marker_text = "  ·  伏笔：%s" % RunState.ending_marker_label(marker)
+		var label: String = "%s%s\n→ %s" % [str(o.get("label", "?")), marker_text, str(o.get("preview", ""))]
 		ui_options.append({"label": label, "callback": Callable(self, "_on_event_choice").bind(o)})
 	if ui_options.is_empty():
 		ui_options.append({"label": "[离开]", "callback": Callable(self, "_close_event_panel")})
@@ -1604,6 +1719,9 @@ func _trigger_event(e: Dictionary) -> void:
 
 func _on_event_choice(opt: Dictionary) -> void:
 	_close_event_panel()
+	var marker: String = str(opt.get("ending_marker", ""))
+	if marker != "":
+		RunState.record_ending_marker(marker)
 	# 应用 effect
 	var msg: String = _apply_reward(opt)
 	if pending_entity != null and not pending_entity.is_empty():
@@ -1623,6 +1741,8 @@ func _on_event_choice(opt: Dictionary) -> void:
 	var result_text: String = str(opt.get("result", ""))
 	if result_text.is_empty():
 		result_text = msg if msg != "" else "回响渐渐散去，没有发生额外变化。"
+	if RunState.is_valid_ending_marker(marker):
+		result_text += "\n\n伏笔：%s" % RunState.ending_marker_label(marker)
 	result_text = _result_body_with_change(result_text, msg)
 	_show_event_panel("回响结果", result_text, [{"label": "继续", "callback": Callable(self, "_close_event_panel")}])
 
@@ -1846,8 +1966,16 @@ func _enter_shop(e: Dictionary) -> void:
 		chapter_shop_cards = north_shop_cards.duplicate()
 	var pool: Array = base_cards.duplicate()
 	var guaranteed_cards: Array = []
+	var character_cards: Array[String] = _active_character_card_ids()
+	if not character_cards.is_empty():
+		pool.append_array(character_cards)
+		pool.append_array(character_cards)
+		guaranteed_cards = character_cards.duplicate()
 	if RunState.current_chapter_index >= RunState.CHAPTER_WEST:
-		guaranteed_cards = west_cards.duplicate()
+		if guaranteed_cards.is_empty():
+			guaranteed_cards = west_cards.duplicate()
+		else:
+			guaranteed_cards.append_array(west_cards)
 		pool.append_array(west_cards)
 		pool.append_array(west_cards)
 		pool.append_array(west_cards)
@@ -2189,12 +2317,12 @@ func _boss_reward_line(kind: String) -> String:
 
 
 func _codex_total_entries() -> int:
-	return CardDatabase.all_cards().size() + EnemyDatabase.all_enemies().size()
+	return GameState.codex_total_entries()
 
 
 func _final_clear_summary() -> String:
 	var codex_total: int = max(1, _codex_total_entries())
-	var codex_unlocked: int = GameState.unlocked_codex.size()
+	var codex_unlocked: int = GameState.valid_codex_unlocked_count()
 	var codex_percent: int = int(round(float(codex_unlocked) * 100.0 / float(codex_total)))
 	var chapters: String = "南山 / 西山 / 北山"
 	if RunState.current_chapter_index >= RunState.CHAPTER_EAST:
@@ -2241,8 +2369,8 @@ func _show_boss_victory(kind: String, name: String) -> void:
 			_victory_btn.text = "进入%s" % next_chapter_name
 		else:
 			_pending_chapter_advance = false
-			_victory_text.text = "v0.8 五境净化！\n你已连续完成「南山 · 朱雀庭」「西山 · 白虎境」「北山 · 玄武渊」「东山 · 青龙原」与「中山 · 麒麟台」。\n五方灵韵在麒麟台归一，祖父书房已经打开，可用典籍碎片启用下一局藏签。\n\n本次变化：%s\n\n%s\n\n（按下方按钮进入祖父书房。）" % [reward_line, _final_clear_summary()]
-			_victory_btn.text = "进入祖父书房"
+			_victory_text.text = "v0.12 五境净化！\n你已连续完成「南山 · 朱雀庭」「西山 · 白虎境」「北山 · 玄武渊」「东山 · 青龙原」与「中山 · 麒麟台」。\n五方灵韵在麒麟台归一，忘川之心已经显现。\n\n本次变化：%s\n\n%s\n\n（按下方按钮进入忘川之心。）" % [reward_line, _final_clear_summary()]
+			_victory_btn.text = "进入忘川之心"
 		return
 	_pending_chapter_advance = false
 	_victory_text.text = "击败 BOSS：%s\n本次变化：%s\n\n本章进度：%d / %d\n继续探索并完成剩余 BOSS。" % [name, reward_line, defeated, total]
@@ -2281,8 +2409,7 @@ func _on_victory_close() -> void:
 		get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
 		return
 	if RunState.bosses_defeated >= RunState.BOSSES_TO_CLEAR and not RunState.has_next_chapter():
-		RunState.reset_for_new_run()
-		get_tree().change_scene_to_file("res://scenes/meta/study_room.tscn")
+		get_tree().change_scene_to_file("res://scenes/finale/finale.tscn")
 		return
 	_victory.visible = false
 	_update_status()
@@ -2290,7 +2417,7 @@ func _on_victory_close() -> void:
 	_minimap.queue_redraw()
 
 func _on_back() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	_show_exit_to_menu_confirm()
 
 
 func _color_for_kind(kind: String) -> Color:
@@ -2354,8 +2481,8 @@ func _draw() -> void:
 		if str(e["kind"]) == "enemy":
 			var eid: String = str(e["id"])
 			if _enemy_facing.has(eid):
-				e_facing = PixelSprites.facing_to_dir(_enemy_facing[eid])
-		var e_frame: int = _anim_frame
+				e_facing = _visual_facing_from_world_facing(_enemy_facing[eid])
+		var e_frame: int = _anim_frame if _entity_is_moving(e) else 0
 		_draw_pixel_sprite_animated(origin, e_key, e_facing, e_frame)
 		# 受击闪烁：在 sprite 上叠一层红色
 		var flash: float = float(e.get("hit_flash", 0.0))
@@ -2370,13 +2497,12 @@ func _draw() -> void:
 	var pbob: float = sin(_time_acc * 3.2) * 1.2
 	_draw_entity_shadow_at(_player_pixel)
 	_draw_player_halo_top(_player_pixel, PLAYER_COLLISION_RADIUS_TOP)
-	var player_facing: String = PixelSprites.facing_to_dir(_facing)
-	# 攻击动画：攻击 CD 中显示剑击帧
-	var is_attacking: bool = _player_attack_cd > PLAYER_ATTACK_RATE * 0.3
-	var foot_pos := _player_pixel + Vector2(0, TILE_SIZE * 0.42 + pbob)
-	_draw_warrior_player(foot_pos, player_facing, is_attacking, WARRIOR_TOP_SCALE)
+	var player_facing: String = _visual_facing_from_world_facing(_facing)
+	var player_frame: int = _anim_frame if _was_moving else 0
+	var player_origin := Vector2(_player_pixel.x - sprite_half, _player_pixel.y - sprite_half + pbob)
+	_draw_pixel_sprite_animated(player_origin, PixelSprites.player_sprite_key(RunState.character_id), player_facing, player_frame)
 	# 玩家头顶 HP 血条
-	_draw_hp_bar(foot_pos + Vector2(0, -150.0 * WARRIOR_TOP_SCALE), RunState.hp, RunState.max_hp)
+	_draw_hp_bar(_player_pixel + Vector2(0, -sprite_half - 12), RunState.hp, RunState.max_hp)
 
 	# 4) 飘字
 	if _font:
@@ -2606,14 +2732,14 @@ func _draw_iso_entity(item: Dictionary) -> void:
 	if str(e["kind"]) == "enemy":
 		var eid2: String = str(e["id"])
 		if _enemy_facing.has(eid2):
-			e_facing = PixelSprites.facing_to_dir(_enemy_facing[eid2])
+			e_facing = _visual_facing_from_world_facing(_enemy_facing[eid2])
 		var enemy_ids: Array = e.get("enemies", [])
 		if not enemy_ids.is_empty():
 			enemy_id = str(enemy_ids[0])
 	var iso_key: String = enemy_id if enemy_id != "" else e_key
 	_draw_iso_entity_shadow(iso_pos, clampf(_iso_entity_scale_for_key(iso_key), 0.75, 1.35))
 	var sprite_rect := Rect2(origin.x, origin.y, sprite_half * 2, sprite_half * 2)
-	var e_frame: int = _anim_frame
+	var e_frame: int = _anim_frame if _entity_is_moving(e) else 0
 	var iso_tex: Texture2D = PixelSprites.iso_enemy_texture(iso_key, e_facing, e_frame)
 	if iso_tex != null:
 		var tex_scale: float = _iso_entity_scale_for_key(iso_key)
@@ -2676,17 +2802,27 @@ func _iso_entity_anchor_ratio_for_key(key: String) -> float:
 		_:
 			return 0.84
 
+
+func _entity_is_moving(e: Dictionary) -> bool:
+	if not e.has("pixel_pos"):
+		return false
+	var target_grid: Vector2i = Vector2i(e.get("target_grid", e.get("pos", Vector2i.ZERO)))
+	var goal: Vector2 = _grid_center_pixel(target_grid)
+	var pixel_pos: Vector2 = e["pixel_pos"]
+	return pixel_pos.distance_to(goal) > 1.0
+
 func _draw_warrior_player(foot_pos: Vector2, facing: String, is_attacking: bool, scale: float) -> void:
 	var anim := "idle"
-	var frame := _anim_frame % 4
+	var frame := 0
 	if is_attacking:
 		anim = "attack"
 		frame = 0 if _player_attack_cd > PLAYER_ATTACK_RATE * 0.6 else 1
 	elif _was_moving:
 		anim = "walk"
-	var tex: Texture2D = PixelSprites.iso_player_texture(anim, facing, frame)
+		frame = _anim_frame % 4
+	var tex: Texture2D = PixelSprites.iso_character_texture(RunState.character_id, anim, facing, frame)
 	if tex == null:
-		_draw_pixel_sprite_animated(foot_pos - Vector2(PixelSprites.PIXEL * PixelSprites.SIZE * 0.5, PixelSprites.PIXEL * PixelSprites.SIZE), "player", facing, frame)
+		_draw_pixel_sprite_animated(foot_pos - Vector2(PixelSprites.PIXEL * PixelSprites.SIZE * 0.5, PixelSprites.PIXEL * PixelSprites.SIZE), PixelSprites.player_sprite_key(RunState.character_id), facing, frame)
 		return
 	var size := tex.get_size() * scale
 	var rect := Rect2(foot_pos.x - size.x * 0.5, foot_pos.y - size.y, size.x, size.y)
@@ -2694,7 +2830,7 @@ func _draw_warrior_player(foot_pos: Vector2, facing: String, is_attacking: bool,
 
 
 func _draw_iso_player(ppos: Vector2) -> void:
-	var player_facing: String = PixelSprites.facing_to_dir(_facing)
+	var player_facing: String = _visual_facing_from_world_facing(_facing)
 	var is_attacking: bool = _player_attack_cd > PLAYER_ATTACK_RATE * 0.3
 	var foot_pos := ppos
 	_draw_iso_entity_shadow(ppos)

@@ -52,6 +52,7 @@ func _rebuild() -> void:
 	_tweens.clear()
 	_player_last_block = int(_battle.player.block) if _battle != null and _battle.player != null else 0
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_build_player()
 	if _battle == null:
 		return
@@ -64,6 +65,7 @@ func _rebuild() -> void:
 func _build_player() -> void:
 	_player_sprite = AnimatedSprite2D.new()
 	_player_sprite.name = "PlayerAnim"
+	_player_sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_player_sprite.sprite_frames = _player_frames()
 	_player_sprite.animation_finished.connect(func(): _play_idle(_player_sprite))
 	add_child(_player_sprite)
@@ -73,6 +75,8 @@ func _build_player() -> void:
 func _build_enemy(enemy: BattleEnemy) -> void:
 	var sprite := AnimatedSprite2D.new()
 	sprite.name = "EnemyAnim_%s" % enemy.data.id
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	sprite.flip_h = false
 	sprite.sprite_frames = _enemy_frames(_sprite_key_for_enemy(enemy))
 	sprite.animation_finished.connect(func(): _play_idle(sprite))
 	add_child(sprite)
@@ -90,20 +94,21 @@ func _build_enemy(enemy: BattleEnemy) -> void:
 
 func _player_frames() -> SpriteFrames:
 	var frames := SpriteFrames.new()
-	_add_animation(frames, ANIM_IDLE, _player_textures("idle"), true, 4.0)
+	var idle := _first_frame_only(_player_textures("idle"))
+	_add_animation(frames, ANIM_IDLE, idle, true, 1.0)
 	_add_animation(frames, ANIM_ATTACK, _player_textures("attack"), false, 10.0)
-	_add_animation(frames, ANIM_HIT, _player_textures("idle"), false, 12.0)
-	_add_animation(frames, ANIM_DEATH, _player_textures("idle"), false, 6.0)
+	_add_animation(frames, ANIM_HIT, idle, false, 12.0)
+	_add_animation(frames, ANIM_DEATH, idle, false, 6.0)
 	_add_animation(frames, ANIM_CAST, _player_textures("attack"), false, 8.0)
-	_add_animation(frames, ANIM_DEFEND, _player_textures("idle"), false, 8.0)
+	_add_animation(frames, ANIM_DEFEND, idle, false, 8.0)
 	return frames
 
 
 func _enemy_frames(enemy_key: String) -> SpriteFrames:
 	var frames := SpriteFrames.new()
-	var idle := _enemy_textures(enemy_key, PixelSprites.DIR_DOWN)
+	var idle := _first_frame_only(_enemy_textures(enemy_key, PixelSprites.DIR_LEFT))
 	var attack := _enemy_textures(enemy_key, PixelSprites.DIR_LEFT)
-	_add_animation(frames, ANIM_IDLE, idle, true, 4.0)
+	_add_animation(frames, ANIM_IDLE, idle, true, 1.0)
 	_add_animation(frames, ANIM_ATTACK, attack, false, 9.0)
 	_add_animation(frames, ANIM_HIT, idle, false, 12.0)
 	_add_animation(frames, ANIM_DEATH, idle, false, 6.0)
@@ -115,9 +120,9 @@ func _enemy_frames(enemy_key: String) -> SpriteFrames:
 func _player_textures(anim: String) -> Array[Texture2D]:
 	var out: Array[Texture2D] = []
 	for i in 4:
-		var tex: Texture2D = PixelSprites.iso_player_texture(anim, PixelSprites.DIR_RIGHT, i)
+		var tex: Texture2D = PixelSprites.iso_character_texture(RunState.character_id, anim, PixelSprites.DIR_RIGHT, i)
 		if tex == null:
-			tex = PixelSprites.iso_player_texture("idle", PixelSprites.DIR_RIGHT, i)
+			tex = PixelSprites.iso_character_texture(RunState.character_id, "idle", PixelSprites.DIR_RIGHT, i)
 		if tex != null:
 			out.append(tex)
 	return out
@@ -135,6 +140,13 @@ func _enemy_textures(enemy_key: String, dir: String) -> Array[Texture2D]:
 		var fallback: Texture2D = PixelSprites.iso_enemy_texture("hu_diao", PixelSprites.DIR_DOWN, 0)
 		if fallback != null:
 			out.append(fallback)
+	return out
+
+
+func _first_frame_only(textures: Array[Texture2D]) -> Array[Texture2D]:
+	var out: Array[Texture2D] = []
+	if not textures.is_empty() and textures[0] != null:
+		out.append(textures[0])
 	return out
 
 
@@ -360,6 +372,8 @@ func _float_text(text: String, pos: Vector2, color: Color) -> void:
 func _sprite_key_for_enemy(enemy: BattleEnemy) -> String:
 	var enemy_id: String = enemy.data.id
 	match enemy_id:
+		"elite_qiongqi":
+			return "elite"
 		"boss_bifang_weak":
 			return "boss_weak"
 		"boss_bifang":

@@ -8,19 +8,22 @@
 				"label": "上前帮她衔一段",
 				"type": "card",
 				"card": "huang.jingwei_fill",
-				"preview": "获得：《精卫·恒念》"
+				"preview": "获得：《精卫·恒念》",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "告诉她海是填不满的",
 				"type": "fragments",
 				"amount": 30,
-				"preview": "+30 灵韵碎片"
+				"preview": "+30 灵韵碎片",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "默默坐下，直到天亮",
 				"type": "max_hp",
 				"amount": 5,
-				"preview": "+5 最大气血（永久）"
+				"preview": "+5 最大气血（永久）",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -33,19 +36,22 @@
 				"label": "用碎片接一滴露",
 				"type": "heal_full_cost",
 				"cost": 15,
-				"preview": "失去 15 碎片，回满气血"
+				"preview": "失去 15 碎片，回满气血",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "凝视太阳的方向",
 				"type": "card",
 				"card": "shan.fusang",
-				"preview": "获得：《扶桑·朝露》"
+				"preview": "获得：《扶桑·朝露》",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "拿一片叶子回去",
 				"type": "exp",
 				"amount": 30,
-				"preview": "+30 EXP"
+				"preview": "+30 EXP",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -58,19 +64,22 @@
 				"label": "向应龙稽首致谢",
 				"type": "card",
 				"card": "hai.yinglong_call",
-				"preview": "获得：《应龙·呼云》"
+				"preview": "获得：《应龙·呼云》",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "记下这片云的形状",
 				"type": "exp",
 				"amount": 35,
-				"preview": "+35 EXP"
+				"preview": "+35 EXP",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "在雨中走一段",
 				"type": "heal",
 				"amount": 25,
-				"preview": "+25 气血"
+				"preview": "+25 气血",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -84,19 +93,22 @@
 				"type": "card_cost",
 				"card": "hai.wenyao_evade",
 				"cost": 10,
-				"preview": "失去 10 碎片，获得《文鳐·夜遁》"
+				"preview": "失去 10 碎片，获得《文鳐·夜遁》",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "教他更好的捕鱼之法",
 				"type": "exp",
 				"amount": 25,
-				"preview": "+25 EXP"
+				"preview": "+25 EXP",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "默默离开",
 				"type": "heal",
 				"amount": 10,
-				"preview": "+10 气血"
+				"preview": "+10 气血",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -109,19 +121,22 @@
 				"label": "为夸父点一柱香",
 				"type": "card",
 				"card": "huang.kuafu_pursue",
-				"preview": "获得：《夸父·逐日》"
+				"preview": "获得：《夸父·逐日》",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "拾一颗石碑边的桃子",
 				"type": "heal",
 				"amount": 30,
-				"preview": "+30 气血"
+				"preview": "+30 气血",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "默念几句典籍",
 				"type": "exp",
 				"amount": 20,
-				"preview": "+20 EXP；解锁图鉴：夸父"
+				"preview": "+20 EXP；解锁图鉴：夸父",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -134,20 +149,23 @@
 				"label": "向他鞠躬",
 				"type": "card",
 				"card": "huang.xingtian_axe",
-				"preview": "获得：《刑天·舞戚》"
+				"preview": "获得：《刑天·舞戚》",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "献上你的灵韵碎片",
 				"type": "max_hp_cost",
 				"cost": 25,
 				"amount": 10,
-				"preview": "失去 25 碎片，+10 最大气血（永久）"
+				"preview": "失去 25 碎片，+10 最大气血（永久）",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "悄悄写下他的故事",
 				"type": "exp",
 				"amount": 40,
-				"preview": "+40 EXP"
+				"preview": "+40 EXP",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -162,7 +180,8 @@
 				"type": "card",
 				"card": "shan.luwu_gate",
 				"preview": "获得：《陆吾·镇门》",
-				"result": "你报出南山旧闻与西山名号，石门上的虎纹缓缓亮起，一枚镇门符落入掌心。"
+				"result": "你报出南山旧闻与西山名号，石门上的虎纹缓缓亮起，一枚镇门符落入掌心。",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "献上碎片修补门纹",
@@ -170,14 +189,16 @@
 				"cost": 20,
 				"amount": 8,
 				"preview": "失去 20 碎片，最大 HP +8",
-				"result": "碎片嵌入门纹，白石裂缝闭合。门后的山风反哺你的气脉。"
+				"result": "碎片嵌入门纹，白石裂缝闭合。门后的山风反哺你的气脉。",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "绕门而行，记下山势",
 				"type": "exp",
 				"amount": 45,
 				"preview": "+45 EXP",
-				"result": "你绕过石门，发现山势如九尾展开，之后判断西山路径会更从容。"
+				"result": "你绕过石门，发现山势如九尾展开，之后判断西山路径会更从容。",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -192,21 +213,24 @@
 				"type": "card",
 				"card": "shan.yingzhao_patrol",
 				"preview": "获得：《英招·巡山》",
-				"result": "英招没有回头，却放慢了半步。你记下它巡山的步法，化作新的卡牌。"
+				"result": "英招没有回头，却放慢了半步。你记下它巡山的步法，化作新的卡牌。",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "在石林中休整",
 				"type": "heal",
 				"amount": 30,
 				"preview": "+30 HP",
-				"result": "石林挡住寒风，铜铃声从远处传来，你的伤口渐渐止住。"
+				"result": "石林挡住寒风，铜铃声从远处传来，你的伤口渐渐止住。",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "把路线刻入木简",
 				"type": "exp",
 				"amount": 35,
 				"preview": "+35 EXP",
-				"result": "木简上的路线连成虎纹，西山的岔路在你眼里清晰了一些。"
+				"result": "木简上的路线连成虎纹，西山的岔路在你眼里清晰了一些。",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -221,21 +245,24 @@
 				"type": "card",
 				"card": "hai.tiangou_ward",
 				"preview": "获得：《天狗·御凶》",
-				"result": "天狗低吠三声，断墙阴影退去。你学会了以声驱凶的方法。"
+				"result": "天狗低吠三声，断墙阴影退去。你学会了以声驱凶的方法。",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "分给它一些碎片",
 				"type": "fragments",
 				"amount": 35,
 				"preview": "+35 碎片",
-				"result": "天狗用鼻尖推回一小堆更纯净的碎片，像是在承认你的善意。"
+				"result": "天狗用鼻尖推回一小堆更纯净的碎片，像是在承认你的善意。",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "守夜到天明",
 				"type": "heal",
 				"amount": 20,
 				"preview": "+20 HP",
-				"result": "你与天狗守到天明，夜色退去时，白虎境的寒意也减轻了。"
+				"result": "你与天狗守到天明，夜色退去时，白虎境的寒意也减轻了。",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -250,21 +277,24 @@
 				"type": "card",
 				"card": "hai.xuan_gui_shell",
 				"preview": "获得：《旋龟·回壳》",
-				"result": "旋龟壳纹一圈圈收束，你抄下最后一笔时，水面映出护身之法。"
+				"result": "旋龟壳纹一圈圈收束，你抄下最后一笔时，水面映出护身之法。",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "饮一口清潭水",
 				"type": "heal_full_cost",
 				"cost": 18,
 				"preview": "失去 18 碎片，回满 HP",
-				"result": "潭水冷得刺骨，却把疲惫一并带走。碎片沉入水底，换来完整气息。"
+				"result": "潭水冷得刺骨，却把疲惫一并带走。碎片沉入水底，换来完整气息。",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "听劈木般的回声",
 				"type": "exp",
 				"amount": 40,
 				"preview": "+40 EXP",
-				"result": "回声像劈木一样层层裂开，你从其中听出旋龟转身的规律。"
+				"result": "回声像劈木一样层层裂开，你从其中听出旋龟转身的规律。",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -279,14 +309,16 @@
 				"type": "card",
 				"card": "huang.gudiao_cry",
 				"preview": "获得：《蛊雕·夜啼》",
-				"result": "你没有退后。哭声忽然转为尖啸，崖影中落下一枚带角羽符。"
+				"result": "你没有退后。哭声忽然转为尖啸，崖影中落下一枚带角羽符。",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "封住耳朵快速通过",
 				"type": "exp",
 				"amount": 30,
 				"preview": "+30 EXP",
-				"result": "你压住心神穿过裂谷，终于分辨出哭声只是蛊雕诱敌的回音。"
+				"result": "你压住心神穿过裂谷，终于分辨出哭声只是蛊雕诱敌的回音。",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "留下碎片安抚崖影",
@@ -294,7 +326,8 @@
 				"card": "huang.zheng_pounce",
 				"cost": 12,
 				"preview": "失去 12 碎片，获得：《狰·击石》",
-				"result": "碎片落入崖影，另一侧传来狰击石的节奏，盖过了蛊雕夜啼。"
+				"result": "碎片落入崖影，另一侧传来狰击石的节奏，盖过了蛊雕夜啼。",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -309,21 +342,24 @@
 				"type": "card",
 				"card": "huang.zheng_pounce",
 				"preview": "获得：《狰·击石》",
-				"result": "你跟上独角击石的节奏，赤豹回望一眼，五尾扫出一道荒系战法。"
+				"result": "你跟上独角击石的节奏，赤豹回望一眼，五尾扫出一道荒系战法。",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "收集震落石片",
 				"type": "fragments",
 				"amount": 40,
 				"preview": "+40 碎片",
-				"result": "岩壁被震落的石片里夹着灵韵，你挑出能用的部分收好。"
+				"result": "岩壁被震落的石片里夹着灵韵，你挑出能用的部分收好。",
+				"ending_marker": "practical"
 			},
 			{
 				"label": "静待回声消散",
 				"type": "max_hp",
 				"amount": 6,
 				"preview": "最大 HP +6",
-				"result": "你静坐到回声完全消散，胸口余震转为更稳定的气血。"
+				"result": "你静坐到回声完全消散，胸口余震转为更稳定的气血。",
+				"ending_marker": "companion"
 			}
 		]
 	},
@@ -338,14 +374,16 @@
 				"preview": "获得海经牌，但可能被寒气拖慢。",
 				"result": "你在倒影里看到被遗忘的水路。",
 				"type": "card",
-				"card": "hai.deep_pool_reflection"
+				"card": "hai.deep_pool_reflection",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "投入灵韵",
 				"preview": "花费碎片换取经验。",
 				"result": "潭面吞下碎片，回声变得清晰。",
 				"type": "exp",
-				"amount": 45
+				"amount": 45,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -360,14 +398,16 @@
 				"preview": "获得护盾向卡牌。",
 				"result": "钟声低沉，山脊像城墙一样回应。",
 				"type": "card",
-				"card": "shan.black_ridge_guard"
+				"card": "shan.black_ridge_guard",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "静听余响",
 				"preview": "恢复生命。",
 				"result": "你没有敲钟，只让余响替你调匀呼吸。",
 				"type": "heal",
-				"amount": 34
+				"amount": 34,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -382,14 +422,16 @@
 				"preview": "获得肥遗相关线索与碎片。",
 				"result": "你没有被任一尾巴带偏。",
 				"type": "fragments",
-				"amount": 58
+				"amount": 58,
+				"ending_marker": "guard"
 			},
 			{
 				"label": "烧掉蛇痕",
 				"preview": "获得荒经攻击牌。",
 				"result": "火光逼出藏在雪下的恶意。",
 				"type": "card",
-				"card": "huang.memory_venom"
+				"card": "huang.memory_venom",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -404,14 +446,16 @@
 				"preview": "抽象记忆化为索引。",
 				"result": "名字被读出后，白芦不再互相遮蔽。",
 				"type": "card",
-				"card": "neutral.archive_index"
+				"card": "neutral.archive_index",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "折芦为记",
 				"preview": "获得最大生命。",
 				"result": "你把一段记忆带在身上，身体也变得更能承受。",
 				"type": "max_hp",
-				"amount": 8
+				"amount": 8,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -426,7 +470,8 @@
 				"preview": "获得玄武守御牌。",
 				"result": "龟蛇纹路合拢，北方的守势落在你掌中。",
 				"type": "card",
-				"card": "shan.xuanwu_barrier"
+				"card": "shan.xuanwu_barrier",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "取一片护身",
@@ -434,7 +479,8 @@
 				"result": "残片贴近胸口，寒意被隔在外面。",
 				"type": "max_hp_cost",
 				"cost": 18,
-				"amount": 10
+				"amount": 10,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -449,14 +495,16 @@
 				"preview": "获得抽牌牌。",
 				"result": "水声分成十缕，替你指出安全的浅滩。",
 				"type": "card",
-				"card": "hai.tide_return"
+				"card": "hai.tide_return",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "快速离开",
 				"preview": "获得经验。",
 				"result": "你记住了声音的方向，没有被拖入潭底。",
 				"type": "exp",
-				"amount": 38
+				"amount": 38,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -471,14 +519,16 @@
 				"preview": "获得荒经群攻牌。",
 				"result": "骨哨一响，藏在雾里的影子同时抬头。",
 				"type": "card",
-				"card": "huang.bone_whistle"
+				"card": "huang.bone_whistle",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "研开冻墨",
 				"preview": "获得碎片。",
 				"result": "冻墨化开后，摊布下露出一袋灵韵。",
 				"type": "fragments",
-				"amount": 64
+				"amount": 64,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -493,14 +543,16 @@
 				"preview": "获得能量向卡牌。",
 				"result": "你在昼夜交界处完成了一次预演。",
 				"type": "card",
-				"card": "neutral.echo_rehearse"
+				"card": "neutral.echo_rehearse",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "等待门开",
 				"preview": "完全恢复但花费碎片。",
 				"result": "你等到呼吸与门缝同频，再穿过去。",
 				"type": "heal_full_cost",
-				"cost": 24
+				"cost": 24,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -515,14 +567,16 @@
 				"preview": "获得山经补强。",
 				"result": "你把山势和脚步一起记下。",
 				"type": "card",
-				"card": "shan.mountain_bell"
+				"card": "shan.mountain_bell",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "记海经",
 				"preview": "获得海经补强。",
 				"result": "雨线洗开了被尘封的路径。",
 				"type": "card",
-				"card": "hai.rain_path"
+				"card": "hai.rain_path",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -537,14 +591,16 @@
 				"preview": "获得碎片。",
 				"result": "裂玉没有再响，碎片被你稳稳收好。",
 				"type": "fragments",
-				"amount": 42
+				"amount": 42,
+				"ending_marker": "guard"
 			},
 			{
 				"label": "以血温玉",
 				"preview": "提高最大生命。",
 				"result": "玉纹贴着掌心合拢，代价是短暂刺痛。",
 				"type": "max_hp",
-				"amount": 6
+				"amount": 6,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -559,14 +615,16 @@
 				"preview": "获得山经根脉牌。",
 				"result": "重复的步伐让防线扎根。",
 				"type": "card",
-				"card": "shan.rooted_oath"
+				"card": "shan.rooted_oath",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "练爆发",
 				"preview": "获得荒经强化牌。",
 				"result": "回声催动旧志，灰中有光复燃。",
 				"type": "card",
-				"card": "huang.fierce_memory"
+				"card": "huang.fierce_memory",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -581,7 +639,8 @@
 				"preview": "恢复生命。",
 				"result": "冷泉入喉，疲惫被慢慢压下。",
 				"type": "heal",
-				"amount": 28
+				"amount": 28,
+				"ending_marker": "guard"
 			},
 			{
 				"label": "洗净旧牌",
@@ -589,7 +648,8 @@
 				"result": "你洗掉旧墨，留下更轻的判断。",
 				"type": "card_cost",
 				"cost": 16,
-				"card": "hai.tide_return"
+				"card": "hai.tide_return",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -604,14 +664,16 @@
 				"preview": "获得东山抽牌牌。",
 				"result": "雨水沿竹简纹路流下，旧字重新显影。",
 				"type": "card",
-				"card": "hai.drizzle_rewrite"
+				"card": "hai.drizzle_rewrite",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "护住新芽",
 				"preview": "获得护盾向卡牌。",
 				"result": "你把雨势挡开，新芽没有被泥水压弯。",
 				"type": "card",
-				"card": "shan.green_sprout_guard"
+				"card": "shan.green_sprout_guard",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -626,14 +688,16 @@
 				"preview": "获得当康主题卡。",
 				"result": "田垄重新对齐，当康终于停下躁动。",
 				"type": "card",
-				"card": "shan.dangkang_harvest"
+				"card": "shan.dangkang_harvest",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "拾取落穗",
 				"preview": "获得碎片。",
 				"result": "落穗里夹着青色灵韵，被你一一收起。",
 				"type": "fragments",
-				"amount": 72
+				"amount": 72,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -648,14 +712,16 @@
 				"preview": "获得犰狳主题卡。",
 				"result": "它没有惊起虫群，只把名字留在湿土里。",
 				"type": "card",
-				"card": "hai.qiuyu_sleep"
+				"card": "hai.qiuyu_sleep",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "绕开草窠",
 				"preview": "恢复生命。",
 				"result": "你绕开将醒未醒的草窠，避过了一场混乱。",
 				"type": "heal",
-				"amount": 40
+				"amount": 40,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -670,14 +736,16 @@
 				"preview": "获得根脉牌。",
 				"result": "你没有等洪水到来，而是先把防线扎入土中。",
 				"type": "card",
-				"card": "shan.spring_root"
+				"card": "shan.spring_root",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "记下预兆",
 				"preview": "获得軨軨主题牌。",
 				"result": "低鸣被写成水位标记，预兆变成了行动提前量。",
 				"type": "card",
-				"card": "huang.lingling_floodcall"
+				"card": "huang.lingling_floodcall",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -692,14 +760,16 @@
 				"preview": "获得朱獳主题牌。",
 				"result": "你追到影子尽头，发现恐惧也有可以辨认的轮廓。",
 				"type": "card",
-				"card": "huang.zhuru_fright"
+				"card": "huang.zhuru_fright",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "停步稳息",
 				"preview": "提高最大生命。",
 				"result": "你让呼吸先稳住，惊惧从身旁掠过。",
 				"type": "max_hp",
-				"amount": 8
+				"amount": 8,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -714,14 +784,16 @@
 				"preview": "获得应龙主题牌。",
 				"result": "云脚被轻轻拨开，雨水找到通往青原的路。",
 				"type": "card",
-				"card": "hai.yinglong_rainpath"
+				"card": "hai.yinglong_rainpath",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "沿云歇脚",
 				"preview": "完全恢复但花费碎片。",
 				"result": "你沿云影休整，等雨势真正落稳。",
 				"type": "heal_full_cost",
-				"cost": 28
+				"cost": 28,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -736,14 +808,16 @@
 				"preview": "获得山经补强牌。",
 				"result": "青苗之间让出距离，反而都站得更稳。",
 				"type": "card",
-				"card": "shan.green_sprout_guard"
+				"card": "shan.green_sprout_guard",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "卖掉旧尺",
 				"preview": "获得碎片。",
 				"result": "旧尺换成碎片，刻痕却仍留在你心里。",
 				"type": "fragments",
-				"amount": 66
+				"amount": 66,
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -758,14 +832,16 @@
 				"preview": "获得海经补强牌。",
 				"result": "水路重新连上，许多判断也跟着顺了。",
 				"type": "card",
-				"card": "hai.drizzle_rewrite"
+				"card": "hai.drizzle_rewrite",
+				"ending_marker": "guard"
 			},
 			{
 				"label": "预演分渠",
 				"preview": "获得通用预演牌。",
 				"result": "你在泥上画出分流路线，真正动手时少了许多反复。",
 				"type": "card",
-				"card": "neutral.field_rehearsal"
+				"card": "neutral.field_rehearsal",
+				"ending_marker": "practical"
 			}
 		]
 	},
@@ -775,8 +851,22 @@
 		"name": "后土方坛",
 		"story": "方坛嵌在黄土中央，四角玉片把前四境余响压成稳定的光。",
 		"options": [
-			{"label": "按住玉角", "preview": "获得中山守势。", "result": "玉角转为温热，土蝼守阶的纹路落入牌组。", "type": "card", "card": "shan.tulou_guard"},
-			{"label": "绕坛三周", "preview": "最大 HP +10。", "result": "方圆纹在脚下闭合，气血上限提高。", "type": "max_hp", "amount": 10}
+			{
+				"label": "按住玉角",
+				"preview": "获得中山守势。",
+				"result": "玉角转为温热，土蝼守阶的纹路落入牌组。",
+				"type": "card",
+				"card": "shan.tulou_guard",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "绕坛三周",
+				"preview": "最大 HP +10。",
+				"result": "方圆纹在脚下闭合，气血上限提高。",
+				"type": "max_hp",
+				"amount": 10,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -785,8 +875,22 @@
 		"name": "夔鼓残响",
 		"story": "一面蒙皮雷鼓半埋在土中，每次震动都让玉台浮起细尘。",
 		"options": [
-			{"label": "击鼓一次", "preview": "获得夔鼓震台。", "result": "雷声短促落下，夔的节拍进入牌组。", "type": "card", "card": "huang.kui_thunder_drum"},
-			{"label": "收拢回声", "preview": "获得 80 EXP。", "result": "回声被压回胸口，旧路经验变得清晰。", "type": "exp", "amount": 80}
+			{
+				"label": "击鼓一次",
+				"preview": "获得夔鼓震台。",
+				"result": "雷声短促落下，夔的节拍进入牌组。",
+				"type": "card",
+				"card": "huang.kui_thunder_drum",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "收拢回声",
+				"preview": "获得 80 EXP。",
+				"result": "回声被压回胸口，旧路经验变得清晰。",
+				"type": "exp",
+				"amount": 80,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -795,8 +899,22 @@
 		"name": "土蝼守阶",
 		"story": "四角兽影伏在台阶两侧，像是在衡量来者能否承受中央之重。",
 		"options": [
-			{"label": "以盾相应", "preview": "获得方坛守势。", "result": "台阶让出一线，方坛守势被刻入竹简。", "type": "card", "card": "shan.square_altar"},
-			{"label": "留下碎片", "preview": "失去 18 碎片，恢复全部 HP。", "result": "土蝼吞下碎片，伤口被土气压合。", "type": "heal_full_cost", "cost": 18}
+			{
+				"label": "以盾相应",
+				"preview": "获得方坛守势。",
+				"result": "台阶让出一线，方坛守势被刻入竹简。",
+				"type": "card",
+				"card": "shan.square_altar",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "留下碎片",
+				"preview": "失去 18 碎片，恢复全部 HP。",
+				"result": "土蝼吞下碎片，伤口被土气压合。",
+				"type": "heal_full_cost",
+				"cost": 18,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -805,8 +923,22 @@
 		"name": "狡角兆纹",
 		"story": "豹纹犬影从坛边闪过，牛角在尘雾里划出预兆。",
 		"options": [
-			{"label": "追随兆纹", "preview": "获得狡兆示警。", "result": "预兆化为破绽，狡兆示警进入牌组。", "type": "card", "card": "huang.jiao_warning"},
-			{"label": "采集黄土", "preview": "碎片 +90。", "result": "黄土里混着旧玉屑，可以重新打磨成碎片。", "type": "fragments", "amount": 90}
+			{
+				"label": "追随兆纹",
+				"preview": "获得狡兆示警。",
+				"result": "预兆化为破绽，狡兆示警进入牌组。",
+				"type": "card",
+				"card": "huang.jiao_warning",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "采集黄土",
+				"preview": "碎片 +90。",
+				"result": "黄土里混着旧玉屑，可以重新打磨成碎片。",
+				"type": "fragments",
+				"amount": 90,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -815,8 +947,22 @@
 		"name": "闻獜识路",
 		"story": "细小鳞光沿着地面游走，把错乱岔路重新指向中央。",
 		"options": [
-			{"label": "记下路径", "preview": "获得闻獜识路。", "result": "路径被记下，下一次转向不再迟疑。", "type": "card", "card": "hai.wenlin_path"},
-			{"label": "顺路休整", "preview": "恢复 42 HP。", "result": "你沿着鳞光走到避风处，气血回复。", "type": "heal", "amount": 42}
+			{
+				"label": "记下路径",
+				"preview": "获得闻獜识路。",
+				"result": "路径被记下，下一次转向不再迟疑。",
+				"type": "card",
+				"card": "hai.wenlin_path",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "顺路休整",
+				"preview": "恢复 42 HP。",
+				"result": "你沿着鳞光走到避风处，气血回复。",
+				"type": "heal",
+				"amount": 42,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -825,8 +971,22 @@
 		"name": "计蒙雨令",
 		"story": "龙首人身的影子从玉台上方经过，雨线却没有冲散黄土。",
 		"options": [
-			{"label": "接住雨令", "preview": "获得计蒙雨令。", "result": "雨令变成一枚湿润玉符，落入牌组。", "type": "card", "card": "hai.jimeng_rain_order"},
-			{"label": "导雨入坛", "preview": "获得 70 EXP。", "result": "水土相合，前四境的经验被重新梳理。", "type": "exp", "amount": 70}
+			{
+				"label": "接住雨令",
+				"preview": "获得计蒙雨令。",
+				"result": "雨令变成一枚湿润玉符，落入牌组。",
+				"type": "card",
+				"card": "hai.jimeng_rain_order",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "导雨入坛",
+				"preview": "获得 70 EXP。",
+				"result": "水土相合，前四境的经验被重新梳理。",
+				"type": "exp",
+				"amount": 70,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -835,8 +995,22 @@
 		"name": "麒麟足迹",
 		"story": "一串蹄印停在方圆纹交汇处，没有威吓，只有审视。",
 		"options": [
-			{"label": "循迹而行", "preview": "获得麒麟德音。", "result": "蹄印亮起，麒麟德音进入牌组。", "type": "card", "card": "shan.qilin_virtue"},
-			{"label": "静听德音", "preview": "最大 HP +12。", "result": "德音沉入经脉，气血上限提高。", "type": "max_hp", "amount": 12}
+			{
+				"label": "循迹而行",
+				"preview": "获得麒麟德音。",
+				"result": "蹄印亮起，麒麟德音进入牌组。",
+				"type": "card",
+				"card": "shan.qilin_virtue",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "静听德音",
+				"preview": "最大 HP +12。",
+				"result": "德音沉入经脉，气血上限提高。",
+				"type": "max_hp",
+				"amount": 12,
+				"ending_marker": "practical"
+			}
 		]
 	},
 	{
@@ -845,8 +1019,22 @@
 		"name": "五境合图",
 		"story": "南、西、北、东四境纹路在中山石案上合成一张完整图。",
 		"options": [
-			{"label": "合上图卷", "preview": "获得五境调和。", "result": "五境余响归于一处，五境调和进入牌组。", "type": "card", "card": "neutral.five_realm_harmony"},
-			{"label": "拓下圆纹", "preview": "获得中流会同。", "result": "圆纹拓片化为可用的调度方法。", "type": "card", "card": "hai.central_confluence"}
+			{
+				"label": "合上图卷",
+				"preview": "获得五境调和。",
+				"result": "五境余响归于一处，五境调和进入牌组。",
+				"type": "card",
+				"card": "neutral.five_realm_harmony",
+				"ending_marker": "guard"
+			},
+			{
+				"label": "拓下圆纹",
+				"preview": "获得中流会同。",
+				"result": "圆纹拓片化为可用的调度方法。",
+				"type": "card",
+				"card": "hai.central_confluence",
+				"ending_marker": "practical"
+			}
 		]
 	}
 ]

@@ -282,8 +282,8 @@ func _resolve_effect(eff: CardEffect, source_card: Card, target: BattleEnemy) ->
 	match eff.kind:
 		CardEffect.Kind.DAMAGE:
 			if eff.target == CardEffect.Target.NONE or eff.target == CardEffect.Target.SELF:
-				RunState.take_damage(eff.amount)
-				emit_signal("log_message", "→ 自身承受 %d 伤害" % eff.amount)
+				var taken := player.take_damage(eff.amount)
+				emit_signal("log_message", "→ 血祭代价：自身承受 %d 伤害" % taken)
 				return
 			var targets: Array[BattleEnemy] = _select_targets(eff.target, target)
 			for tgt in targets:

@@ -9,8 +9,8 @@ var _save_system: Node = null
 var _snapshot: Dictionary = {}
 
 
-func _init() -> void:
-	call_deferred("_run")
+func _initialize() -> void:
+	process_frame.connect(_run, CONNECT_ONE_SHOT)
 
 
 func _run() -> void:
@@ -24,7 +24,7 @@ func _run() -> void:
 	_check_old_save_compatibility()
 	_check_bookmark_purchase_activation_and_starter_deck()
 	_check_save_roundtrip()
-	await _check_final_clear_enters_study_room()
+	await _check_final_clear_enters_finale()
 	await _check_battle_animation_stage()
 	_restore_snapshot()
 	_finish()
@@ -77,7 +77,7 @@ func _check_study_room_scene() -> void:
 	var list = study.get_node_or_null("Root/ListScroll/List")
 	_expect(list != null, "study room list should exist")
 	if list != null:
-		_expect(list.get_child_count() == 4, "study room should list four bookmarks")
+		_expect(list.get_child_count() >= 4, "study room should list bookmarks plus optional character rows")
 	study.queue_free()
 
 
@@ -115,8 +115,7 @@ func _check_old_save_compatibility() -> void:
 func _check_bookmark_purchase_activation_and_starter_deck() -> void:
 	_game_state.call("from_dict", {})
 	_game_state.fragments = 500
-	for i in 16:
-		_game_state.unlock_codex("smoke.codex.%02d" % i)
+	_unlock_real_codex_entries(16)
 	_expect(not bool(_game_state.call("is_bookmark_unlocked", "shan")), "shan bookmark should start locked")
 	_expect(bool(_game_state.call("unlock_bookmark", "shan")), "shan bookmark should unlock with enough fragments and codex")
 	_expect(bool(_game_state.call("set_active_bookmark", "shan")), "shan bookmark should activate after unlock")
@@ -140,7 +139,7 @@ func _check_save_roundtrip() -> void:
 	_expect(bool(_game_state.call("is_bookmark_unlocked", "shan")), "bookmark save roundtrip should preserve unlocked bookmark")
 
 
-func _check_final_clear_enters_study_room() -> void:
+func _check_final_clear_enters_finale() -> void:
 	_run_state.call("reset_for_new_run")
 	_run_state.current_chapter_index = _run_state.CHAPTER_CENTRAL
 	_run_state.current_floor = _run_state.CHAPTER_CENTRAL
@@ -156,11 +155,11 @@ func _check_final_clear_enters_study_room() -> void:
 	var victory_text = map.get("_victory_text")
 	_expect(victory_text != null, "final victory text should exist")
 	if victory_text != null:
-		_expect(str(victory_text.text).find("祖父书房") >= 0, "final clear should mention study room")
+		_expect(str(victory_text.text).find("忘川之心") >= 0, "final clear should mention Wangchuan finale")
 	map.call("_on_victory_close")
 	await process_frame
 	var current = current_scene
-	_expect(current != null and current.scene_file_path.ends_with("study_room.tscn"), "final clear button should enter study room")
+	_expect(current != null and current.scene_file_path.ends_with("finale.tscn"), "final clear button should enter finale")
 	if current != null:
 		current.queue_free()
 	map.queue_free()
@@ -402,6 +401,20 @@ func _deck_ids() -> PackedStringArray:
 		if card != null:
 			ids.append(card.id)
 	return ids
+
+
+func _unlock_real_codex_entries(count: int) -> void:
+	var unlocked := 0
+	for card in _card_db.call("all_cards"):
+		if unlocked >= count:
+			return
+		if card is Card and bool(_game_state.call("unlock_codex", "card." + card.id)):
+			unlocked += 1
+	for enemy in _enemy_db.call("all_enemies"):
+		if unlocked >= count:
+			return
+		if enemy is EnemyData and bool(_game_state.call("unlock_codex", "beast." + enemy.id)):
+			unlocked += 1
 
 
 func _contains_nth(ids: PackedStringArray, card_id: String, required_count: int) -> bool:

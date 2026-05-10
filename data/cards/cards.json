@@ -20,7 +20,8 @@
 				"amount": 6,
 				"target": 1
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.guard",
@@ -39,7 +40,8 @@
 				"amount": 5,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"_section": "===== 山经 · 守拙流（防御 / 草木）====="
@@ -51,7 +53,7 @@
 		"card_type": 1,
 		"rarity": 0,
 		"cost": 1,
-		"description": "获得 {0} 点护盾，抽 {1} 张牌。",
+		"description": "【根脉】获得 {0} 点护盾，抽 {1} 张牌。",
 		"classic_quote": "有木青叶紫茎，玄华黄实，名曰建木，百仞无枝，上有九欘，下有九枸，其实如麻，其叶如芒，大皞爰过，黄帝所为。（《山海经·海内经》）",
 		"translation": "建木是上古天梯，连接天与人的神木。袁珂校注：建木乃古人想象中沟通天地的通道，其形高直，承接天露。",
 		"alive_today": "三星堆出土的'青铜神树'被视为建木的实物对应，今天仍在四川广汉博物馆中静静矗立。",
@@ -66,6 +68,9 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -75,7 +80,7 @@
 		"card_type": 1,
 		"rarity": 0,
 		"cost": 1,
-		"description": "获得 {0} 层根脉：每回合开始获得等量护盾。",
+		"description": "【根脉】获得 {0} 层根脉：每回合开始获得等量护盾。",
 		"classic_quote": "汤谷上有扶木，一日方至，一日方出，皆载于乌。（《山海经·大荒东经》）",
 		"translation": "汤谷之上有扶桑神木，太阳栖息其上，一日落则一日升，循环不息。",
 		"alive_today": "'扶桑'后成为日本古称的雅称，至今汉日文化交流中仍被提起。",
@@ -87,6 +92,9 @@
 				"status_id": "root",
 				"status_stack": 2
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -96,7 +104,7 @@
 		"card_type": 1,
 		"rarity": 1,
 		"cost": 2,
-		"description": "获得 {0} 点护盾，下一张山经卡费用 -1。",
+		"description": "【根脉】获得 {0} 点护盾，下一张山经卡费用 -1。",
 		"classic_quote": "灰野之山，上有赤树，青叶，赤华，名曰若木。（《山海经·大荒北经》）",
 		"translation": "灰野之山上的若木，叶青花赤，是日落之处的圣树，象征终而复始的安定力量。",
 		"alive_today": "屈原《离骚》'折若木以拂日兮'即取此意，至今广为传诵。",
@@ -113,6 +121,9 @@
 				"status_id": "resonance_shan",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -122,7 +133,7 @@
 		"card_type": 1,
 		"rarity": 1,
 		"cost": 2,
-		"description": "获得 {0} 点护盾，并获得 {1} 层根脉。",
+		"description": "【根脉】获得 {0} 点护盾，并获得 {1} 层根脉。",
 		"classic_quote": "西南四百里，曰昆仑之丘，是实惟帝之下都，神陆吾司之。其神状虎身而九尾，人面而虎爪。（《山海经·西山经》）",
 		"translation": "陆吾是昆仑之神，掌管天上九部和帝苑时节。九尾虎身，人面虎爪，威严而不暴戾。",
 		"alive_today": "陆吾形象在明清门神纹样、北京石狮造型中仍可见其踪。",
@@ -139,6 +150,9 @@
 				"status_id": "root",
 				"status_stack": 2
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -148,7 +162,7 @@
 		"card_type": 1,
 		"rarity": 1,
 		"cost": 1,
-		"description": "回复 {0} 生命，并获得 {1} 点护盾。",
+		"description": "【根脉 / 生息】回复 {0} 生命，并获得 {1} 点护盾。",
 		"classic_quote": "麒麟，仁兽也。麏身，牛尾，一角。（《说文解字》引）",
 		"translation": "麒麟为仁兽，性情温和，所到之处不踏生灵不折草木，是太平的象征。",
 		"alive_today": "'麒麟送子'图、麒麟送瑞剪纸，至今仍是民间过年常见纹样。",
@@ -163,6 +177,10 @@
 				"amount": 4,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"根脉",
+			"生息"
 		]
 	},
 	{
@@ -175,7 +193,7 @@
 		"card_type": 1,
 		"rarity": 0,
 		"cost": 1,
-		"description": "抽 {0} 张牌。",
+		"description": "【潮涌】抽 {0} 张牌。",
 		"classic_quote": "应龙处南极，杀蚩尤与夸父，不得复上，故下数旱。（《山海经·大荒东经》）",
 		"translation": "应龙是有翼之龙，曾助黄帝战蚩尤。他能呼云行雨，是水神的化身。",
 		"alive_today": "应龙形象保留在故宫太和殿藻井、汉画像石上，是中国龙形象的早期祖型。",
@@ -185,6 +203,9 @@
 				"amount": 2,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -194,7 +215,7 @@
 		"card_type": 1,
 		"rarity": 0,
 		"cost": 0,
-		"description": "获得 {0} 点护盾。下一张海经卡费用 -1（共鸣加成）。",
+		"description": "【潮涌】获得 {0} 点护盾。下一张海经卡费用 -1（共鸣加成）。",
 		"classic_quote": "观水多文鳐鱼，状如鲤鱼，鱼身而鸟翼，苍文而白首，赤喙，常行西海，游于东海，以夜飞。（《山海经·西山经》）",
 		"translation": "文鳐鱼鱼身鸟翼，能日行于西海，夜飞至东海，被视为长途跋涉的智者。",
 		"alive_today": "今广东沿海仍有'飞鱼'，被视为文鳐鱼的现代余音。",
@@ -211,6 +232,9 @@
 				"status_id": "resonance_hai",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -221,7 +245,7 @@
 		"rarity": 0,
 		"cost": 1,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害，并施加 {1} 层湿润。",
+		"description": "【湿润】造成 {0} 点伤害，并施加 {1} 层湿润。",
 		"classic_quote": "北冥有鱼，其名为鲲。鲲之大，不知其几千里也。（《庄子·逍遥游》）",
 		"translation": "鲲是北海中的巨鱼，化为大鹏可扶摇九万里，是变化与自由的图腾。",
 		"alive_today": "成语'鲲鹏展翅'仍在中文写作中表达远大志向。",
@@ -238,6 +262,9 @@
 				"status_id": "wet",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"湿润"
 		]
 	},
 	{
@@ -248,7 +275,7 @@
 		"rarity": 1,
 		"cost": 1,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害两次。若目标湿润，再追加一次。",
+		"description": "【湿润】造成 {0} 点伤害两次。若目标湿润，再追加一次。",
 		"classic_quote": "章莪之山有鸟焉，其状如鹤，一足，赤文青质而白喙，名曰毕方，其鸣自叫也，见则其邑有讹火。（《山海经·西山经》）",
 		"translation": "毕方是独足红纹白喙的神鸟，所到之处有讹火。但被唤醒后，它本是司守火塘的灵鸟。",
 		"alive_today": "敦煌壁画、汉代瓦当中的朱雀形象，与毕方有共同的文化原型。",
@@ -263,6 +290,9 @@
 				"amount": 4,
 				"target": 1
 			}
+		],
+		"keywords": [
+			"湿润"
 		]
 	},
 	{
@@ -283,7 +313,8 @@
 				"amount": 5,
 				"target": 2
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "hai.zhulong_breath",
@@ -292,7 +323,7 @@
 		"card_type": 1,
 		"rarity": 2,
 		"cost": 2,
-		"description": "抽 {0} 张牌，并获得 {1} 点灵韵。",
+		"description": "【潮涌】抽 {0} 张牌，并获得 {1} 点灵韵。",
 		"classic_quote": "钟山之神，名曰烛阴，视为昼，瞑为夜，吹为冬，呼为夏。（《山海经·海外北经》）",
 		"translation": "烛龙是钟山之神，睁眼为昼闭眼为夜，呼吸调节寒暑，是时间本身的化身。",
 		"alive_today": "屈原《天问》'日安不到，烛龙何照'，至今仍被引用。",
@@ -307,6 +338,9 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -320,7 +354,7 @@
 		"rarity": 0,
 		"cost": 1,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害，施加 {1} 层易伤。",
+		"description": "【凶势】造成 {0} 点伤害，施加 {1} 层易伤。",
 		"classic_quote": "邽山有兽焉，其状如牛，猬毛，名曰穷奇，音如獆狗，是食人。（《山海经·西山经》）",
 		"translation": "穷奇形如刺猬牛，本被记载为凶兽。被唤醒后才知它原是捍卫山林的猎手，只是被忘川扭曲了它的认知。",
 		"alive_today": "'穷奇'后被借作春秋四凶之一，这种'被污名化'的命运本身值得反思。",
@@ -337,6 +371,9 @@
 				"status_id": "vulnerable",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -347,7 +384,7 @@
 		"rarity": 1,
 		"cost": 2,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害，随机弃 {1} 张牌。",
+		"description": "【血祭】造成 {0} 点伤害，随机弃 {1} 张牌。",
 		"classic_quote": "钩吾之山，有兽焉，其状羊身人面，其目在腋下，虎齿人爪，其音如婴儿，名曰狍鸮，是食人。（《山海经·北山经》）",
 		"translation": "饕餮的原型狍鸮被记为食人之兽。后人引申为'贪'的警戒。游戏中将其唤醒，让它回归本来面目——饥饿，但渴望被理解。",
 		"alive_today": "商周青铜器上的'饕餮纹'是中国早期纹样艺术的高峰，至今仍被视觉设计沿用。",
@@ -362,6 +399,9 @@
 				"amount": 2,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"血祭"
 		]
 	},
 	{
@@ -372,7 +412,7 @@
 		"rarity": 1,
 		"cost": 2,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害，失去 {1} 生命，获得 {2} 层强化。",
+		"description": "【凶势 / 血祭】造成 {0} 点伤害，失去 {1} 生命，获得 {2} 层强化。",
 		"classic_quote": "夸父与日逐走，入日；渴，欲得饮，饮于河、渭；河、渭不足，北饮大泽。（《山海经·海外北经》）",
 		"translation": "夸父追逐太阳的故事被后人误读为不自量力，但在《列子》中明示——夸父是为给后人留下水源而献身的先驱。",
 		"alive_today": "'夸父逐日'被中国航天人引为精神原型，'夸父号'是真实存在的太阳观测卫星。",
@@ -394,6 +434,10 @@
 				"status_id": "strengthen",
 				"status_stack": 3
 			}
+		],
+		"keywords": [
+			"凶势",
+			"血祭"
 		]
 	},
 	{
@@ -403,7 +447,7 @@
 		"card_type": 1,
 		"rarity": 1,
 		"cost": 1,
-		"description": "获得 {0} 层强化。",
+		"description": "【凶势】获得 {0} 层强化。",
 		"classic_quote": "发鸠之山，有鸟焉，其状如乌，文首，白喙，赤足，名曰精卫，其鸣自詨。是炎帝之少女，名曰女娃，女娃游于东海，溺而不返，故为精卫，常衔西山之木石，以堙于东海。（《山海经·北山经》）",
 		"translation": "精卫填海，明知不可为而为之。这是中华文化中'坚守'的最早原型。",
 		"alive_today": "中国治沙工程、植树造林事业，被誉为'当代精卫'。",
@@ -415,6 +459,9 @@
 				"status_id": "strengthen",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -425,7 +472,7 @@
 		"rarity": 2,
 		"cost": 1,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害两次。若手牌为空，再追加一次。",
+		"description": "【凶势】造成 {0} 点伤害两次。若手牌为空，再追加一次。",
 		"classic_quote": "刑天与帝至此争神，帝断其首，葬之常羊之山，乃以乳为目，以脐为口，操干戚以舞。（《山海经·海外西经》）",
 		"translation": "刑天虽断头依然舞戚不止，是'不屈精神'的最早化身。陶渊明《读山海经》：'刑天舞干戚，猛志固常在。'",
 		"alive_today": "'猛志固常在'今被广泛刻于匾额、校训，纪念那些虽败犹荣的坚持者。",
@@ -440,6 +487,9 @@
 				"amount": 6,
 				"target": 1
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -463,7 +513,8 @@
 				"amount": 2,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.qi_gather",
@@ -483,7 +534,8 @@
 				"amount": 2,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.warrior_oath",
@@ -503,7 +555,8 @@
 				"amount": 9,
 				"target": 1
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.scholar_resolve",
@@ -525,7 +578,8 @@
 				"status_id": "scholar",
 				"status_stack": 1
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.ancestor_blessing",
@@ -555,7 +609,8 @@
 				"amount": 1,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"_section": "===== 现实文物 · 让博物馆走进卡组 ====="
@@ -580,7 +635,8 @@
 				"status_id": "scholar",
 				"status_stack": 1
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"_section": "===== v0.6 西山 · 白虎境 ====="
@@ -592,7 +648,7 @@
 		"card_type": 1,
 		"rarity": 2,
 		"cost": 2,
-		"description": "获得 {0} 点护盾，并获得 {1} 层根脉。",
+		"description": "【根脉】获得 {0} 点护盾，并获得 {1} 层根脉。",
 		"classic_quote": "昆仑之丘，神陆吾司之，其神状虎身而九尾，人面而虎爪。",
 		"translation": "陆吾守昆仑之门。此卡把守门的意象转为稳定防御。",
 		"alive_today": "陆吾常见于当代山海经主题美术与守护神再创作。",
@@ -609,6 +665,9 @@
 				"status_id": "root",
 				"status_stack": 2
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -618,7 +677,7 @@
 		"card_type": 1,
 		"rarity": 1,
 		"cost": 1,
-		"description": "获得 {0} 点护盾，抽 {1} 张牌。",
+		"description": "【根脉】获得 {0} 点护盾，抽 {1} 张牌。",
 		"classic_quote": "神英招司之，其状马身而人面，虎文而鸟翼。",
 		"translation": "英招巡守平圃，既能预警也能开路。",
 		"alive_today": "复合神兽形象适合表现守护者。",
@@ -633,6 +692,9 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -657,7 +719,8 @@
 				"amount": 3,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "hai.tiangou_ward",
@@ -666,7 +729,7 @@
 		"card_type": 1,
 		"rarity": 1,
 		"cost": 1,
-		"description": "获得 {0} 点护盾，下一张海经卡费用 -1。",
+		"description": "【潮涌】获得 {0} 点护盾，下一张海经卡费用 -1。",
 		"classic_quote": "天狗，其音如榴榴，可以御凶。",
 		"translation": "天狗从误判的吠声回到守夜之声。",
 		"alive_today": "天狗保留了灾异与守护的双重意味。",
@@ -683,6 +746,9 @@
 				"status_id": "resonance_hai",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -693,7 +759,7 @@
 		"rarity": 1,
 		"cost": 1,
 		"requires_target": true,
-		"description": "造成 {0} 点伤害，施加 {1} 层易伤。",
+		"description": "【凶势】造成 {0} 点伤害，施加 {1} 层易伤。",
 		"classic_quote": "狰状如赤豹，五尾一角，其音如击石。",
 		"translation": "狰的击石之声化为破甲的先声。",
 		"alive_today": "狰适合承担高速破防意象。",
@@ -710,6 +776,9 @@
 				"status_id": "vulnerable",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -719,7 +788,7 @@
 		"card_type": 0,
 		"rarity": 2,
 		"cost": 2,
-		"description": "对全体敌人造成 {0} 点伤害，并施加 {1} 层易伤。",
+		"description": "【凶势】对全体敌人造成 {0} 点伤害，并施加 {1} 层易伤。",
 		"classic_quote": "蛊雕，其状如雕而有角，其音如婴儿之音。",
 		"translation": "蛊雕的夜啼会让群敌心神动摇。",
 		"alive_today": "婴啼怪鸟是东方志怪叙事中的强符号。",
@@ -736,6 +805,9 @@
 				"status_id": "vulnerable",
 				"status_stack": 1
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -749,7 +821,7 @@
 		"requires_target": false,
 		"classic_quote": "有鱼焉，其状如一首而十身，其音如吠犬。",
 		"translation": "北山水中有河罗鱼，一首十身，声音像犬吠。",
-		"description": "召唤河罗鱼同伴 {0} 回合：每回合开始抽 1 张牌。",
+		"description": "【潮涌】召唤河罗鱼同伴 {0} 回合：每回合开始抽 1 张牌。",
 		"alive_today": "把繁杂线索拆成十条支流，让真正的主线自己浮上水面。",
 		"effects": [
 			{
@@ -758,6 +830,9 @@
 				"target": 0,
 				"status_id": "ally_heluo"
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -771,7 +846,7 @@
 		"requires_target": false,
 		"classic_quote": "有蛇焉，一首两身，名曰肥遗。",
 		"translation": "山中有名为肥遗的蛇，一首两身，出现常与旱疫传说相连。",
-		"description": "召唤肥遗同伴 {0} 回合：每回合开始攻击生命最低的敌人。",
+		"description": "【凶势】召唤肥遗同伴 {0} 回合：每回合开始攻击生命最低的敌人。",
 		"alive_today": "危险并不总从正面来，先处理最脆弱的一环。",
 		"effects": [
 			{
@@ -780,6 +855,9 @@
 				"target": 0,
 				"status_id": "ally_feiyi"
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -793,7 +871,7 @@
 		"requires_target": false,
 		"classic_quote": "有兽焉，其状如牛而四角，人目彘耳，其名曰诸怀。",
 		"translation": "诸怀形似牛而有四角、人目、猪耳，是北山志怪中的猛兽。",
-		"description": "召唤诸怀同伴 {0} 回合：每回合开始获得护盾。",
+		"description": "【根脉】召唤诸怀同伴 {0} 回合：每回合开始获得护盾。",
 		"alive_today": "在混乱来临前，把边界钉稳。",
 		"effects": [
 			{
@@ -802,6 +880,9 @@
 				"target": 0,
 				"status_id": "ally_zhuhuai"
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -815,7 +896,7 @@
 		"requires_target": false,
 		"classic_quote": "有鸟焉，其状如夸父，四翼、一目、犬尾，名曰嚣。",
 		"translation": "嚣是四翼一目、带犬尾的异鸟，鸣声常被视作不安的预兆。",
-		"description": "召唤嚣同伴 {0} 回合：每回合开始抽 1 张牌。",
+		"description": "【潮涌】召唤嚣同伴 {0} 回合：每回合开始抽 1 张牌。",
 		"alive_today": "异常的声音不是噪音，而是提前到来的情报。",
 		"effects": [
 			{
@@ -824,6 +905,9 @@
 				"target": 0,
 				"status_id": "ally_xiao"
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -837,7 +921,7 @@
 		"requires_target": false,
 		"classic_quote": "相柳氏九首，食于九山。",
 		"translation": "相柳九首，所触之地多成泽毒，是上古洪水叙事中的灾厄形象。",
-		"description": "召唤相柳影同伴 {0} 回合：每回合开始重击生命最低的敌人。",
+		"description": "【凶势】召唤相柳影同伴 {0} 回合：每回合开始重击生命最低的敌人。",
 		"alive_today": "系统性风险会从多个入口渗入，必须先切断扩散点。",
 		"effects": [
 			{
@@ -846,6 +930,9 @@
 				"target": 0,
 				"status_id": "ally_xiangliu"
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -868,7 +955,8 @@
 				"target": 0,
 				"status_id": "ally_zhulong"
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "hai.beishan_mist",
@@ -880,7 +968,7 @@
 		"requires_target": false,
 		"classic_quote": "北山多寒水，其阴气凝而为雾。",
 		"translation": "北山水寒，雾气压低视线，也让敌意迟缓。",
-		"description": "给予所有敌人 {0} 层湿润，抽 1 张牌。",
+		"description": "【潮涌 / 湿润】给予所有敌人 {0} 层湿润，抽 1 张牌。",
 		"alive_today": "当信息不清晰时，先降低对手推进速度。",
 		"effects": [
 			{
@@ -895,6 +983,10 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"潮涌",
+			"湿润"
 		]
 	},
 	{
@@ -907,7 +999,7 @@
 		"requires_target": false,
 		"classic_quote": "玄武，龟蛇合体，镇北方之水。",
 		"translation": "玄武象征北方、水与守御，龟蛇相缠而成镇物。",
-		"description": "获得 {0} 护盾，获得 2 层根脉。",
+		"description": "【根脉】获得 {0} 护盾，获得 2 层根脉。",
 		"alive_today": "真正的防守不是静止，而是让结构持续生成保护。",
 		"effects": [
 			{
@@ -922,6 +1014,9 @@
 				"status_id": "root",
 				"status_stack": 2
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -934,7 +1029,7 @@
 		"requires_target": true,
 		"classic_quote": "水伏于石下，遇隙则鸣。",
 		"translation": "暗流在石下积蓄，找到缝隙便爆发成声。",
-		"description": "造成 {0} 伤害。若目标湿润，现有规则会提高伤害。",
+		"description": "【湿润】造成 {0} 伤害。若目标湿润，现有规则会提高伤害。",
 		"alive_today": "不要硬推墙面，找到压力已经聚集的裂缝。",
 		"effects": [
 			{
@@ -942,6 +1037,9 @@
 				"amount": 9,
 				"target": 1
 			}
+		],
+		"keywords": [
+			"湿润"
 		]
 	},
 	{
@@ -954,7 +1052,7 @@
 		"requires_target": true,
 		"classic_quote": "毒水所经，不可久居。",
 		"translation": "毒泽不止伤身，也会留下难以清除的记忆。",
-		"description": "造成 {0} 伤害，给予 2 层易伤。",
+		"description": "【凶势】造成 {0} 伤害，给予 2 层易伤。",
 		"alive_today": "旧问题若不命名，就会在每次选择里重复中毒。",
 		"effects": [
 			{
@@ -969,6 +1067,9 @@
 				"status_id": "vulnerable",
 				"status_stack": 2
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -981,7 +1082,7 @@
 		"requires_target": false,
 		"classic_quote": "山脊如城，寒色不移。",
 		"translation": "北山山脊像城墙一样横在寒水之间。",
-		"description": "获得 {0} 护盾。",
+		"description": "【根脉】获得 {0} 护盾。",
 		"alive_today": "把可控的阵地做厚，焦虑会少很多。",
 		"effects": [
 			{
@@ -989,6 +1090,9 @@
 				"amount": 10,
 				"target": 3
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -1001,7 +1105,7 @@
 		"requires_target": false,
 		"classic_quote": "潭深则影定，风止则形明。",
 		"translation": "深潭能照见轮廓，前提是水面暂时平静。",
-		"description": "抽 {0} 张牌，获得 4 护盾。",
+		"description": "【潮涌】抽 {0} 张牌，获得 4 护盾。",
 		"alive_today": "复盘不是停滞，是给下一步找到清晰倒影。",
 		"effects": [
 			{
@@ -1014,6 +1118,9 @@
 				"amount": 4,
 				"target": 3
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -1035,7 +1142,8 @@
 				"amount": 1,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.echo_rehearse",
@@ -1061,7 +1169,8 @@
 				"amount": 1,
 				"target": 0
 			}
-		]
+		],
+		"keywords": []
 	},
 	{
 		"id": "shan.rooted_oath",
@@ -1073,7 +1182,7 @@
 		"requires_target": false,
 		"classic_quote": "木有本，水有源。",
 		"translation": "树木依靠根本，水流依靠源头。",
-		"description": "获得 {0} 层根脉。",
+		"description": "【根脉】获得 {0} 层根脉。",
 		"alive_today": "给长期承诺一个每天都会自动生效的根。",
 		"effects": [
 			{
@@ -1083,6 +1192,9 @@
 				"status_id": "root",
 				"status_stack": 3
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -1095,7 +1207,7 @@
 		"requires_target": false,
 		"classic_quote": "钟鸣于山，行者知止。",
 		"translation": "山中钟声提醒行者停步、辨向。",
-		"description": "获得 {0} 护盾，抽 1 张牌。",
+		"description": "【根脉】获得 {0} 护盾，抽 1 张牌。",
 		"alive_today": "暂停不是落后，而是校准步幅。",
 		"effects": [
 			{
@@ -1108,6 +1220,9 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -1120,7 +1235,7 @@
 		"requires_target": false,
 		"classic_quote": "潮往复来，失者复见。",
 		"translation": "潮水往复，带走也带回。",
-		"description": "抽 {0} 张牌。",
+		"description": "【潮涌】抽 {0} 张牌。",
 		"alive_today": "让信息循环回来，别让一次遗漏变成永久损失。",
 		"effects": [
 			{
@@ -1128,6 +1243,9 @@
 				"amount": 2,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -1140,7 +1258,7 @@
 		"requires_target": false,
 		"classic_quote": "雨过山径，尘泥各归。",
 		"translation": "雨水洗过山路，尘土沉下，路径显出。",
-		"description": "治疗 {0} HP，抽 1 张牌。",
+		"description": "【潮涌】治疗 {0} HP，抽 1 张牌。",
 		"alive_today": "恢复状态的同时，也要恢复判断。",
 		"effects": [
 			{
@@ -1153,6 +1271,9 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -1165,7 +1286,7 @@
 		"requires_target": false,
 		"classic_quote": "以骨为哨，其声裂谷。",
 		"translation": "骨哨声尖，能惊动潜伏的兽群。",
-		"description": "对所有敌人造成 {0} 伤害。",
+		"description": "【凶势】对所有敌人造成 {0} 伤害。",
 		"alive_today": "有时需要一次清晰信号，让所有隐藏问题同时现形。",
 		"effects": [
 			{
@@ -1173,6 +1294,9 @@
 				"amount": 5,
 				"target": 2
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -1185,7 +1309,7 @@
 		"requires_target": false,
 		"classic_quote": "猛志常在，灰中复明。",
 		"translation": "强烈的意志不会完全熄灭，灰烬里仍有余光。",
-		"description": "获得 {0} 层强化，获得 1 能量。",
+		"description": "【凶势】获得 {0} 层强化，获得 1 能量。",
 		"alive_today": "把被压住的行动欲重新接上线。",
 		"effects": [
 			{
@@ -1200,6 +1324,9 @@
 				"amount": 1,
 				"target": 0
 			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -1215,11 +1342,23 @@
 		"requires_target": false,
 		"classic_quote": "其状如豚而有牙，其名曰当康，其鸣自叫，见则天下大穰。",
 		"translation": "当康是丰穰瑞兽，象征收成与被重新照看的田畴。",
-		"description": "获得 {0} 护盾，治疗 4 HP。",
+		"description": "【根脉 / 生息】获得 {0} 护盾，治疗 4 HP。",
 		"alive_today": "真正的希望不是空喊，是把下一季能收成的事先种下。",
 		"effects": [
-			{"kind": 1, "amount": 8, "target": 3},
-			{"kind": 2, "amount": 4, "target": 3}
+			{
+				"kind": 1,
+				"amount": 8,
+				"target": 3
+			},
+			{
+				"kind": 2,
+				"amount": 4,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"根脉",
+			"生息"
 		]
 	},
 	{
@@ -1235,9 +1374,20 @@
 		"description": "造成 {0} 伤害，给予 1 层易伤。",
 		"alive_today": "先让问题停下来，才有空间判断它真正的根。",
 		"effects": [
-			{"kind": 0, "amount": 6, "target": 1},
-			{"kind": 5, "amount": 0, "target": 1, "status_id": "vulnerable", "status_stack": 1}
-		]
+			{
+				"kind": 0,
+				"amount": 6,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "vulnerable",
+				"status_stack": 1
+			}
+		],
+		"keywords": []
 	},
 	{
 		"id": "huang.lingling_floodcall",
@@ -1249,10 +1399,17 @@
 		"requires_target": false,
 		"classic_quote": "其状如牛而虎文，其音如钦，其名曰軨軨，见则天下大水。",
 		"translation": "軨軨的鸣声带着大水预兆，提醒玩家在压力爆发前先听见它。",
-		"description": "对所有敌人造成 {0} 伤害。",
+		"description": "【凶势】对所有敌人造成 {0} 伤害。",
 		"alive_today": "预警不是坏消息，是留给行动的提前量。",
 		"effects": [
-			{"kind": 0, "amount": 8, "target": 2}
+			{
+				"kind": 0,
+				"amount": 8,
+				"target": 2
+			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -1265,11 +1422,24 @@
 		"requires_target": true,
 		"classic_quote": "其状如狐而鱼翼，其名曰朱獳，见则其国有恐。",
 		"translation": "朱獳把恐惧带到水边与林间，也把恐惧本身暴露出来。",
-		"description": "造成 {0} 伤害，获得 1 层强化。",
+		"description": "【凶势】造成 {0} 伤害，获得 1 层强化。",
 		"alive_today": "命名恐惧之后，恐惧就不再只会从暗处驱赶你。",
 		"effects": [
-			{"kind": 0, "amount": 10, "target": 1},
-			{"kind": 6, "amount": 0, "target": 3, "status_id": "strengthen", "status_stack": 1}
+			{
+				"kind": 0,
+				"amount": 10,
+				"target": 1
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 3,
+				"status_id": "strengthen",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"凶势"
 		]
 	},
 	{
@@ -1282,11 +1452,22 @@
 		"requires_target": false,
 		"classic_quote": "应龙已杀蚩尤，又杀夸父，乃去南方处之，故南方多雨。",
 		"translation": "应龙的雨泽意象在东山作为主题借用，负责开路和复苏。",
-		"description": "治疗 {0} HP，抽 1 张牌。",
+		"description": "【潮涌】治疗 {0} HP，抽 1 张牌。",
 		"alive_today": "让停滞的地方重新有水路，下一步才会自己浮现。",
 		"effects": [
-			{"kind": 2, "amount": 8, "target": 3},
-			{"kind": 3, "amount": 1, "target": 0}
+			{
+				"kind": 2,
+				"amount": 8,
+				"target": 3
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -1302,8 +1483,14 @@
 		"description": "召唤青龙残影 3 回合：每个玩家回合开始造成伤害。",
 		"alive_today": "真正可靠的希望会持续在场，不只在一句话里闪过。",
 		"effects": [
-			{"kind": 9, "amount": 3, "target": 0, "status_id": "ally_qinglong"}
-		]
+			{
+				"kind": 9,
+				"amount": 3,
+				"target": 0,
+				"status_id": "ally_qinglong"
+			}
+		],
+		"keywords": []
 	},
 	{
 		"id": "shan.green_sprout_guard",
@@ -1315,10 +1502,17 @@
 		"requires_target": false,
 		"classic_quote": "春木初生，先护其土。",
 		"translation": "东山的新生不急于拔高，先把根边的土护住。",
-		"description": "获得 {0} 护盾。",
+		"description": "【根脉】获得 {0} 护盾。",
 		"alive_today": "项目开始时最该保护的，是让它能继续长的环境。",
 		"effects": [
-			{"kind": 1, "amount": 12, "target": 3}
+			{
+				"kind": 1,
+				"amount": 12,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"根脉"
 		]
 	},
 	{
@@ -1331,11 +1525,25 @@
 		"requires_target": false,
 		"classic_quote": "木有本，春有萌。",
 		"translation": "本版本不新增生长状态，而用根脉表达东山的持续生发。",
-		"description": "获得 {0} 层根脉，治疗 3 HP。",
+		"description": "【根脉 / 生息】获得 {0} 层根脉，治疗 3 HP。",
 		"alive_today": "复苏不一定要新名字，能每天生效的根才是关键。",
 		"effects": [
-			{"kind": 6, "amount": 0, "target": 3, "status_id": "root", "status_stack": 3},
-			{"kind": 2, "amount": 3, "target": 3}
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 3,
+				"status_id": "root",
+				"status_stack": 3
+			},
+			{
+				"kind": 2,
+				"amount": 3,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"根脉",
+			"生息"
 		]
 	},
 	{
@@ -1348,10 +1556,17 @@
 		"requires_target": false,
 		"classic_quote": "细雨入简，旧墨可更。",
 		"translation": "微雨不激烈，却能让旧墨重新流动。",
-		"description": "抽 {0} 张牌。",
+		"description": "【潮涌】抽 {0} 张牌。",
 		"alive_today": "小幅复盘也能让僵住的判断重新流动。",
 		"effects": [
-			{"kind": 3, "amount": 2, "target": 0}
+			{
+				"kind": 3,
+				"amount": 2,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"潮涌"
 		]
 	},
 	{
@@ -1364,11 +1579,23 @@
 		"requires_target": true,
 		"classic_quote": "雷动而百草拆甲。",
 		"translation": "春雷不是毁灭，而是把种子外壳震开。",
-		"description": "造成 {0} 伤害，自身承受 3 伤害。",
+		"description": "【凶势 / 血祭】造成 {0} 伤害，自身承受 3 伤害。",
 		"alive_today": "有些突破需要一点代价，但代价必须清楚写在牌面上。",
 		"effects": [
-			{"kind": 0, "amount": 14, "target": 1},
-			{"kind": 0, "amount": 3, "target": 3}
+			{
+				"kind": 0,
+				"amount": 14,
+				"target": 1
+			},
+			{
+				"kind": 0,
+				"amount": 3,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"凶势",
+			"血祭"
 		]
 	},
 	{
@@ -1385,8 +1612,13 @@
 		"alive_today": "记录不是拖延，是给未来行动留下入口。",
 		"exhaust": true,
 		"effects": [
-			{"kind": 3, "amount": 1, "target": 0}
-		]
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": []
 	},
 	{
 		"id": "neutral.field_rehearsal",
@@ -1402,9 +1634,18 @@
 		"alive_today": "提前做一次小规模演练，能减少真正开工时的浪费。",
 		"exhaust": true,
 		"effects": [
-			{"kind": 4, "amount": 1, "target": 0},
-			{"kind": 1, "amount": 5, "target": 3}
-		]
+			{
+				"kind": 4,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 1,
+				"amount": 5,
+				"target": 3
+			}
+		],
+		"keywords": []
 	},
 	{
 		"_section": "===== v0.8 中山 · 麒麟台 ====="
@@ -1419,9 +1660,18 @@
 		"requires_target": false,
 		"classic_quote": "有兽焉，其状如羊而四角，名曰土蝼，是食人。",
 		"translation": "土蝼原出西山，本章按中央土德主题借用其守阶意象。",
-		"description": "获得 {0} 护盾。",
+		"description": "【根脉】获得 {0} 护盾。",
 		"alive_today": "主题借用条目，强调中山土坛的守护与压迫，不改写原文出处。",
-		"effects": [{"kind": 1, "amount": 14, "target": 3}]
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 14,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"根脉"
+		]
 	},
 	{
 		"id": "shan.qilin_virtue",
@@ -1433,9 +1683,24 @@
 		"requires_target": false,
 		"classic_quote": "毛虫三百六十，而麒麟为之长。",
 		"translation": "麒麟以仁德与秩序统合百兽，是中山归一主题的核心意象。",
-		"description": "恢复 {0} HP，获得 {1} 护盾。",
+		"description": "【根脉 / 生息】恢复 {0} HP，获得 {1} 护盾。",
 		"alive_today": "把祥瑞从奖励符号转为调和五境的章节终点。",
-		"effects": [{"kind": 2, "amount": 10, "target": 3}, {"kind": 1, "amount": 10, "target": 3}]
+		"effects": [
+			{
+				"kind": 2,
+				"amount": 10,
+				"target": 3
+			},
+			{
+				"kind": 1,
+				"amount": 10,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"根脉",
+			"生息"
+		]
 	},
 	{
 		"id": "shan.central_earth_oath",
@@ -1447,9 +1712,27 @@
 		"requires_target": false,
 		"classic_quote": "中央者，土也，其帝黄帝，其佐后土。",
 		"translation": "中央属土，承载四方并使其归于秩序。",
-		"description": "获得 根脉 2 与 强化 1。",
+		"description": "【根脉】获得 根脉 2 与 强化 1。",
 		"alive_today": "用既有根脉和强化表达中山的稳定，不新增土系枚举。",
-		"effects": [{"kind": 6, "amount": 0, "target": 3, "status_id": "root", "status_stack": 2}, {"kind": 6, "amount": 0, "target": 3, "status_id": "strengthen", "status_stack": 1}]
+		"effects": [
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 3,
+				"status_id": "root",
+				"status_stack": 2
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 3,
+				"status_id": "strengthen",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"根脉"
+		]
 	},
 	{
 		"id": "shan.square_altar",
@@ -1461,9 +1744,23 @@
 		"requires_target": false,
 		"classic_quote": "地载万物，方以成形。",
 		"translation": "方坛代表承载与边界，使五方灵韵不再散逸。",
-		"description": "获得 {0} 护盾，抽 {1} 张牌。",
+		"description": "【根脉】获得 {0} 护盾，抽 {1} 张牌。",
 		"alive_today": "把地图上的方圆纹转化为稳定的防御节奏。",
-		"effects": [{"kind": 1, "amount": 8, "target": 3}, {"kind": 3, "amount": 1, "target": 0}]
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 8,
+				"target": 3
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"根脉"
+		]
 	},
 	{
 		"id": "hai.jimeng_rain_order",
@@ -1475,9 +1772,25 @@
 		"requires_target": true,
 		"classic_quote": "有神，人身而龙首，名曰计蒙。",
 		"translation": "计蒙以雨令调节水土，是中山精英的主题借用条目。",
-		"description": "造成 {0} 伤害，施加 潮湿 2。",
+		"description": "【湿润】造成 {0} 伤害，施加 潮湿 2。",
 		"alive_today": "真实出处保留，章节上用于表现水土调和。",
-		"effects": [{"kind": 0, "amount": 7, "target": 1}, {"kind": 5, "amount": 0, "target": 1, "status_id": "wet", "status_stack": 2}]
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 7,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "wet",
+				"status_stack": 2
+			}
+		],
+		"keywords": [
+			"湿润"
+		]
 	},
 	{
 		"id": "hai.wenlin_path",
@@ -1489,10 +1802,24 @@
 		"requires_target": false,
 		"classic_quote": "闻獜循山泽而行，见者知其所向。",
 		"translation": "闻獜在本章作为归一路径的主题借用条目。",
-		"description": "抽 {0} 张牌，获得 {1} 护盾。消耗。",
+		"description": "【潮涌】抽 {0} 张牌，获得 {1} 护盾。消耗。",
 		"alive_today": "用低费过牌表达道路被重新辨认。",
 		"exhaust": true,
-		"effects": [{"kind": 3, "amount": 1, "target": 0}, {"kind": 1, "amount": 4, "target": 3}]
+		"effects": [
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 1,
+				"amount": 4,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"潮涌"
+		]
 	},
 	{
 		"id": "hai.central_confluence",
@@ -1504,9 +1831,18 @@
 		"requires_target": false,
 		"classic_quote": "四渎所归，百川会同。",
 		"translation": "中山把前四境的分流重新汇入一处。",
-		"description": "抽 {0} 张牌。",
+		"description": "【潮涌】抽 {0} 张牌。",
 		"alive_today": "为终章提供稳定手牌调度。",
-		"effects": [{"kind": 3, "amount": 2, "target": 0}]
+		"effects": [
+			{
+				"kind": 3,
+				"amount": 2,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"潮涌"
+		]
 	},
 	{
 		"id": "hai.round_return",
@@ -1518,10 +1854,24 @@
 		"requires_target": false,
 		"classic_quote": "圆以应天，复归其始。",
 		"translation": "圆纹象征循环与回返，使消耗重新成为余力。",
-		"description": "恢复 {0} HP，获得 {1} 灵韵。消耗。",
+		"description": "【潮涌】恢复 {0} HP，获得 {1} 灵韵。消耗。",
 		"alive_today": "用治疗与能量回应中山的圆融主题。",
 		"exhaust": true,
-		"effects": [{"kind": 2, "amount": 6, "target": 3}, {"kind": 4, "amount": 1, "target": 0}]
+		"effects": [
+			{
+				"kind": 2,
+				"amount": 6,
+				"target": 3
+			},
+			{
+				"kind": 4,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"潮涌"
+		]
 	},
 	{
 		"id": "huang.kui_thunder_drum",
@@ -1533,9 +1883,25 @@
 		"requires_target": true,
 		"classic_quote": "状如牛，苍身而无角，一足，出入水则必风雨，其光如日月，其声如雷，名曰夔。",
 		"translation": "夔以雷声震动祭台，是中山土坛上的强攻节拍。",
-		"description": "造成 {0} 伤害，获得 强化 1。",
+		"description": "【凶势】造成 {0} 伤害，获得 强化 1。",
 		"alive_today": "从雷鼓意象转化为一次爆发后的持续压力。",
-		"effects": [{"kind": 0, "amount": 13, "target": 1}, {"kind": 6, "amount": 0, "target": 3, "status_id": "strengthen", "status_stack": 1}]
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 13,
+				"target": 1
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 3,
+				"status_id": "strengthen",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"凶势"
+		]
 	},
 	{
 		"id": "huang.jiao_warning",
@@ -1547,9 +1913,25 @@
 		"requires_target": true,
 		"classic_quote": "有兽焉，其状如犬而豹文，其角如牛，其名曰狡。",
 		"translation": "狡原有丰收兆象，本章按终章预兆主题借用。",
-		"description": "造成 {0} 伤害，施加 易伤 1。",
+		"description": "【凶势】造成 {0} 伤害，施加 易伤 1。",
 		"alive_today": "真实出处保留，战斗中表现为提前看见破绽。",
-		"effects": [{"kind": 0, "amount": 8, "target": 1}, {"kind": 5, "amount": 0, "target": 1, "status_id": "vulnerable", "status_stack": 1}]
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 8,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "vulnerable",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"凶势"
+		]
 	},
 	{
 		"id": "huang.fivefold_pressure",
@@ -1561,9 +1943,18 @@
 		"requires_target": false,
 		"classic_quote": "五方既定，中央制衡。",
 		"translation": "五境压力在中央汇合，向所有敌人同时落下。",
-		"description": "对所有敌人造成 {0} 伤害。",
+		"description": "【凶势】对所有敌人造成 {0} 伤害。",
 		"alive_today": "终章群体输出，强调归一后的重量。",
-		"effects": [{"kind": 0, "amount": 12, "target": 2}]
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 12,
+				"target": 2
+			}
+		],
+		"keywords": [
+			"凶势"
+		]
 	},
 	{
 		"id": "neutral.five_realm_harmony",
@@ -1577,6 +1968,618 @@
 		"translation": "五章主题被调和为一个完整闭环。",
 		"description": "获得 {0} 护盾，抽 {1} 张牌，恢复 {2} HP。",
 		"alive_today": "v0.8 闭环奖励卡，不引入新规则，只复用既有基础效果。",
-		"effects": [{"kind": 1, "amount": 12, "target": 3}, {"kind": 3, "amount": 1, "target": 0}, {"kind": 2, "amount": 5, "target": 3}]
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 12,
+				"target": 3
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 2,
+				"amount": 5,
+				"target": 3
+			}
+		],
+		"keywords": []
+	},
+	{
+		"id": "ali.foxtail_feint",
+		"title": "狐尾·佯步",
+		"school": 3,
+		"card_type": 0,
+		"rarity": 0,
+		"cost": 1,
+		"requires_target": true,
+		"classic_quote": "有兽焉，其状如狐而九尾。",
+		"translation": "九尾狐裔以尾影扰乱视线，让敌人先露破绽。",
+		"description": "【凶势】造成 {0} 点伤害，施加 {1} 层易伤。",
+		"alive_today": "阿离基础攻势牌，用轻巧试探打开爆发窗口。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 6,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "vulnerable",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"凶势"
+		]
+	},
+	{
+		"id": "ali.moonlit_wound",
+		"title": "月下·换伤",
+		"school": 3,
+		"card_type": 0,
+		"rarity": 0,
+		"cost": 1,
+		"requires_target": true,
+		"classic_quote": "青丘之山，有兽焉，其状如狐而九尾。",
+		"translation": "月色照见代价，阿离以自身气血换取更深一击。",
+		"description": "【血祭】造成 {0} 点伤害，自身承受 {1} 伤害。",
+		"alive_today": "低阶血祭牌，伤害高于普通攻击，但必须管理护盾和血量。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 10,
+				"target": 1
+			},
+			{
+				"kind": 0,
+				"amount": 2,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"血祭"
+		]
+	},
+	{
+		"id": "ali.masked_step",
+		"title": "狐面·移影",
+		"school": 3,
+		"card_type": 1,
+		"rarity": 1,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "其音如婴儿，能食人。",
+		"translation": "狐面遮住真实步伐，留下可借力的残影。",
+		"description": "【凶势】获得 {0} 护盾，抽 {1} 张牌，获得 {2} 层强化。",
+		"alive_today": "阿离的节奏牌，帮助血祭前先铺一点防护。",
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 5,
+				"target": 3
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "strengthen",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"凶势"
+		]
+	},
+	{
+		"id": "ali.nine_tail_bargain",
+		"title": "九尾·借火",
+		"school": 3,
+		"card_type": 0,
+		"rarity": 1,
+		"cost": 1,
+		"requires_target": true,
+		"classic_quote": "其状如狐而九尾，其音如婴儿。",
+		"translation": "九尾借来一瞬狐火，也收走一点安稳。",
+		"description": "【凶势 / 血祭】造成 {0} 点伤害，自身承受 {1} 伤害，获得 {2} 点灵韵。",
+		"alive_today": "阿离的爆发转速牌，用自伤换当回合更多行动。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 9,
+				"target": 1
+			},
+			{
+				"kind": 0,
+				"amount": 3,
+				"target": 3
+			},
+			{
+				"kind": 4,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"凶势",
+			"血祭"
+		]
+	},
+	{
+		"id": "ali.charm_snare",
+		"title": "狐语·惑阵",
+		"school": 3,
+		"card_type": 0,
+		"rarity": 2,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "见则其国大穰。",
+		"translation": "狐语未必只带灾异，也能让敌阵自乱。",
+		"description": "【凶势】对所有敌人造成 {0} 点伤害，并施加 {1} 层易伤。",
+		"alive_today": "阿离的群体控场牌，让后续爆发更容易收束战斗。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 7,
+				"target": 2
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 2,
+				"status_id": "vulnerable",
+				"status_stack": 2
+			}
+		],
+		"keywords": [
+			"凶势"
+		]
+	},
+	{
+		"id": "ali.foxfire_oath",
+		"title": "狐火·离誓",
+		"school": 3,
+		"card_type": 0,
+		"rarity": 3,
+		"cost": 2,
+		"requires_target": true,
+		"classic_quote": "青丘之狐，九尾而有灵。",
+		"translation": "狐火绕身成誓，代价与锋芒一同燃起。",
+		"description": "【凶势 / 血祭】造成 {0} 点伤害，自身承受 {1} 伤害，获得 {2} 层强化，抽 {3} 张牌。",
+		"alive_today": "阿离遗珍牌，适合在有护盾或需要终结时使用。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 16,
+				"target": 1
+			},
+			{
+				"kind": 0,
+				"amount": 4,
+				"target": 3
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "strengthen",
+				"status_stack": 2
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"凶势",
+			"血祭"
+		]
+	},
+	{
+		"id": "luoling.rainthread_draw",
+		"title": "雨丝·牵卷",
+		"school": 2,
+		"card_type": 1,
+		"rarity": 0,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "水行之气，随卷而来。",
+		"translation": "洛泠以雨丝牵动古卷，让手牌像水面一样流转。",
+		"description": "【潮涌】抽 {0} 张牌，获得 {1} 点护盾。",
+		"alive_today": "洛泠基础过牌牌，稳定补手牌并保留少量防护。",
+		"effects": [
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 1,
+				"amount": 3,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"潮涌"
+		]
+	},
+	{
+		"id": "luoling.tide_mark",
+		"title": "潮痕·点水",
+		"school": 2,
+		"card_type": 0,
+		"rarity": 0,
+		"cost": 1,
+		"requires_target": true,
+		"classic_quote": "水有行迹，触石成痕。",
+		"translation": "潮痕先落在敌身，后续水势更容易找到缺口。",
+		"description": "【湿润】造成 {0} 点伤害，并施加 {1} 层湿润。",
+		"alive_today": "洛泠基础湿润牌，用于开启海经追加伤害。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 5,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "wet",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"湿润"
+		]
+	},
+	{
+		"id": "luoling.mistwalk",
+		"title": "雾步·回澜",
+		"school": 2,
+		"card_type": 1,
+		"rarity": 1,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "雾起而路隐，水回而身轻。",
+		"translation": "洛泠踏雾回身，借水势保留下一次行动。",
+		"description": "【潮涌】获得 {0} 点护盾，抽 {1} 张牌，下一张海经卡费用 -1。",
+		"alive_today": "洛泠的防守节奏牌，帮助连续打出海经牌。",
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 7,
+				"target": 3
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "resonance_hai",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"潮涌"
+		]
+	},
+	{
+		"id": "luoling.wavecut",
+		"title": "浪刃·逐鳞",
+		"school": 2,
+		"card_type": 0,
+		"rarity": 1,
+		"cost": 1,
+		"requires_target": true,
+		"classic_quote": "水击成刃，逐鳞而行。",
+		"translation": "浪刃先润其甲，再顺水切入。",
+		"description": "【潮涌 / 湿润】造成 {0} 点伤害，施加 {1} 层湿润，抽 {2} 张牌。",
+		"alive_today": "洛泠的核心衔接牌，兼顾铺湿润和补牌。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 7,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "wet",
+				"status_stack": 1
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"潮涌",
+			"湿润"
+		]
+	},
+	{
+		"id": "luoling.dragonwell_breath",
+		"title": "龙井·纳息",
+		"school": 2,
+		"card_type": 1,
+		"rarity": 2,
+		"cost": 2,
+		"requires_target": false,
+		"classic_quote": "龙潜于渊，息生风雨。",
+		"translation": "洛泠纳一口深渊水息，换来手牌与灵韵的回流。",
+		"description": "【潮涌】抽 {0} 张牌，获得 {1} 点灵韵，并获得 {2} 点护盾。",
+		"alive_today": "洛泠神品牌，承担海经爆发回合的资源补给。",
+		"effects": [
+			{
+				"kind": 3,
+				"amount": 2,
+				"target": 0
+			},
+			{
+				"kind": 4,
+				"amount": 1,
+				"target": 0
+			},
+			{
+				"kind": 1,
+				"amount": 4,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"潮涌"
+		]
+	},
+	{
+		"id": "luoling.deepsea_confluence",
+		"title": "沧流·会海",
+		"school": 2,
+		"card_type": 0,
+		"rarity": 3,
+		"cost": 2,
+		"requires_target": false,
+		"classic_quote": "众水归海，万流同声。",
+		"translation": "沧流汇成一线，先浸没敌阵，再推回新的手牌。",
+		"description": "【潮涌 / 湿润】给予所有敌人 {0} 层湿润，对所有敌人造成 {1} 点伤害，抽 {2} 张牌。",
+		"alive_today": "洛泠遗珍牌，用于铺场和终结海经连段。",
+		"effects": [
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 2,
+				"status_id": "wet",
+				"status_stack": 2
+			},
+			{
+				"kind": 0,
+				"amount": 8,
+				"target": 2
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"潮涌",
+			"湿润"
+		]
+	},
+	{
+		"id": "sangqi.root_guard",
+		"title": "根门·守息",
+		"school": 1,
+		"card_type": 1,
+		"rarity": 0,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "汤谷上有扶桑，十日所浴。",
+		"translation": "桑岐把根门沉入地脉，先稳住脚下，再让护意延续到下一轮。",
+		"description": "【根脉】获得 {0} 点护盾，并获得 {1} 层根脉。",
+		"alive_today": "桑岐基础防御牌，用根脉把短护盾转成下一回合的站场。",
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 8,
+				"target": 3
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "root",
+				"status_stack": 2
+			}
+		],
+		"keywords": [
+			"根脉"
+		]
+	},
+	{
+		"id": "sangqi.fusang_sprout",
+		"title": "扶桑·新芽",
+		"school": 1,
+		"card_type": 1,
+		"rarity": 0,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "木长千里，叶承朝光。",
+		"translation": "新芽不急着开枝，先把气血和护盾一并托住。",
+		"description": "【生息】获得 {0} 点护盾，恢复 {1} 点生命。",
+		"alive_today": "桑岐基础生息牌，给防守局一点稳定恢复。",
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 5,
+				"target": 3
+			},
+			{
+				"kind": 2,
+				"amount": 4,
+				"target": 3
+			}
+		],
+		"keywords": [
+			"生息"
+		]
+	},
+	{
+		"id": "sangqi.wooden_sigil",
+		"title": "木符·缚影",
+		"school": 1,
+		"card_type": 0,
+		"rarity": 1,
+		"cost": 1,
+		"requires_target": true,
+		"classic_quote": "其木若华，根络山川。",
+		"translation": "木符贴住敌影，让攻势先慢下来，再露出破绽。",
+		"description": "【根脉】造成 {0} 点伤害，施加 {1} 层易伤，并获得 {2} 层根脉。",
+		"alive_today": "桑岐的低费衔接牌，补一点伤害并为慢速回合攒根脉。",
+		"effects": [
+			{
+				"kind": 0,
+				"amount": 6,
+				"target": 1
+			},
+			{
+				"kind": 5,
+				"amount": 0,
+				"target": 1,
+				"status_id": "vulnerable",
+				"status_stack": 1
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "root",
+				"status_stack": 1
+			}
+		],
+		"keywords": [
+			"根脉"
+		]
+	},
+	{
+		"id": "sangqi.green_breath",
+		"title": "青息·回荣",
+		"school": 1,
+		"card_type": 1,
+		"rarity": 1,
+		"cost": 1,
+		"requires_target": false,
+		"classic_quote": "日出扶桑，万木受荣。",
+		"translation": "青息顺着枝叶回流，把一次防守回合转成继续行动的余力。",
+		"description": "【生息】恢复 {0} 点生命，获得 {1} 点灵韵。",
+		"alive_today": "桑岐的节奏回复牌，适合在高压回合补回行动空间。",
+		"effects": [
+			{
+				"kind": 2,
+				"amount": 7,
+				"target": 3
+			},
+			{
+				"kind": 4,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"生息"
+		]
+	},
+	{
+		"id": "sangqi.ridge_bastion",
+		"title": "山脊·盘根",
+		"school": 1,
+		"card_type": 1,
+		"rarity": 2,
+		"cost": 2,
+		"requires_target": false,
+		"classic_quote": "根盘于山，风不能拔。",
+		"translation": "桑岐把根脉盘成一道山脊，先挡住当前压力，再留下下一轮的护势。",
+		"description": "【根脉】获得 {0} 点护盾，获得 {1} 层根脉，抽 {2} 张牌。",
+		"alive_today": "桑岐神品牌，承担防守核心与手牌续航。",
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 14,
+				"target": 3
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "root",
+				"status_stack": 3
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"根脉"
+		]
+	},
+	{
+		"id": "sangqi.ten_thousand_leaves",
+		"title": "万叶·同荣",
+		"school": 1,
+		"card_type": 1,
+		"rarity": 3,
+		"cost": 2,
+		"requires_target": false,
+		"classic_quote": "枝叶相覆，群生同荣。",
+		"translation": "万叶同时展开，护盾、回复和下一次攻势一起回到手里。",
+		"description": "【根脉 / 生息】获得 {0} 点护盾，恢复 {1} 点生命，获得 {2} 层强化，抽 {3} 张牌。",
+		"alive_today": "桑岐遗珍牌，用于把长期防守转成稳定反击。",
+		"effects": [
+			{
+				"kind": 1,
+				"amount": 10,
+				"target": 3
+			},
+			{
+				"kind": 2,
+				"amount": 8,
+				"target": 3
+			},
+			{
+				"kind": 6,
+				"amount": 0,
+				"target": 0,
+				"status_id": "strengthen",
+				"status_stack": 1
+			},
+			{
+				"kind": 3,
+				"amount": 1,
+				"target": 0
+			}
+		],
+		"keywords": [
+			"根脉",
+			"生息"
+		]
 	}
 ]

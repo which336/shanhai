@@ -9,30 +9,31 @@ script = ExtResource("1_cv")
 
 [node name="V" type="VBoxContainer" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 3
 
 [node name="Header" type="HBoxContainer" parent="V"]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 
 [node name="Cost" type="Label" parent="V/Header"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(38, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 text = "费 1"
 clip_text = true
 
 [node name="School" type="Label" parent="V/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 14
-text = "通用"
+theme_override_font_sizes/font_size = 13
+text = "通 · 技 · 凡品"
 horizontal_alignment = 2
 clip_text = true
+text_overrun_behavior = 3
 
 [node name="Title" type="Label" parent="V"]
-custom_minimum_size = Vector2(0, 26)
+custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 theme_override_font_sizes/font_size = 15
 text = "卡名"
@@ -41,8 +42,18 @@ vertical_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
+[node name="Keywords" type="Label" parent="V"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "关键词"
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+
 [node name="Description" type="Label" parent="V"]
-custom_minimum_size = Vector2(0, 84)
+custom_minimum_size = Vector2(0, 74)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_font_sizes/font_size = 14
@@ -53,10 +64,9 @@ autowrap_mode = 2
 clip_text = true
 
 [node name="Quote" type="Label" parent="V"]
-custom_minimum_size = Vector2(0, 28)
+visible = false
 layout_mode = 2
 theme_override_font_sizes/font_size = 12
-text = "「原文」"
 horizontal_alignment = 1
 vertical_alignment = 1
 clip_text = true

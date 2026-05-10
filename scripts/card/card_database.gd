@@ -1,12 +1,10 @@
-## CardDatabase: 启动时从 JSON 加载所有卡牌（Autoload 单例）
-## 数据驱动：策划在 data/cards/cards.json 中加新卡，不动代码即可上线
+## CardDatabase: 启动时从 JSON 加载所有卡牌。
 extends Node
 
 const CARDS_PATH: String = "res://data/cards/cards.json"
 
-var _cards: Dictionary = {}             # id -> Card
+var _cards: Dictionary = {}
 
-## 起手卡组（角色 -> 卡 ID 列表）。MVP 仅一个角色。
 const STARTER_DECKS: Dictionary = {
 	"fang_xun": [
 		"neutral.strike",
@@ -17,6 +15,36 @@ const STARTER_DECKS: Dictionary = {
 		"neutral.guard",
 		"neutral.guard",
 		"shan.jianmu",
+	],
+	"ali": [
+		"neutral.strike",
+		"neutral.strike",
+		"neutral.guard",
+		"neutral.guard",
+		"ali.foxtail_feint",
+		"ali.moonlit_wound",
+		"huang.qiongqi_lash",
+		"neutral.scroll_study",
+	],
+	"luo_ling": [
+		"neutral.strike",
+		"neutral.strike",
+		"neutral.guard",
+		"neutral.guard",
+		"hai.yinglong_call",
+		"hai.wenyao_evade",
+		"hai.kun_swift",
+		"hai.tide_return",
+	],
+	"sang_qi": [
+		"neutral.strike",
+		"neutral.guard",
+		"neutral.guard",
+		"neutral.guard",
+		"sangqi.root_guard",
+		"sangqi.fusang_sprout",
+		"shan.jianmu",
+		"shan.fusang",
 	]
 }
 
@@ -41,7 +69,7 @@ func reload_all() -> void:
 		if not (card_def is Dictionary):
 			continue
 		if card_def.has("_section"):
-			continue   # JSON 里用作章节注释的伪条目
+			continue
 		var c := _build_card(card_def)
 		if c != null and c.id != "":
 			_cards[c.id] = c
@@ -60,6 +88,7 @@ func _build_card(d: Dictionary) -> Card:
 	c.cost = int(d.get("cost", 1))
 	c.exhaust = bool(d.get("exhaust", false))
 	c.requires_target = bool(d.get("requires_target", false))
+	c.keywords = _parse_keywords(d.get("keywords", []))
 	c.classic_quote = d.get("classic_quote", "")
 	c.translation = d.get("translation", "")
 	c.description = d.get("description", "")
@@ -77,6 +106,17 @@ func _build_card(d: Dictionary) -> Card:
 		effects_array.append(eff)
 	c.effects = effects_array
 	return c
+
+
+func _parse_keywords(raw: Variant) -> Array[String]:
+	var result: Array[String] = []
+	if not (raw is Array):
+		return result
+	for item in raw:
+		var keyword := str(item).strip_edges()
+		if keyword != "" and not result.has(keyword):
+			result.append(keyword)
+	return result
 
 
 func get_card(id: String) -> Card:
@@ -99,7 +139,6 @@ func get_starter_deck(character_id: String) -> PackedStringArray:
 	return result
 
 
-## 按流派/稀有度筛选（用于商人 / 战利品池）
 func query(school: int = -1, rarity: int = -1) -> Array:
 	var out: Array = []
 	for c in _cards.values():

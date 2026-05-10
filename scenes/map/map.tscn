@@ -34,7 +34,7 @@ offset_left = -540.0
 offset_top = 50.0
 offset_right = 540.0
 offset_bottom = 78.0
-text = "[WASD/方向键] 移动     [Tab] 小地图     [K] 山海图鉴     [R] 重生本层     [ESC] 战斗中=放弃"
+text = "[WASD/方向键] 移动     [Shift] 加速     [Tab] 小地图     [K] 山海图鉴     [R] 重生本层     [ESC] 战斗中放弃"
 horizontal_alignment = 1
 
 [node name="Status" type="Label" parent="UI"]

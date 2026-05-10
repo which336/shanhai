@@ -9,8 +9,8 @@ var _run_state: Node = null
 var _game_state: Node = null
 
 
-func _init() -> void:
-	call_deferred("_run")
+func _initialize() -> void:
+	process_frame.connect(_run, CONNECT_ONE_SHOT)
 
 
 func _run() -> void:
@@ -54,7 +54,7 @@ func _check_main_menu_key_node() -> void:
 	var footer = menu.get_node_or_null("Footer")
 	_expect(footer != null, "main menu footer should exist")
 	if footer != null:
-		_expect(str(footer.text).find("v0.8.0") >= 0, "main menu footer should show v0.8.0")
+		_expect(str(footer.text).find("v0.14") >= 0, "main menu footer should show v0.14")
 	var info = menu.get("_info_label")
 	_expect(info != null, "main menu info label should exist")
 	if info != null:
@@ -75,6 +75,7 @@ func _check_map_key_node(chapter: int, label: String, floor_tileset: String, wal
 	var map = packed.instantiate()
 	root.add_child(map)
 	await process_frame
+	_check_map_movement_speed(map)
 	var raw_data: Variant = map.get("data")
 	var data: Dictionary = raw_data if raw_data is Dictionary else {}
 	_expect(int(data.get("chapter_index", -1)) == chapter, "%s map should use requested chapter" % label)
@@ -99,6 +100,17 @@ func _check_map_key_node(chapter: int, label: String, floor_tileset: String, wal
 		_expect(seen_bosses.has(boss_id), "%s map should include boss enemy %s" % [label, boss_id])
 	_expect(seen_shop, "%s map should include a shop key node" % label)
 	map.queue_free()
+
+
+func _check_map_movement_speed(map: Node) -> void:
+	_expect(map.has_method("_player_move_speed"), "map should expose player movement speed helper")
+	if not map.has_method("_player_move_speed"):
+		return
+	var walk_speed: float = float(map.call("_player_move_speed", false))
+	var sprint_speed: float = float(map.call("_player_move_speed", true))
+	_expect(walk_speed < 180.0, "default player walk speed should be slower than the old fast movement")
+	_expect(sprint_speed > walk_speed, "shift sprint should be faster than walking")
+	_expect(sprint_speed <= 240.0, "shift sprint should stay close to the previous top speed")
 
 
 func _check_battle_portrait_key_node() -> void:
@@ -157,7 +169,7 @@ func _check_chapter_flow_key_node() -> void:
 	var victory_text = map.get("_victory_text")
 	_expect(victory_text != null, "central final text should exist")
 	if victory_text != null:
-		_expect(str(victory_text.text).find("v0.8") >= 0, "central final text should mention v0.8")
+		_expect(str(victory_text.text).find("忘川之心") >= 0, "central final text should mention Wangchuan finale")
 	map.queue_free()
 
 
